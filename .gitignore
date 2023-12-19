@@ -1,0 +1,7 @@
+/Debug
+/Release
+/.settings
+/.mxproject
+/*.launch
+/.vscode
+.DS_Store
