@@ -1,1 +1,4 @@
 # MainBoard_v2
+MCU STM32F446RET6
+
+STM32CubeIDE v1.14.0
