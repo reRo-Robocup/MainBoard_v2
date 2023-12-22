@@ -12,30 +12,31 @@ volatile int16_t xg, yg, zg;
 
 uint8_t read_byte( uint8_t reg ) {
 	uint8_t ret,val;
-
 		ret = reg | 0x80;
-		CS_RESET;
+		// CS_RESET;
+		gpioSetValue(IMU_CS, 0);
 		HAL_SPI_Transmit(&hspi2, &ret, 1, 100);
 		HAL_SPI_Receive(&hspi2, &val, 1, 100);
-		CS_SET;
+		// CS_SET;
+		gpioSetValue(IMU_CS, 1);
 
 	return val;
 }
 
 void write_byte( uint8_t reg, uint8_t val )  {
 	uint8_t ret;
-
 	ret = reg & 0x7F;
-	CS_RESET;
+	// CS_RESET;
+	gpioSetValue(IMU_CS, 0);
 	HAL_SPI_Transmit(&hspi2, &ret, 1, 100);
 	HAL_SPI_Receive(&hspi2, &val, 1, 100);
-	CS_SET;
+	// CS_SET;
+	gpioSetValue(IMU_CS, 1);
 }
 
 uint8_t IMU_init() {
 	uint8_t who_am_i, ret;
 	ret = 0;
-
 	who_am_i = read_byte( 0x75 );
 	if ( who_am_i == 0x70 ) {
 		ret = 1;
