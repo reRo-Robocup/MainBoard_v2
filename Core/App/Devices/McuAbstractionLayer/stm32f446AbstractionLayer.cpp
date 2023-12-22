@@ -134,15 +134,37 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
 }
 
 // PWM
+
+void stm32f446AbstractionLayer::_initPWM() {
+    HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor1], PAL.PWM_CH[MAL::Peripheral_PWM::Motor1]);
+    HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor2], PAL.PWM_CH[MAL::Peripheral_PWM::Motor2]);
+    HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor3], PAL.PWM_CH[MAL::Peripheral_PWM::Motor3]);
+    HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor4], PAL.PWM_CH[MAL::Peripheral_PWM::Motor4]);
+    HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Buzzer], PAL.PWM_CH[MAL::Peripheral_PWM::Buzzer]);
+}
 void stm32f446AbstractionLayer::pwmSetDuty(Peripheral_PWM p, float duty) {
+    if (p != Peripheral_PWM::End_P) {
+        __HAL_TIM_SET_COMPARE(PAL.PWM_TIM[p], PAL.PWM_CH[p], duty * __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p]));
+    }
 }
 
 // GPIO
 
 void stm32f446AbstractionLayer::gpioSetValue(Peripheral_GPIO p, bool value) {
+    if (p != Peripheral_GPIO::End_G) {
+        if (value) {
+            HAL_GPIO_WritePin(PAL.GPIO_PORT[p], PAL.GPIO_PIN[p], GPIO_PIN_SET);
+        } else {
+            HAL_GPIO_WritePin(PAL.GPIO_PORT[p], PAL.GPIO_PIN[p], GPIO_PIN_RESET);
+        }
+    }
 }
 
 bool stm32f446AbstractionLayer::gpioGetValue(Peripheral_GPIO p) {
+    if (p != Peripheral_GPIO::End_G) {
+        return HAL_GPIO_ReadPin(PAL.GPIO_PORT[p], PAL.GPIO_PIN[p]) == GPIO_PIN_SET;
+    }
+    return false;
 }
 
 // UART
