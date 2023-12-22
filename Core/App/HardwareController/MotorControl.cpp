@@ -16,7 +16,10 @@ MotorContol::MotorControl(Devices* devices) {
 }
 
 void MotorControl::init() {
-    
+    pwmSetDuty(Motor1, 0);
+    pwmSetDuty(Motor2, 0);
+    pwmSetDuty(Motor3, 0);
+    pwmSetDuty(Motor4, 0);
 }
 
 void MotorContol::run(uint8_t angle, uint8_t speed) {
@@ -33,5 +36,11 @@ void MotorContol::run(uint8_t angle, uint8_t speed) {
         for(int i = 0; i < 4; i++) {
             MPwrVector[i] *= (1 / MPwrMax);
         }
+    }
+    for(int i = 0; i < 4; i++) {
+        pwmSetDuty(Motor1, MPwrVector[0]);
+        pwmSetDuty(Motor2, MPwrVector[1]);
+        pwmSetDuty(Motor3, MPwrVector[2]);
+        pwmSetDuty(Motor4, MPwrVector[3]);
     }
 }
