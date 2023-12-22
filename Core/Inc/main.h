@@ -59,8 +59,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define Rotary_IN3_Pin GPIO_PIN_13
 #define Rotary_IN3_GPIO_Port GPIOC
-#define MotorStates_Pin GPIO_PIN_15
-#define MotorStates_GPIO_Port GPIOC
+#define isMotorEnabled_Pin GPIO_PIN_15
+#define isMotorEnabled_GPIO_Port GPIOC
 #define IMU_SDI_Pin GPIO_PIN_1
 #define IMU_SDI_GPIO_Port GPIOC
 #define IMU_SDO_Pin GPIO_PIN_2

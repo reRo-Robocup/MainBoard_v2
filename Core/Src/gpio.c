@@ -62,7 +62,7 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin
                            PCPin */
-  GPIO_InitStruct.Pin = Rotary_IN3_Pin|MotorStates_Pin|Rotary_IN0_Pin|Rotary_IN1_Pin
+  GPIO_InitStruct.Pin = Rotary_IN3_Pin|isMotorEnabled_Pin|Rotary_IN0_Pin|Rotary_IN1_Pin
                           |Rotary_IN2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
