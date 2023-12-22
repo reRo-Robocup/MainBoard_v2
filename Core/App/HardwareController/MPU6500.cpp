@@ -5,7 +5,7 @@
  *      Author: iguchi
  */
 
-#include "MPU6500.h"
+#include "MPU6500.hpp"
 
 volatile int16_t xa, ya, za;
 volatile int16_t xg, yg, zg;
