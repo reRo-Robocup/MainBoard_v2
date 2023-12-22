@@ -44,13 +44,9 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
 
     // UART
     void _initUART();
-
     uint32_t _uartCheckRxBufferDmaWriteAddress(Peripheral_UART p);
-
-    // static uint8_t _uartTxBuffer[UART_BUFFER_SIZE];
-    static uint8_t _uartRxBuffer[Peripheral_UART::End_U - 1][UART_BUFFER_SIZE];
-
-    uint32_t _uartRxBufferReadAddress[Peripheral_UART::End_U - 1] = {0};
+    static uint8_t _uartRxBuffer[Peripheral_UART::End_U][UART_BUFFER_SIZE];
+    uint32_t _uartRxBufferReadAddress[Peripheral_UART::End_U] = {0};
 };
 
 #endif /* APP_DEVICES_STM32F446ABSTRACTIONLAYER_STM32F446ABSTRACTIONLAYER_HPP_ */
