@@ -15,6 +15,7 @@ class lineSensorAlgorithm {
 
    private:
     Devices* _devices;
+    const uint8_t _motorAngles[4] = {45, 135, 225, 315}; // モーターの配置角度
 };
 
 #endif /* APP_HARDWARECONTROLLER_MOTORCONTROL_HPP_ */
