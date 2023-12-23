@@ -1,5 +1,5 @@
 /*
- * MPU6500.hpp
+ * nMPU6500.hpp
  *
  *  Created on: Dec 23, 2023
  */
@@ -14,16 +14,19 @@ class MPU6500 {
     void init();
     void update();
 
+    int16_t xa, ya, za;
+    int16_t xg, yg, zg;
+
     bool isInitialized;
 
    private:
     MAL* _mcu;
 
-    uint8_t _read_byte(uint8_t reg);
-    void _write_byte(uint8_t reg, uint8_t val);
+    void _read_gyro_data();
+    void _read_accel_data();
 
-    int16_t xa, ya, za;
-    int16_t xg, yg, zg;
+    void _write_byte(uint8_t reg, uint8_t val);
+    uint8_t _read_byte(uint8_t reg);
 };
 
 #endif /* APP_DEVICES_DRIVER_MPU6500_HPP_ */

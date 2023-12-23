@@ -67,8 +67,7 @@ class baseMcuAbstractionLayer {
         End_I,
     };
 
-    virtual void
-    init(void) = 0;
+    virtual void init(void) = 0;
 
     virtual uint16_t adcGetValue(Peripheral_ADC p) = 0;
     virtual bool isAdcConvCplt(Peripheral_ADC p) = 0;
