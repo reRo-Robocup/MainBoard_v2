@@ -313,3 +313,9 @@ void stm32f446AbstractionLayer::spiWriteViaBuffer(Peripheral_SPI p, uint8_t* dat
 void stm32f446AbstractionLayer::spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) {
     HAL_SPI_Receive(PAL.SPI[p], data, size, 100);
 }
+
+// Delay
+
+void stm32f446AbstractionLayer::delay_ms(uint32_t ms) {
+    HAL_Delay(ms);
+}
