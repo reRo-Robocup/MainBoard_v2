@@ -4,8 +4,8 @@
  *  Created on: Dec 7, 2023
  */
 
-#ifndef APP_DEVICES_DRIVER_LINESENSORDRIVER_H_
-#define APP_DEVICES_DRIVER_LINESENSORDRIVER_H_
+#ifndef APP_DEVICES_DRIVER_LINESENSORDRIVER_HPP_
+#define APP_DEVICES_DRIVER_LINESENSORDRIVER_HPP_
 #include <Devices/McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class lineSensorDriver {
@@ -44,7 +44,7 @@ class lineSensorDriver {
         {0, 1, 0, 0},  // In5 S2
         {1, 0, 0, 0},  // In6 S1
         {0, 0, 0, 0},  // In7 S0
-        {1, 1, 1, 1},   // In8 S15
+        {1, 1, 1, 1},  // In8 S15
         {0, 1, 1, 1},  // In9 S14
         {1, 0, 1, 1},  // In10 S13
         {0, 0, 1, 1},  // In11 S12
@@ -62,7 +62,7 @@ class lineSensorDriver {
         {0, 1, 0, 0},  // In5 S2
         {1, 0, 0, 0},  // In6 S1
         {0, 0, 0, 0},  // In7 S0
-        {1, 1, 1, 1},   // In8 S15
+        {1, 1, 1, 1},  // In8 S15
         {0, 1, 1, 1},  // In9 S14
         {1, 0, 1, 1},  // In10 S13
         {0, 0, 1, 1},  // In11 S12
@@ -73,4 +73,4 @@ class lineSensorDriver {
     };
 };
 
-#endif /* APP_DEVICES_DRIVER_LINESENSORDRIVER_H_ */
+#endif /* APP_DEVICES_DRIVER_LINESENSORDRIVER_HPP_ */
