@@ -12,7 +12,14 @@
 #include "usart.h"
 
 struct PeripheralAllocation {
-    ADC_HandleTypeDef* ADC_Ins[MAL::Peripheral_ADC::End_A];
+    enum STM_ADC {
+        ADC_1,
+        ADC_2,
+        ADC_3,
+        ADC_END
+    };
+    ADC_HandleTypeDef* ADC_Ins[ADC_END];
+    STM_ADC ADC_Connected[MAL::Peripheral_ADC::End_A];
     uint8_t ADC_RANK[MAL::Peripheral_ADC::End_A];
 
     TIM_HandleTypeDef* PWM_TIM[MAL::Peripheral_PWM::End_P];
@@ -28,11 +35,15 @@ struct PeripheralAllocation {
 static PeripheralAllocation PAL;
 
 stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
-    PAL.ADC_Ins[MAL::Peripheral_ADC::MuxA] = &hadc1;
-    PAL.ADC_Ins[MAL::Peripheral_ADC::MuxB] = &hadc3;
-    PAL.ADC_Ins[MAL::Peripheral_ADC::BatteryVoltage] = &hadc2;
-    PAL.ADC_Ins[MAL::Peripheral_ADC::BallCatchA] = &hadc2;
-    PAL.ADC_Ins[MAL::Peripheral_ADC::BallCatchB] = &hadc2;
+    PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1] = &hadc1;
+    PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2] = &hadc2;
+    PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3] = &hadc3;
+
+    PAL.ADC_Connected[MAL::Peripheral_ADC::MuxA] = PeripheralAllocation::STM_ADC::ADC_1;
+    PAL.ADC_Connected[MAL::Peripheral_ADC::MuxB] = PeripheralAllocation::STM_ADC::ADC_3;
+    PAL.ADC_Connected[MAL::Peripheral_ADC::BatteryVoltage] = PeripheralAllocation::STM_ADC::ADC_2;
+    PAL.ADC_Connected[MAL::Peripheral_ADC::BallCatchA] = PeripheralAllocation::STM_ADC::ADC_2;
+    PAL.ADC_Connected[MAL::Peripheral_ADC::BallCatchB] = PeripheralAllocation::STM_ADC::ADC_2;
 
     PAL.ADC_RANK[MAL::Peripheral_ADC::MuxA] = 0;
     PAL.ADC_RANK[MAL::Peripheral_ADC::MuxB] = 0;
@@ -115,19 +126,35 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
 
 void stm32f446AbstractionLayer::init() {
     _initADC();
+    _initPWM();
+    _initUART();
 }
 
 // ADC
-uint16_t stm32f446AbstractionLayer::_data[2] = {0};
-bool stm32f446AbstractionLayer::_adcCplt[2] = {0};
+uint16_t stm32f446AbstractionLayer::_data[3][3] = {0};
+bool stm32f446AbstractionLayer::_adcCplt[3] = {0};
 
 void stm32f446AbstractionLayer::_initADC(void) {
+    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1], (uint32_t*)this->_data[0], sizeof(uint16_t)) * PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->Init.NbrOfConversion !=
+        HAL_OK) {
+        Error_Handler();
+    }
+    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2], (uint32_t*)this->_data[1], sizeof(uint16_t)) * PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Init.NbrOfConversion !=
+        HAL_OK) {
+        Error_Handler();
+    }
+    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3], (uint32_t*)this->_data[2], sizeof(uint16_t)) * PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->Init.NbrOfConversion !=
+        HAL_OK) {
+        Error_Handler();
+    }
 }
 
 uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {
+    return this->_data[PAL.ADC_Connected[p]][PAL.ADC_RANK[p]];
 }
 
 bool stm32f446AbstractionLayer::isAdcConvCplt(Peripheral_ADC p) {
+    return this->_adcCplt[PAL.ADC_Connected[p]];
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {

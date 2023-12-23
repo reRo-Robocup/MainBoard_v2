@@ -32,12 +32,12 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
     virtual void uartReadViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size);
     virtual uint32_t uartGetRxDataSize(Peripheral_UART p);
 
-    static bool _adcCplt[2];
+    static bool _adcCplt[3];
 
    private:
     // ADC
     void _initADC();
-    static uint16_t _data[2];
+    static uint16_t _data[3][3];
 
     // Timer PWM
     void _initPWM();
