@@ -8,6 +8,7 @@
 #include <cstring>
 #include "adc.h"
 #include "gpio.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 
@@ -30,6 +31,8 @@ struct PeripheralAllocation {
 
     UART_HandleTypeDef* UART[MAL::Peripheral_UART::End_U];
     DMA_HandleTypeDef* UART_DMA[MAL::Peripheral_UART::End_U];
+
+    SPI_HandleTypeDef* SPI[MAL::Peripheral_SPI::End_S];
 };
 
 static PeripheralAllocation PAL;
@@ -122,6 +125,8 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
 
     PAL.UART[MAL::Peripheral_UART::Cam] = &huart6;
     PAL.UART[MAL::Peripheral_UART::Debug] = &huart2;
+
+    PAL.SPI[MAL::Peripheral_SPI::IMU] = &hspi2;
 }
 
 void stm32f446AbstractionLayer::init() {
@@ -158,6 +163,13 @@ bool stm32f446AbstractionLayer::isAdcConvCplt(Peripheral_ADC p) {
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
+    if (AdcHandle->Instance == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->Instance) {
+        stm32f446AbstractionLayer::_adcCplt[0] = true;
+    } else if (AdcHandle->Instance == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Instance) {
+        stm32f446AbstractionLayer::_adcCplt[1] = true;
+    } else if (AdcHandle->Instance == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->Instance) {
+        stm32f446AbstractionLayer::_adcCplt[2] = true;
+    }
 }
 
 // PWM
@@ -290,4 +302,14 @@ uint32_t stm32f446AbstractionLayer::uartGetRxDataSize(Peripheral_UART p) {
     }
 
     return size;
+}
+
+// SPI
+
+void stm32f446AbstractionLayer::spiWriteViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) {
+    HAL_SPI_Transmit(PAL.SPI[p], data, size, 100);
+}
+
+void stm32f446AbstractionLayer::spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) {
+    HAL_SPI_Receive(PAL.SPI[p], data, size, 100);
 }

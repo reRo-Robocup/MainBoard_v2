@@ -19,6 +19,7 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
 
     virtual uint16_t adcGetValue(Peripheral_ADC p);
     virtual bool isAdcConvCplt(Peripheral_ADC p);
+    static bool _adcCplt[3];
 
     virtual void pwmSetDuty(Peripheral_PWM p, float duty);
 
@@ -32,9 +33,10 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
     virtual void uartReadViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size);
     virtual uint32_t uartGetRxDataSize(Peripheral_UART p);
 
-    static bool _adcCplt[3];
+    virtual void spiWriteViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size);
+    virtual void spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size);
 
-   private:
+      private:
     // ADC
     void _initADC();
     static uint16_t _data[3][3];
