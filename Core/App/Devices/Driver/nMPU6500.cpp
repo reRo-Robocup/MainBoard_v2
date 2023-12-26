@@ -12,6 +12,8 @@ MPU6500::MPU6500(MAL* mcu) {
 
 void MPU6500::init() {
     uint8_t who_am_i;
+    // _dt = 1 / RCC_OscInitStruct.PLL.PLLN;
+    _dt = 1 / 180 / 100000;
     who_am_i = _read_byte(0x75);
     if (who_am_i == 0x70) {
         _write_byte(0x6B, 0x00);  // sleep mode解除
@@ -27,6 +29,7 @@ void MPU6500::update() {
         _read_gyro_data();
         _read_accel_data();
     }
+    yaw = _dt * (za - _prev_za);
 }
 
 void MPU6500::_read_gyro_data() {

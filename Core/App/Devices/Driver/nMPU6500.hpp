@@ -17,10 +17,16 @@ class MPU6500 {
     int16_t xa, ya, za;
     int16_t xg, yg, zg;
 
+    uint8_t yaw;
+    float yaw_f;
+
     bool isInitialized;
 
    private:
     MAL* _mcu;
+
+    float _dt;
+    int16_t _prev_za;
 
     void _read_gyro_data();
     void _read_accel_data();
