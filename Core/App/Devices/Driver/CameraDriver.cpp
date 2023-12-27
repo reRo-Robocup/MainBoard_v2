@@ -14,6 +14,7 @@ void CameraDriver::init() {
     AttackColor = YELLOW;
 }
 
-void CameraDriver::updateFPS {
-    
+void CameraDriver::updateFPS() {
+    uint8_t data;
+    _mcu->uartReadViaBuffer(MAL::Peripheral_UART::Cam, (uint8_t*)data, 8);
 }
