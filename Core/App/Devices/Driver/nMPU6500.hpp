@@ -13,6 +13,7 @@ class MPU6500 {
     MPU6500(MAL* mcu);
     void init();
     void update();
+    void calibration();
 
     int16_t xa, ya, za;
     int16_t xg, yg, zg;
@@ -21,12 +22,13 @@ class MPU6500 {
     float yaw_f;
 
     bool isInitialized;
+    bool isCalibrationed;
 
    private:
     MAL* _mcu;
 
     float _dt;
-    int16_t _prev_za;
+    int16_t _drift_constant;
 
     void _read_gyro_data();
     void _read_accel_data();

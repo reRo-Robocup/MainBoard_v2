@@ -5,6 +5,7 @@
  */
 
 #include <Devices/Driver/nMPU6500.hpp>
+#include "GlobalDefines.h"
 
 MPU6500::MPU6500(MAL* mcu) {
     _mcu = mcu;
@@ -12,8 +13,7 @@ MPU6500::MPU6500(MAL* mcu) {
 
 void MPU6500::init() {
     uint8_t who_am_i;
-    // _dt = 1 / RCC_OscInitStruct.PLL.PLLN;
-    _dt = 1 / 180 / 100000;
+    _dt = IMU_CONTROLL_CYCLE;
     who_am_i = _read_byte(0x75);
     if (who_am_i == 0x70) {
         _write_byte(0x6B, 0x00);  // sleep mode解除
@@ -22,6 +22,22 @@ void MPU6500::init() {
         _write_byte(0x1B, 0x18);
         isInitialized = 1;
     }
+    isCalibrationed = 0;
+}
+
+void MPU6500::calibration() {
+    int16_t _tmp_za_min = 0, _tmp_za_max = 0;
+    int16_t _data = 0;
+    int16_t constant = 0;
+    uint32_t tim = _mcu->millis();
+    while((_mcu->millis() - tim) < 2000) {
+        MPU6500::_read_accel_data();
+        _data = za;
+        if(_data > _tmp_za_max) _data = _tmp_za_max;
+        if(_data < _tmp_za_min) _data = _tmp_za_min;
+    }
+    _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
+    isCalibrationed = 1;
 }
 
 void MPU6500::update() {
@@ -29,7 +45,7 @@ void MPU6500::update() {
         _read_gyro_data();
         _read_accel_data();
     }
-    yaw = _dt * (za - _prev_za);
+    yaw += _dt * za + _drift_constant;
 }
 
 void MPU6500::_read_gyro_data() {
