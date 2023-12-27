@@ -4,3 +4,14 @@
  *  Created on: Dec 23, 2023
  */
 
+#ifndef APP_HARDWARECONTROLLER_IMUCONTROLLER_HPP_
+#define APP_HARDWARECONTROLLER_IMUCONTROLLER_HPP_
+
+class IMUController {
+   public:
+    IMUController(Devices* devices);
+   private:
+    Devices* _devices;
+};
+
+#endif
