@@ -88,6 +88,8 @@ class baseMcuAbstractionLayer {
     virtual void spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) = 0;
 
     virtual void delay_ms(uint32_t ms) = 0;
+    virtual long millis(void) = 0;
+
 };
 
 typedef baseMcuAbstractionLayer MAL;
