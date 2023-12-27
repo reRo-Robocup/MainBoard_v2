@@ -32,18 +32,18 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
     float MPowerMax = 0;          // 最大値
     for (int i = 0; i < 4; i++) {
         MPowerVector[i] = -sin(deg_to_rad(angle - _motorAngles[i]));
-        if (MPwrMax < MPwrVector[i])
-            MPwrMax = MPwrVector[i];
+        if (MPowerMax < MPowerVector[i])
+            MPowerMax = MPowerVector[i];
     }
-    if (MPwrMax < 1) {
+    if (MPowerMax < 1) {
         for (int i = 0; i < 4; i++) {
-            MPwrVector[i] *= (1 / MPwrMax);
+            MPowerVector[i] *= (1 / MPowerMax);
         }
     }
     for (int i = 0; i < 4; i++) {
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, MPwrVector[0]);
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, MPwrVector[1]);
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, MPwrVector[2]);
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, MPwrVector[3]);
+        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, MPowerVector[0]);
+        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, MPowerVector[1]);
+        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, MPowerVector[2]);
+        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, MPowerVector[3]);
     }
 }
