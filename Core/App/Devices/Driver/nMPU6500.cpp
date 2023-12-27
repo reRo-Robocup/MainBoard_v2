@@ -1,7 +1,13 @@
 /*
- * nMPU6500.cpp
+ *  nMPU6500.cpp
  *
  *  Created on: Dec 23, 2023
+ * 
+ *  Author: iguchi, SHIMOTORI Haruki
+ * 
+ *  From : reRo_robotrace_board_public
+ *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/MPU6500.c
+ *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/IMU.cpp
  */
 
 #include <Devices/Driver/nMPU6500.hpp>
