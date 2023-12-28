@@ -27,13 +27,14 @@ class MPU6500 {
     uint8_t yaw;
     float yaw_f;
 
+    float _dt;
+
     bool isInitialized;
     bool isCalibrationed;
 
    private:
     MAL* _mcu;
 
-    float _dt;
     int16_t _drift_constant;
 
     void _read_gyro_data();
