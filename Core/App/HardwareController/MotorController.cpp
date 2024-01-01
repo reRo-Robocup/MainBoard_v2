@@ -62,6 +62,6 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
 }
 
 void MotorController::MotorRoll(int motor, float duty) {
-    int _write_compare = ((duty * speed_constant + 1) / 2); // LAP制御用にDuty変換
+    float _write_compare = ((duty * speed_constant + 1) / 2); // LAP制御用にDuty変換
     _devices->mcu->pwmSetDuty(Motor_TIM_CH[i], _write_compare);
 }
