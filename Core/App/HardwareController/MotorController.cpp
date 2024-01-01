@@ -49,10 +49,10 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
 
 float MotorController::MotorRoll(int motor, float duty) {
     int Motor_TIM_CH[4] = {
-        MAL::Peripheral_PWM::Motor1,
-        MAL::Peripheral_PWM::Motor2,
-        MAL::Peripheral_PWM::Motor3,
-        MAL::Peripheral_PWM::Motor4,
+        PAL.PWM_CH[MAL::Peripheral_PWM::Motor1],
+        PAL.PWM_CH[MAL::Peripheral_PWM::Motor2],
+        PAL.PWM_CH[MAL::Peripheral_PWM::Motor3],
+        PAL.PWM_CH[MAL::Peripheral_PWM::Motor4],
     };
     int _write_compare = 0;
     const float speed_fix = 0.2;
