@@ -10,18 +10,16 @@
 
 #include "GlobalDefines.h"
 
-#define STOP_COMPARE 899 / 2
-// htim1.Init.Period / 2
+#define MOTOR_STOP_COMPARE (__HAL_TIM_GET_AUTORELOAD(&tim1) / 2)
 
 MotorController::MotorController(Devices* devices) {
     _devices = devices;
 }
 
 void MotorController::init() {
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0);
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0);
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0);
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0);
+    for(int i = 0; i < 4; i++) {
+        MotorController::MotorRoll(i, MOTOR_STOP_COMPARE);
+    }
 }
 
 void MotorController::run(uint8_t angle, uint8_t speed) {
