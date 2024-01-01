@@ -11,6 +11,8 @@
 #define deg_to_rad(deg) (((deg) / 360) * 2 * M_PI)
 #define rad_to_deg(rad) (((rad) / 2 / M_PI) * 360)
 
+#define STOP_COMPARE 899 / 2
+
 MotorController::MotorController(Devices* devices) {
     _devices = devices;
 }
@@ -35,15 +37,25 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
         if (MPowerMax < MPowerVector[i])
             MPowerMax = MPowerVector[i];
     }
-    if (MPowerMax < 1) {
+    if (MPowerMax =! 1 || MPowerMax =! -1) {
         for (int i = 0; i < 4; i++) {
             MPowerVector[i] *= (1 / MPowerMax);
         }
     }
     for (int i = 0; i < 4; i++) {
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, MPowerVector[0]);
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, MPowerVector[1]);
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, MPowerVector[2]);
-        _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, MPowerVector[3]);
+        MotorController::MotorRoll(i,MPowerVector[i]);
     }
+}
+
+float MotorController::MotorRoll(int motor, float duty) {
+    int Motor_TIM_CH[4] = {
+        MAL::Peripheral_PWM::Motor1,
+        MAL::Peripheral_PWM::Motor2,
+        MAL::Peripheral_PWM::Motor3,
+        MAL::Peripheral_PWM::Motor4,
+    };
+    int _write_compare = 0;
+    const float speed_fix = 0.2;
+    _write_compare = (duty * speed_fix + 1) * STOP_COMPARE;
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _write_compare);
 }
