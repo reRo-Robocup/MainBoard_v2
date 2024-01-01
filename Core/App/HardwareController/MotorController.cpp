@@ -55,7 +55,7 @@ float MotorController::MotorRoll(int motor, float duty) {
         PAL.PWM_CH[MAL::Peripheral_PWM::Motor4],
     };
     int _write_compare = 0;
-    const float speed_fix = 0.2;
-    _write_compare = (duty * speed_fix + 1);
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _write_compare);
+    const float speed_constant = 0.2;
+    _write_compare = (duty * speed_constant + 1); // LAP制御用にDuty変換
+    _devices->mcu->pwmSetDuty(Motor_TIM_CH[i], _write_compare);
 }
