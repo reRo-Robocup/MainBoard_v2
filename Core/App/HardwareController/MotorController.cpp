@@ -11,6 +11,7 @@
 #include "GlobalDefines.h"
 
 #define STOP_COMPARE 899 / 2
+// htim1.Init.Period / 2
 
 MotorController::MotorController(Devices* devices) {
     _devices = devices;
@@ -42,7 +43,7 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
         }
     }
     for (int i = 0; i < 4; i++) {
-        MotorController::MotorRoll(i,MPowerVector[i]);
+        MotorController::MotorRoll(i, MPowerVector[i]);
     }
 }
 
@@ -55,6 +56,6 @@ float MotorController::MotorRoll(int motor, float duty) {
     };
     int _write_compare = 0;
     const float speed_fix = 0.2;
-    _write_compare = (duty * speed_fix + 1) * STOP_COMPARE;
+    _write_compare = (duty * speed_fix + 1);
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _write_compare);
 }
