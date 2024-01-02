@@ -10,7 +10,7 @@
  *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/IMU.cpp
  */
 
-#include <Devices/Driver/nMPU6500.hpp>
+#include <Devices/Driver/MPU6500.hpp>
 #include "GlobalDefines.h"
 
 MPU6500::MPU6500(MAL* mcu) {
