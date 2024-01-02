@@ -13,6 +13,8 @@
 #include <Devices/Driver/MPU6500.hpp>
 #include "GlobalDefines.h"
 
+#define ZA_LIFTED 9.8
+
 MPU6500::MPU6500(MAL* mcu) {
     _mcu = mcu;
 }
@@ -32,26 +34,32 @@ void MPU6500::init() {
 }
 
 void MPU6500::calibration() {
-    int16_t _tmp_za_min = 0, _tmp_za_max = 0;
-    int16_t _data = 0;
-    int16_t constant = 0;
-    uint32_t tim = _mcu->millis();
-    while((_mcu->millis() - tim) < 2000) {
-        MPU6500::_read_accel_data();
-        _data = za;
-        if(_data > _tmp_za_max) _data = _tmp_za_max;
-        if(_data < _tmp_za_min) _data = _tmp_za_min;
+    if(!isCalibrationed) {
+        int16_t _tmp_za_min = 0, _tmp_za_max = 0;
+        int16_t _data = 0;
+        int16_t constant = 0;
+        uint32_t tim = _mcu->millis();
+        while((_mcu->millis() - tim) < 2000) {
+            MPU6500::_read_accel_data();
+            _data = za;
+            if(_data > _tmp_za_max) _data = _tmp_za_max;
+            if(_data < _tmp_za_min) _data = _tmp_za_min;
+        }
+        _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
+        isCalibrationed = 1;
     }
-    _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
-    isCalibrationed = 1;
 }
 
 void MPU6500::update() {
-    if (isInitialized) {
+    if (isInitialized && isCalibrationed) {
         _read_gyro_data();
         _read_accel_data();
     }
     yaw += _dt * za + _drift_constant;
+    while(yaw > 180)  yaw -= 360;
+    while(yaw < -180) yaw += 360;
+
+    isRobotLift = (za > ZA_LIFTED);
 }
 
 void MPU6500::_read_gyro_data() {
@@ -61,9 +69,9 @@ void MPU6500::_read_gyro_data() {
 }
 
 void MPU6500::_read_accel_data() {
-    xa = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
-    // ya = ((int16_t)read_byte(0x3D) << 8) | ((int16_t)read_byte(0x3E));
-    // za = ((int16_t)read_byte(0x3F) << 8) | ((int16_t)read_byte(0x40));
+    // xa = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
+    // ya = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
+    za = ((int16_t)_read_byte(0x3F) << 8) | ((int16_t)_read_byte(0x40));
 }
 
 void MPU6500::_write_byte(uint8_t reg, uint8_t val) {

@@ -24,13 +24,13 @@ class MPU6500 {
     int16_t xa, ya, za;
     int16_t xg, yg, zg;
 
-    uint8_t yaw;
-    float yaw_f;
-
+    int16_t yaw;
     float _dt;
 
     bool isInitialized;
     bool isCalibrationed;
+
+    bool isRobotLift;
 
    private:
     MAL* _mcu;
