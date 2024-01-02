@@ -8,3 +8,10 @@
 #include <Devices/Devices.hpp>
 #include <HardwareController/IMUController.hpp>
 
+IMUController::IMUController(Devices* devices) {
+    _devices = devices;
+};
+
+void IMUController::init() {
+    
+}

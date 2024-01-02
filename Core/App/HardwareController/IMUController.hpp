@@ -10,6 +10,8 @@
 class IMUController {
    public:
     IMUController(Devices* devices);
+    void init();
+    void update();
    private:
     Devices* _devices;
 };
