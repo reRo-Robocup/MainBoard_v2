@@ -9,6 +9,7 @@
 
 #include <Devices/Driver/lineSensorDriver.hpp>
 #include <Devices/Driver/MPU6500.hpp>
+#include <Devices/Driver/CameraDriver.hpp>
 #include <Devices/McuAbstractionLayer/stm32f446AbstractionLayer.hpp>
 
 class Devices {
@@ -20,6 +21,7 @@ class Devices {
     stm32f446AbstractionLayer* mcu;
     lineSensorDriver* lineSensor;
     MPU6500* mpu6500;
+    CameraDriver* camera;
 };
 
 #endif /* APP_DEVICES_Devices_H_ */
