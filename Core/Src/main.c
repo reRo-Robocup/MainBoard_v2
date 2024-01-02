@@ -108,6 +108,7 @@ int main(void)
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim6);
+  HAL_TIM_Base_Start_IT(&htim7);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -181,8 +182,13 @@ PUTCHAR_PROTOTYPE {
 	HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, 0xFFFF);
 	return ch;
 }
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim6) {
-  
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+  if(htim->Instance == TIM6) {
+
+  }
+  if(htim->Instance == TIM7) {
+    
+  }
 }
 /* USER CODE END 4 */
 
