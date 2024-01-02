@@ -9,6 +9,8 @@
 
 #include <Devices/Devices.hpp>
 #include <HardwareController/lineSensorAlgorithm.hpp>
+#include <HardwareController/MotorController.hpp>
+
 class HardwareController {
    public:
     HardwareController(Devices* devices);
@@ -16,6 +18,7 @@ class HardwareController {
     void update();
 
     lineSensorAlgorithm* lineSensorAlgo;
+    MotorController* motor;
 
    private:
     Devices* _devices;

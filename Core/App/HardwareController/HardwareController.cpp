@@ -9,10 +9,12 @@
 HardwareController::HardwareController(Devices* devices) {
     _devices = devices;
     lineSensorAlgo = new lineSensorAlgorithm(_devices);
+    motor = new MotorController(_devices);
 }
 
 void HardwareController::init() {
     lineSensorAlgo->init();
+    motor->init();
 }
 
 void HardwareController::update() {
