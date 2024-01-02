@@ -37,6 +37,7 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
     virtual void spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size);
 
     virtual void delay_ms(uint32_t ms);
+    // virtual uint32_t millis(void);
 
    private:
     // ADC

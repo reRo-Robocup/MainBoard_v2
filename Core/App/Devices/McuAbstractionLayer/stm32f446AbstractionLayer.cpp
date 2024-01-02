@@ -320,6 +320,6 @@ void stm32f446AbstractionLayer::delay_ms(uint32_t ms) {
     HAL_Delay(ms);
 }
 
-uint32_t stm32f446AbstractionLayer::millis(void) {
-    return HAL_GetTick();
-}
+// uint32_t stm32f446AbstractionLayer::millis(void) {
+//     return HAL_GetTick();
+// }

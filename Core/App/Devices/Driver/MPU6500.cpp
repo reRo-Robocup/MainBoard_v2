@@ -32,18 +32,20 @@ void MPU6500::init() {
 }
 
 void MPU6500::calibration() {
-    int16_t _tmp_za_min = 0, _tmp_za_max = 0;
-    int16_t _data = 0;
-    int16_t constant = 0;
-    uint32_t tim = _mcu->millis();
-    while((_mcu->millis() - tim) < 2000) {
-        MPU6500::_read_accel_data();
-        _data = za;
-        if(_data > _tmp_za_max) _data = _tmp_za_max;
-        if(_data < _tmp_za_min) _data = _tmp_za_min;
-    }
-    _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
-    isCalibrationed = 1;
+    // millis 実装待ち
+    
+    // int16_t _tmp_za_min = 0, _tmp_za_max = 0;
+    // int16_t _data = 0;
+    // int16_t constant = 0;
+    // uint32_t tim = _mcu->millis();
+    // while((_mcu->millis() - tim) < 2000) {
+    //     MPU6500::_read_accel_data();
+    //     _data = za;
+    //     if(_data > _tmp_za_max) _data = _tmp_za_max;
+    //     if(_data < _tmp_za_min) _data = _tmp_za_min;
+    // }
+    // _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
+    // isCalibrationed = 1;
 }
 
 void MPU6500::update() {

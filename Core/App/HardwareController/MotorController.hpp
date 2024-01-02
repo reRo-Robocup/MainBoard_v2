@@ -12,7 +12,7 @@ class MotorController {
     MotorController(Devices* devices);
     void init();
     void run(uint8_t angle, uint8_t speed);
-    void MotorController::MotorRoll(int motor, float duty);
+    void MotorRoll(int motor, float duty);
 
    private:
     Devices* _devices;

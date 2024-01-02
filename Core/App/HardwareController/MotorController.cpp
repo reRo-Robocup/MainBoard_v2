@@ -8,32 +8,27 @@
 #include <Devices/Devices.hpp>
 #include <HardwareController/MotorController.hpp>
 #include "GlobalDefines.h"
+#include <Devices/McuAbstractionLayer/stm32f446AbstractionLayer.cpp>
 
-#define MOTOR_STOP_COMPARE (__HAL_TIM_GET_AUTORELOAD(&tim1) / 2)
+#define MOTOR_STOP_COMPARE (__HAL_TIM_GET_AUTORELOAD(&htim1) / 2)
 
 const bool isMotorPinReversed[4] = {
-    // モーターの配線逆か？
+    // モーターの配線逆か
     false, false, false, false
 };
 
-const int Motor_TIM_CH[4] = {
-    PAL.PWM_CH[MAL::Peripheral_PWM::Motor1],
-    PAL.PWM_CH[MAL::Peripheral_PWM::Motor2],
-    PAL.PWM_CH[MAL::Peripheral_PWM::Motor3],
-    PAL.PWM_CH[MAL::Peripheral_PWM::Motor4],
-};
-
 const float speed_constant = 0.2;
-const uint8_t _motorAngles[4] = {45, 135, 225, 315};  // モーターの配置角度
+const uint16_t _motorAngles[4] = {45, 135, 225, 315};  // モーターの配置角度
 
 MotorController::MotorController(Devices* devices) {
     _devices = devices;
 }
 
 void MotorController::init() {
-    for(int i = 0; i < 4; i++) {
-        MotorController::MotorRoll(i, MOTOR_STOP_COMPARE);
-    }
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.5);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.5);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0.5);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.5);
 }
 
 void MotorController::run(uint8_t angle, uint8_t speed) {
@@ -51,17 +46,18 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
         if(isMotorPinReversed)
             MPowerVector[i] *= -1;
     }
-    if (MPowerMax =! 1 || MPowerMax =! -1) {
+    if ((MPowerMax =! 1) || (MPowerMax =! -1)) {
         for (int i = 0; i < 4; i++) {
             MPowerVector[i] *= (1 / MPowerMax);
         }
     }
+    float _write_compare[4] = {0};
+    float speed_constant = 0.5;
     for (int i = 0; i < 4; i++) {
-        MotorController::MotorRoll(i, MPowerVector[i]);
+        _write_compare[i] = ((MPowerVector[i] * speed_constant + 1) / 2);
     }
-}
-
-void MotorController::MotorRoll(int motor, float duty) {
-    float _write_compare = ((duty * speed_constant + 1) / 2); // LAP制御用にDuty変換
-    _devices->mcu->pwmSetDuty(Motor_TIM_CH[i], _write_compare);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, _write_compare[0]);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, _write_compare[1]);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, _write_compare[2]);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _write_compare[3]);
 }
