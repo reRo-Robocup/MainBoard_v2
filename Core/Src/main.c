@@ -106,7 +106,7 @@ int main(void)
   MX_ADC3_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_Base_Start_IT(&htim6);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -179,6 +179,9 @@ void SystemClock_Config(void)
 PUTCHAR_PROTOTYPE {
 	HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, 0xFFFF);
 	return ch;
+}
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim6) {
+  
 }
 /* USER CODE END 4 */
 
