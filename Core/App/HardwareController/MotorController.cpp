@@ -8,14 +8,12 @@
 #include <Devices/Devices.hpp>
 #include <HardwareController/MotorController.hpp>
 #include "GlobalDefines.h"
-#include <Devices/McuAbstractionLayer/stm32f446AbstractionLayer.cpp>
 
 #define MOTOR_STOP_COMPARE (__HAL_TIM_GET_AUTORELOAD(&htim1) / 2)
 
 const bool isMotorPinReversed[4] = {
     // モーターの配線逆か
-    false, false, false, false
-};
+    false, false, false, false};
 
 const float speed_constant = 0.2;
 const uint16_t _motorAngles[4] = {45, 135, 225, 315};  // モーターの配置角度
@@ -43,10 +41,10 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
         MPowerVector[i] = sin(deg_to_rad(angle - _motorAngles[i]));
         if (MPowerMax < MPowerVector[i])
             MPowerMax = MPowerVector[i];
-        if(isMotorPinReversed)
+        if (isMotorPinReversed)
             MPowerVector[i] *= -1;
     }
-    if ((MPowerMax =! 1) || (MPowerMax =! -1)) {
+    if ((MPowerMax = !1) || (MPowerMax = !-1)) {
         for (int i = 0; i < 4; i++) {
             MPowerVector[i] *= (1 / MPowerMax);
         }
