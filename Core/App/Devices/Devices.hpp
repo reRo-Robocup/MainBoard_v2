@@ -8,7 +8,7 @@
 #define APP_DEVICES_Devices_H_
 
 #include <Devices/Driver/lineSensorDriver.hpp>
-#include <Devices/Driver/nMPU6500.hpp>
+#include <Devices/Driver/MPU6500.hpp>
 #include <Devices/McuAbstractionLayer/stm32f446AbstractionLayer.hpp>
 
 class Devices {
