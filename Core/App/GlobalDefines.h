@@ -1,6 +1,8 @@
 #ifndef __APP_GLOBAL_DEFINES_H__
 #define __APP_GLOBAL_DEFINES_H__
 
+#include "math.h"
+
 #define MAIN_CONTROLL_CYCLE 0.001   // 1KHz
 #define IMU_CONTROLL_CYCLE 0.000001 // 100KHZ
 
