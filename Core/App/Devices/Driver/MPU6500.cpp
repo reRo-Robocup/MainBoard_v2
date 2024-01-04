@@ -35,7 +35,7 @@ void MPU6500::init() {
 
 void MPU6500::calibration() {
     if(!isCalibrationed) {
-        int16_t _tmp_za_min = 0, _tmp_za_max = 0;
+        int16_t _tmp_za_min = INT16_MAX, _tmp_za_max = 0;
         int16_t _data = 0;
         int16_t constant = 0;
         uint32_t tim = _mcu->millis();
