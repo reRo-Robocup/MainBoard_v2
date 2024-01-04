@@ -41,6 +41,7 @@ void lineSensorAlgorithm::update() {
     } else {
         angle = 1023;
     }
+    isOnLine = (angle > 360);
 }
 
 uint16_t lineSensorAlgorithm::getLineR() {

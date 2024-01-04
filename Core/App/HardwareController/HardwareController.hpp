@@ -10,6 +10,7 @@
 #include <Devices/Devices.hpp>
 #include <HardwareController/lineSensorAlgorithm.hpp>
 #include <HardwareController/MotorController.hpp>
+#include <HardwareController/CameraController.hpp>
 
 class HardwareController {
    public:
@@ -19,6 +20,7 @@ class HardwareController {
 
     lineSensorAlgorithm* lineSensorAlgo;
     MotorController* motor;
+    CameraController* camera;
 
    private:
     Devices* _devices;

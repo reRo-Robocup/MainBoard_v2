@@ -25,13 +25,17 @@ void app_main() {
     const int isBallFront = 30;
     int16_t angle;
     int8_t Ball_dir = 0;
-    
 
     while (1) {
         devices.update();
         hwc.update();
 
         Ball_dir = BallAngle / abs(BallAngle);
+
+        // ラインセンサー処理
+        while(hwc.lineSensorAlgo->isOnLine) {
+            hwc.motor->run(hwc.lineSensorAlgo->angle, 100);
+        }
 
         // 回り込み
         if(abs(BallAngle) < isBallFront) {
@@ -40,6 +44,9 @@ void app_main() {
         else {
             angle = BallAngle + 30;
         }
+
+        // IMU処理
+
 
         // BallAngle = hwc.camera->BallAngle;
         // debug_angle = hwc.lineSensorAlgo->angle;

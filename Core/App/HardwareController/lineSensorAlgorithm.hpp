@@ -14,6 +14,7 @@ class lineSensorAlgorithm {
     void update();
     uint16_t getLineR();
     uint16_t angle;
+    bool isOnLine;
 
    private:
     Devices* _devices;
