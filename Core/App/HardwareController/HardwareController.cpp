@@ -16,6 +16,7 @@ HardwareController::HardwareController(Devices* devices) {
 void HardwareController::init() {
     lineSensorAlgo->init();
     motor->init();
+    camera->init();
 }
 
 void HardwareController::update() {

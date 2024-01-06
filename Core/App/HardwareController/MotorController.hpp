@@ -13,6 +13,7 @@ class MotorController {
     void init();
     void run(uint8_t angle, uint8_t speed);
     void MotorRoll(int motor, float duty);
+    void turn(bool cw, uint8_t speed);
 
    private:
     Devices* _devices;

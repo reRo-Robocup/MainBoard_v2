@@ -8,13 +8,12 @@
 #include <Devices/Devices.hpp>
 #include <HardwareController/MotorController.hpp>
 #include "GlobalDefines.h"
-// #include <Devices/McuAbstractionLayer/stm32f446AbstractionLayer.cpp>
 
 #define MOTOR_STOP_COMPARE (__HAL_TIM_GET_AUTORELOAD(&htim1) / 2)
 
 const bool isMotorPinReversed[4] = {
-    // モーターの配線逆か
-    false, false, false, false};
+    false, false, false, false
+};
 
 const float speed_constant = 0.2;
 const uint16_t _motorAngles[4] = {45, 135, 225, 315};  // モーターの配置角度
@@ -59,4 +58,11 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, _write_compare[1]);
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, _write_compare[2]);
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _write_compare[3]);
+}
+
+void MotorController::turn(bool cw, uint8_t speed) {
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, speed);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, speed);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, speed);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, speed);
 }
