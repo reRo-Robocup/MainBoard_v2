@@ -65,10 +65,14 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
 }
 
 void MotorController::turn(bool cw, uint8_t speed) {
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, speed);
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, speed);
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, speed);
-    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, speed);
+    float _s[4] = {0.0};
+    for(int i = 0; i < 4; i++) {
+        _s[i] = MotorController::_duty_to_LAPduty(cw * (1 / speed));
+    }
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, _s[0]);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, _s[1]);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, _s[2]);
+    _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _s[3]);
 }
 
 void MotorController::carryBall(int16_t TargetAngle, uint8_t GoalDistance, uint8_t speed, int16_t IMU_yaw) {
