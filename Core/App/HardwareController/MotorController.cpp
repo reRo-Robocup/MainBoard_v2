@@ -71,6 +71,7 @@ void MotorController::turn(bool cw, uint8_t speed) {
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, speed);
 }
 
-void MotorController::carryBall(int16_t TargetAngle, uint8_t GoalDistance, uint8_t speed) {
-    
+void MotorController::carryBall(int16_t TargetAngle, uint8_t GoalDistance, uint8_t speed, int16_t IMU_yaw) {
+    bool isRerativeGoalDir = signbit(TargetAngle);
+    float _p = (IMU_yaw - TargetAngle) * 0.001;
 }
