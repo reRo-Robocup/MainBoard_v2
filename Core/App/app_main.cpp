@@ -33,6 +33,9 @@ void app_main() {
         devices.update();
         hwc.update();
 
+        // スピード決定 実装中
+        speed = devices.mcu->adcGetValue(MAL::Peripheral_ADC::BatteryVoltage) / BATT_MIN_V;
+
         // 向き直し
         while(abs(devices.mpu6500->yaw) > 5) {
             bool dir = signbit(devices.mpu6500->yaw);
@@ -48,12 +51,20 @@ void app_main() {
         while(devices.mcu->adcGetValue(MAL::Peripheral_ADC::BallCatchA) > Ball_threshold) {
             int16_t GoalAngle = devices.camera->angles[devices.camera->AttackColor];
             if(abs(GoalAngle) > 15) {
-
+                // 正面
+                hwc.motor->run(GoalAngle, speed);
+            }
+            else if (abs(GoalAngle > 45)) {
+                // 狙える
+                hwc.motor->carryBall(GoalAngle, devices.camera->goalDistance[devices.camera->AttackColor], speed, devices.mpu6500->yaw);
             }
             else {
-
+                // 狙えない
+                unsigned long tim = devices.mcu->millis();
+                while(((devices.mcu->millis() - tim) < 2000) && (abs(devices.camera->angles[devices.camera->AttackColor])) > 45) {
+                    hwc.motor->run(180, speed / 2);
+                }
             }
-            hwc.motor->carryBall(0,0,0);
         }
 
         // 回り込み
