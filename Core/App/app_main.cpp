@@ -8,7 +8,7 @@
 #include <Devices/Devices.hpp>
 #include <HardwareController/HardwareController.hpp>
 
-#include "./GlobalDefines.h"
+#include "GlobalDefines.h"
 
 Devices devices;
 HardwareController hwc(&devices);
@@ -22,15 +22,20 @@ void app_init() {
 
 void app_main() {
     app_init();
+
     const int isBallFront = 30;
     int16_t angle;
-    int8_t Ball_dir = 0;
+    uint16_t speed = 255;
 
     while (1) {
         devices.update();
         hwc.update();
 
-        Ball_dir = BallAngle / abs(BallAngle);
+        // 向き直し
+        while(abs(devices.mpu6500->yaw) > 5) {
+            bool dir = signbit(devices.mpu6500->yaw);
+            hwc.motor->turn(dir, speed);
+        }
 
         // ラインセンサー処理
         while(hwc.lineSensorAlgo->isOnLine) {
@@ -45,13 +50,6 @@ void app_main() {
             angle = BallAngle + 30;
         }
 
-        // IMU処理
-
-
-        // BallAngle = hwc.camera->BallAngle;
-        // debug_angle = hwc.lineSensorAlgo->angle;
-        // for (int i = 0; i < 32; i++) {
-        //     debug_sensor[i] = devices.lineSensor->sensorValue[i];
-        // }
+        hwc.motor->run(angle,100);
     }
 }
