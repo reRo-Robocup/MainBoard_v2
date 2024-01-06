@@ -18,6 +18,7 @@ class MotorController {
 
    private:
     Devices* _devices;
+    float _duty_to_LAPduty(float duty);
 };
 
 #endif /* APP_HARDWARECONTROLLER_MOTORCONTROLLER_HPP_ */

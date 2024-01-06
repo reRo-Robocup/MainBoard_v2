@@ -29,6 +29,10 @@ void MotorController::init() {
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.5);
 }
 
+float MotorController::_duty_to_LAPduty(float duty) {
+    return (duty++)/2;
+}
+
 void MotorController::run(uint8_t angle, uint8_t speed) {
     angle = 450 - angle;
     while (angle > 359)
@@ -52,7 +56,7 @@ void MotorController::run(uint8_t angle, uint8_t speed) {
     float _write_compare[4] = {0};
     float speed_constant = 0.5;
     for (int i = 0; i < 4; i++) {
-        _write_compare[i] = ((MPowerVector[i] * speed_constant + 1) / 2);
+        _write_compare[i] = MotorController::_duty_to_LAPduty(MPowerVector[i]);
     }
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, _write_compare[0]);
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, _write_compare[1]);
