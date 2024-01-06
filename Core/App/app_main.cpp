@@ -27,6 +27,8 @@ void app_main() {
     int16_t angle;
     uint16_t speed = 255;
 
+    uint16_t Ball_threshold = 3078;
+
     while (1) {
         devices.update();
         hwc.update();
@@ -42,7 +44,21 @@ void app_main() {
             hwc.motor->run(hwc.lineSensorAlgo->angle, 100);
         }
 
+        // キャッチした場合
+        while(devices.mcu->adcGetValue(MAL::Peripheral_ADC::BallCatchA) > Ball_threshold) {
+            int16_t GoalAngle = devices.camera->angles[devices.camera->AttackColor];
+            if(abs(GoalAngle) > 15) {
+
+            }
+            else {
+
+            }
+            hwc.motor->carryBall(0,0,0);
+        }
+
         // 回り込み
+        BallAngle = devices.camera->angles[2];
+
         if(abs(BallAngle) < isBallFront) {
             angle = isBallFront;
         }

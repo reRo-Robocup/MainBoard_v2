@@ -66,3 +66,7 @@ void MotorController::turn(bool cw, uint8_t speed) {
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, speed);
     _devices->mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, speed);
 }
+
+void MotorController::carryBall(int16_t TargetAngle, uint8_t GoalDistance, uint8_t speed) {
+    
+}

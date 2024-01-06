@@ -14,6 +14,7 @@ class MotorController {
     void run(uint8_t angle, uint8_t speed);
     void MotorRoll(int motor, float duty);
     void turn(bool cw, uint8_t speed);
+    void carryBall(int16_t TargetAngle, uint8_t GoalDistance, uint8_t speed);
 
    private:
     Devices* _devices;
