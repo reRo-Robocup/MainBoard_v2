@@ -25,7 +25,7 @@ void app_main() {
 
     const int isBallFront = 30;
     int16_t angle;
-    uint16_t speed = 255;
+    uint16_t speed;
 
     uint16_t Ball_threshold = 3078;
 
@@ -44,7 +44,7 @@ void app_main() {
 
         // ラインセンサー処理
         while(hwc.lineSensorAlgo->isOnLine) {
-            hwc.motor->run(hwc.lineSensorAlgo->angle, 100);
+            hwc.motor->run(hwc.lineSensorAlgo->angle, speed);
         }
 
         // キャッチした場合
@@ -74,9 +74,9 @@ void app_main() {
             angle = isBallFront;
         }
         else {
-            angle = BallAngle + 30;
+            angle = BallAngle + 30 * ((BallAngle)? -1: 1);
         }
 
-        hwc.motor->run(angle,100);
+        hwc.motor->run(angle, speed);
     }
 }
