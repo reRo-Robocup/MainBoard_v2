@@ -4,9 +4,7 @@
  *  Created on: Dec 23, 2023
  */
 
-#include <math.h>
-#include <Devices/Devices.hpp>
-#include <HardwareController/MotorController.hpp>
+#include <MotorControll.hpp>
 #include "GlobalDefines.h"
 
 #define MOTOR_STOP_COMPARE (__HAL_TIM_GET_AUTORELOAD(&htim1) / 2)
