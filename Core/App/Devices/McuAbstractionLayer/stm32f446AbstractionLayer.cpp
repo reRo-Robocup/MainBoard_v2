@@ -181,10 +181,15 @@ void stm32f446AbstractionLayer::_initPWM() {
     HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor4], PAL.PWM_CH[MAL::Peripheral_PWM::Motor4]);
     HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Buzzer], PAL.PWM_CH[MAL::Peripheral_PWM::Buzzer]);
 }
+
 void stm32f446AbstractionLayer::pwmSetDuty(Peripheral_PWM p, float duty) {
     if (p != Peripheral_PWM::End_P) {
         __HAL_TIM_SET_COMPARE(PAL.PWM_TIM[p], PAL.PWM_CH[p], duty * __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p]));
     }
+}
+
+uint32_t stm32f446AbstractionLayer::getPWMConpare(Peripheral_PWM p) {
+    return __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p]);
 }
 
 // GPIO

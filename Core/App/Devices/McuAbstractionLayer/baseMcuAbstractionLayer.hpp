@@ -73,6 +73,7 @@ class baseMcuAbstractionLayer {
     virtual bool isAdcConvCplt(Peripheral_ADC p) = 0;
 
     virtual void pwmSetDuty(Peripheral_PWM p, float duty) = 0;
+    virtual uint32_t getPWMConpare(Peripheral_PWM p) = 0;
 
     virtual void gpioSetValue(Peripheral_GPIO p, bool value) = 0;
     virtual bool gpioGetValue(Peripheral_GPIO p) = 0;
