@@ -16,17 +16,12 @@ class camera {
         camera(MAL* mcu);
         void init();
         void updateFPS();
-        bool getAttackColor();
+        bool AttackColor;
 
-        struct Object {
-            int16_t angle;
-            uint8_t distance;
-            bool enable;
-        };
+        struct Object {};
 
     private:
         MAL* _mcu;
-        bool _AttackColor;
 };
 
 #endif
