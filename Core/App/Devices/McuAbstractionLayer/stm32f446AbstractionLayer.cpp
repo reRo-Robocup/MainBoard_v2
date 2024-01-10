@@ -133,6 +133,8 @@ void stm32f446AbstractionLayer::init() {
     _initADC();
     _initPWM();
     _initUART();
+    HAL_TIM_Base_Start_IT(&htim6);
+    HAL_TIM_Base_Start_IT(&htim7);
 }
 
 // ADC
