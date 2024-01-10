@@ -12,7 +12,6 @@
 class Buzzer {
     public:
         Buzzer(MAL* mcu);
-        void init();
         void on(uint16_t pulse, uint8_t ms);
     private:
         MAL* _mcu;
@@ -21,8 +20,15 @@ class Buzzer {
 class RotarySW {
     public:
         RotarySW(MAL* mcu);
-        void init();
-        uint8_t readVal();
+        uint8_t getVal();
+    private:
+        MAL* _mcu;
+};
+
+class Switch {
+    public:
+        Switch(MAL* mcu);
+        bool getStates();
     private:
         MAL* _mcu;
 };
