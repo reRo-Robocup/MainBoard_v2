@@ -57,8 +57,8 @@ void LineSensor::setThreshold() {
                 _minVal[i+16] = this->sensorValue[i+16];
             if(_maxVal[i] < this->sensorValue[i])    
                 _minVal[i] = this->sensorValue[i];
-            if(_maxVal[i+16] < this->sensorValue[i+32]) 
-                _minVal[i+32] = this->sensorValue[i+32];
+            if(_maxVal[i+16] < this->sensorValue[i+16]) 
+                _minVal[i+16] = this->sensorValue[i+16];
         }
     }
     for(int i = 0; i < 16; i++) {
