@@ -1,5 +1,5 @@
 /*
- *  nMPU6500.hpp
+ *  MPU6500.hpp
  *
  *  Created on: Dec 23, 2023
  * 
@@ -14,9 +14,9 @@
 #define APP_DEVICES_DRIVER_MPU6500_HPP_
 #include <baseMcuAbstractionLayer.hpp>
 
-class IMU {
+class MPU6500 {
    public:
-    IMU(MAL* mcu);
+    MPU6500(MAL* mcu);
     void init();
     void update();
     void calibration();
