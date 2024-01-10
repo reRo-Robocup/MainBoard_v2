@@ -157,11 +157,13 @@ void stm32f446AbstractionLayer::_initADC(void) {
 }
 
 uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {
-    return this->_data[PAL.ADC_Connected[p]][PAL.ADC_RANK[p]];
+    return _data[PAL.ADC_Connected[p]][PAL.ADC_RANK[p]];
 }
 
 bool stm32f446AbstractionLayer::isAdcConvCplt(Peripheral_ADC p) {
-    return this->_adcCplt[PAL.ADC_Connected[p]];
+    bool ret = _adcCplt[PAL.ADC_Connected[p]];
+    _adcCplt[PAL.ADC_Connected[p]] = false;
+    return ret;
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
