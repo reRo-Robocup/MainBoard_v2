@@ -22,7 +22,7 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
     static bool _adcCplt[3];
 
     virtual void pwmSetDuty(Peripheral_PWM p, float duty);
-    virtual uint32_t getPWMConpare(Peripheral_PWM p) = 0;
+    virtual uint32_t getPWMConpare(Peripheral_PWM p);
 
     virtual void gpioSetValue(Peripheral_GPIO p, bool value);
     virtual bool gpioGetValue(Peripheral_GPIO p);

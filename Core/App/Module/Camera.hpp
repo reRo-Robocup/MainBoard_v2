@@ -6,8 +6,8 @@
  *  Author: User, G4T1PR0
  */
 
-#ifndef __CAMERA_CPP__
-#define __CAMERA_CPP__
+#ifndef __APP_MODULE_CAMERA_HPP__
+#define __APP_MODULE_CAMERA_HPP__
 
 #include <baseMcuAbstractionLayer.hpp>
 
@@ -18,10 +18,13 @@ class camera {
         void updateFPS();
         bool AttackColor;
 
-        struct Object {};
+        uint16_t angle[3] = {0};
+        uint8_t distance[3] = {0};
+        bool isDisable[3] = {false};
 
     private:
         MAL* _mcu;
+        void _read_by_header();
 };
 
-#endif
+#endif 
