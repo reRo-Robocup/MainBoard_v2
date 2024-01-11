@@ -27,6 +27,10 @@ void MotorControll::init() {
     _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.5);
 }
 
+float MotorControll::_getBatteryVoltage() {
+    return _mcu->adcGetValue(MAL::Peripheral_ADC::BatteryVoltage) / 4096;
+}
+
 float MotorControll::_duty_to_LAPduty(float duty) {
     return (duty++)/2;
 }

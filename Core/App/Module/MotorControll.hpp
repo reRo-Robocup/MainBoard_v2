@@ -21,6 +21,7 @@ class MotorControll {
    private:
     MAL* _mcu;
     float _duty_to_LAPduty(float duty);
+    float _getBatteryVoltage();
 };
 
 #endif /* APP_HARDWARECONTROLLER_MotorControll_HPP_ */
