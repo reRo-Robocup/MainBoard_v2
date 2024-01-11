@@ -24,6 +24,10 @@ void camera::updateFPS() {
 }
 
 void camera::_read_by_header() {
+    /*  UARTプロトコル
+        | header(0xFF) | BallAngle(16bit) | YellowAngle(16bit) | BlueAngle(16bit)|
+        | BallDis(8bit) | YellowDis(8bit) | BlueDis(8bit) | disable(8bit) |
+    */
     uint8_t header = 0xFF;
     uint8_t _data = _mcu->uartGetChar(MAL::Peripheral_UART::Cam);
     if(_data == header) {
@@ -39,8 +43,8 @@ void camera::_read_by_header() {
             distance[i] = _mcu->uartGetChar(MAL::Peripheral_UART::Cam);
         }
         // 検出できたか 格納
-        isDisable[0] = (_mcu->uartGetChar(MAL::Peripheral_UART::Cam) & 0x10000000) << 8;
-        isDisable[1] = (_mcu->uartGetChar(MAL::Peripheral_UART::Cam) & 0x01000000) << 8;
-        isDisable[2] = (_mcu->uartGetChar(MAL::Peripheral_UART::Cam) & 0x00100000) << 8;
+        enable[0] = (_mcu->uartGetChar(MAL::Peripheral_UART::Cam) & 0x10000000) << 8;
+        enable[1] = (_mcu->uartGetChar(MAL::Peripheral_UART::Cam) & 0x01000000) << 8;
+        enable[2] = (_mcu->uartGetChar(MAL::Peripheral_UART::Cam) & 0x00100000) << 8;
     }
 }

@@ -20,7 +20,7 @@ class camera {
 
         uint16_t angle[3] = {0};
         uint8_t distance[3] = {0};
-        bool isDisable[3] = {false};
+        bool enable[3] = {false};
 
     private:
         MAL* _mcu;
