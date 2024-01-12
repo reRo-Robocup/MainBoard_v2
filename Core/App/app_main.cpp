@@ -5,19 +5,17 @@
  */
 
 #include <app_main.h>
-#include <Devices/Devices.hpp>
-#include <HardwareController/HardwareController.hpp>
 
-#include "GlobalDefines.h"
+#include <GlobalDefines.h>
 
-Devices devices;
-HardwareController hwc(&devices);
-
-int16_t BallAngle;
+#include <Module/Camera.hpp>
+#include <Module/LineSensor.hpp>
+#include <Module/MPU6500.hpp>
+#include <Module/UI.hpp>
+#include <Module/MotorControll.hpp>
 
 void app_init() {
-    devices.init();
-    hwc.init();
+
 }
 
 void app_main() {
