@@ -4,7 +4,7 @@
  *  Created on: Dec 7, 2023
  */
 
-#include <Devices/McuAbstractionLayer/stm32f446AbstractionLayer.hpp>
+#include "stm32f446AbstractionLayer.hpp"
 #include <cstring>
 #include "adc.h"
 #include "gpio.h"

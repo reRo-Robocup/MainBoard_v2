@@ -12,7 +12,8 @@
 
 #ifndef APP_DEVICES_DRIVER_MPU6500_HPP_
 #define APP_DEVICES_DRIVER_MPU6500_HPP_
-#include <baseMcuAbstractionLayer.hpp>
+
+#include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class MPU6500 {
    public:

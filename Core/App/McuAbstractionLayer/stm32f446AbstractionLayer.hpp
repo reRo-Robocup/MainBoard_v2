@@ -7,7 +7,7 @@
 #ifndef APP_DEVICES_STM32F446ABSTRACTIONLAYER_STM32F446ABSTRACTIONLAYER_HPP_
 #define APP_DEVICES_STM32F446ABSTRACTIONLAYER_STM32F446ABSTRACTIONLAYER_HPP_
 
-#include <Devices/McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
+#include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 #define UART_BUFFER_SIZE 64
 

@@ -6,21 +6,24 @@
 
 #ifndef APP_DEVICES_DRIVER_LINESENSOR_HPP_
 #define APP_DEVICES_DRIVER_LINESENSOR_HPP_
-#include <baseMcuAbstractionLayer.hpp>
+#include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class LineSensor {
    public:
     LineSensor(MAL* mcu);
     void init();
     void update();
+    void read();
     void setThreshold();
     uint16_t sensorValue[32] = {0};
     bool isSensorONline[32] = {0};
-    bool isONline;
+    bool isonLine;
+    uint16_t angle;
 
    private:
     MAL* _mcu;
     uint32_t _threshold[32] = {0};
+    float _sincosTable[32][2] = {0.0};
     const bool SigPattern[16][4] = {
         {1, 1, 1, 0},  // In0 S7
         {0, 1, 1, 0},  // In1 S6

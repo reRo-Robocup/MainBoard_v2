@@ -7,7 +7,7 @@
 #ifndef APP_HARDWARECONTROLLER_MotorControll_HPP_
 #define APP_HARDWARECONTROLLER_MotorControll_HPP_
 
-#include <baseMcuAbstractionLayer.hpp>
+#include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class MotorControll {
    public:

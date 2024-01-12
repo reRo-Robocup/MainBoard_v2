@@ -7,7 +7,7 @@
 #ifndef APP_DEVICES_DRIVER_UI_HPP_
 #define APP_DEVICES_DRIVER_UI_HPP_
 
-#include <baseMcuAbstractionLayer.hpp>
+#include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class Buzzer {
     public:

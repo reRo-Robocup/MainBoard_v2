@@ -4,8 +4,7 @@
  *  Created on: Jan 10, 2024
  */
 
-#include <UI.hpp>
-#include <baseMcuAbstractionLayer.hpp>
+#include "UI.hpp"
 
 Buzzer::Buzzer(MAL* mcu) {
     _mcu = mcu;

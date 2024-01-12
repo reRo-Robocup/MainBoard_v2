@@ -9,7 +9,7 @@
 #ifndef __APP_MODULE_CAMERA_HPP__
 #define __APP_MODULE_CAMERA_HPP__
 
-#include <baseMcuAbstractionLayer.hpp>
+#include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class camera {
     public:

@@ -4,7 +4,8 @@
  *  Created on: Dec 7, 2023
  */
 
-#include <LineSensor.hpp>
+#include "LineSensor.hpp"
+#include <GlobalDefines.h>
 
 LineSensor::LineSensor(MAL* mcu) {
     _mcu = mcu;
@@ -19,9 +20,13 @@ void LineSensor::init() {
     _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig1, 0);
     _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig2, 0);
     _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig3, 0);
+    for(int i = 0; i < 32; i++) {
+        this->_sincosTable[i][0] = sin(deg_to_rad(360 / 32 * i));
+        this->_sincosTable[i][1] = cos(deg_to_rad(360 / 32 * i));
+    }
 }
 
-void LineSensor::update() {
+void LineSensor::read() {
     for (int i = 0; i < 16; i++) {
         _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig0, SigPattern[i][0]);
         _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig1, SigPattern[i][1]);
@@ -42,6 +47,31 @@ void LineSensor::update() {
         sensorValue[i]      = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
         sensorValue[i + 16] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxB);
     }
+}
+
+void LineSensor::update() {
+    float x = 0.0;
+    float y = 0.0;
+    uint8_t _cnt = 0;
+    for (int i = 0; i < 32; i++) {
+        if (sensorValue[i] > this->_threshold[i]) {
+            _cnt++;
+            x += _sincosTable[1][i];
+            y += _sincosTable[0][i];
+        }
+    }
+    uint16_t _angle = 0;
+    this->isonLine = _cnt > 0;
+    if (isonLine) {
+        _angle = rad_to_deg(atan2(y, x)) - 90;
+        if (_angle > 359)
+            _angle -= 360;
+        else if (_angle < 0)
+            _angle += 360;
+    } else {
+        _angle = 1023;
+    }
+    this->angle = _angle;
 }
 
 void LineSensor::setThreshold() {
