@@ -198,6 +198,15 @@ uint32_t stm32f446AbstractionLayer::getPWMConpare(Peripheral_PWM p) {
     return __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p]);
 }
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+  if(htim->Instance == TIM6) {
+
+  }
+  if(htim->Instance == TIM7) {
+    
+  }
+}
+
 // GPIO
 
 void stm32f446AbstractionLayer::gpioSetValue(Peripheral_GPIO p, bool value) {

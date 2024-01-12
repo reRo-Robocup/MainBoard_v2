@@ -181,14 +181,6 @@ PUTCHAR_PROTOTYPE {
 	HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, 0xFFFF);
 	return ch;
 }
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-  if(htim->Instance == TIM6) {
-
-  }
-  if(htim->Instance == TIM7) {
-    
-  }
-}
 /* USER CODE END 4 */
 
 /**

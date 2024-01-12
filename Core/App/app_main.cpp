@@ -32,6 +32,12 @@ void app_init() {
     motor.init();
 }
 
+void app_update() {
+    cam.updateFPS();
+    line.update();
+    imu.update();
+}
+
 void app_main() {
 
     app_init();
