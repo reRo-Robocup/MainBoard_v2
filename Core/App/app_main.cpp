@@ -46,6 +46,8 @@ void app_main() {
     uint8_t isBallFront = 5;
     uint16_t angle = 0;
 
+    const uint16_t BallCatchThreshold[2] = {2048, 2048};
+
     while (1) {
 
         // 向き直し
@@ -60,18 +62,18 @@ void app_main() {
         }
 
         // キャッチした場合
-        while(mcu->adcGetValue(MAL::Peripheral_ADC::BallCatchA)) {
+        while(mcu->adcGetValue(MAL::Peripheral_ADC::BallCatchA) > BallCatchThreshold[0]) {
             int16_t GoalAngle = cam.angle[cam.AttackColor];
+            // 正面
             if(abs(GoalAngle) > 15) {
-                // 正面
                 motor.run(GoalAngle);
             }
+            // 狙える
             else if (abs(GoalAngle > 45)) {
-                // 狙える
                 motor.carryBall(GoalAngle, cam.distance[cam.AttackColor], imu.yaw);
             }
+            // 狙えない
             else {
-                // 狙えない
                 unsigned long tim = mcu->millis();
                 while(((mcu->millis() - tim) < 2000) && (abs(cam.angle[cam.AttackColor])) > 45) {
                     motor.run(180);
