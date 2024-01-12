@@ -26,7 +26,7 @@ void camera::updateFPS() {
 void camera::_read_by_header() {
     /*  UARTプロトコル
         | header(0xFF) | BallAngle(16bit) | YellowAngle(16bit) | BlueAngle(16bit)|
-        | BallDis(8bit) | YellowDis(8bit) | BlueDis(8bit) | disable(8bit) |
+        | BallDis(8bit) | enable(8bit) |
     */
     uint8_t header = 0xFF;
     uint8_t _data = _mcu->uartGetChar(MAL::Peripheral_UART::Cam);
