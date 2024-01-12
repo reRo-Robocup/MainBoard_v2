@@ -18,6 +18,7 @@ const uint16_t _motorAngles[4] = {45, 135, 225, 315};  // モーターの配置�
 
 MotorControll::MotorControll(MAL* mcu) {
     _mcu = mcu;
+    speed = 100;
 }
 
 void MotorControll::init() {
@@ -35,7 +36,7 @@ float MotorControll::_duty_to_LAPduty(float duty) {
     return (duty++)/2;
 }
 
-void MotorControll::run(uint8_t angle, uint8_t speed) {
+void MotorControll::run(uint8_t angle) {
     angle = 450 - angle;
     while (angle > 359)
         angle -= 360;
@@ -58,7 +59,7 @@ void MotorControll::run(uint8_t angle, uint8_t speed) {
     float _write_compare[4] = {0};
     float speed_constant = 0.5;
     for (int i = 0; i < 4; i++) {
-        _write_compare[i] = MotorControll::_duty_to_LAPduty(MPowerVector[i]);
+        _write_compare[i] = MotorControll::_duty_to_LAPduty(MPowerVector[i]) * (this->speed / 100);
     }
     _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, _write_compare[0]);
     _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, _write_compare[1]);
@@ -66,7 +67,7 @@ void MotorControll::run(uint8_t angle, uint8_t speed) {
     _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _write_compare[3]);
 }
 
-void MotorControll::turn(bool cw, uint8_t speed) {
+void MotorControll::turn(bool cw) {
     float _s[4] = {0.0};
     for(int i = 0; i < 4; i++) {
         _s[i] = MotorControll::_duty_to_LAPduty(cw * (1 / speed));
@@ -77,7 +78,7 @@ void MotorControll::turn(bool cw, uint8_t speed) {
     _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _s[3]);
 }
 
-void MotorControll::carryBall(int16_t TargetAngle, uint8_t GoalDistance, uint8_t speed, int16_t IMU_yaw) {
+void MotorControll::carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t IMU_yaw) {
     bool isRerativeGoalDir = signbit(TargetAngle);
     float _p = (IMU_yaw - TargetAngle) * 0.001;
 }
