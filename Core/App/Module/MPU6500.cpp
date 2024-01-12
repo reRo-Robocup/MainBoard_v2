@@ -1,9 +1,9 @@
 /*
- *  nMPU6500.cpp
+ *  MPU6500.cpp
  *
  *  Created on: Dec 23, 2023
  * 
- *  Author: iguchi, SHIMOTORI Haruki
+ *  Author: iguchi, SHIMOTORI Haruki, (onlydcx, G4T1PR0)
  * 
  *  From : reRo_robotrace_board_public
  *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/MPU6500.c
@@ -21,7 +21,7 @@ MPU6500::MPU6500(MAL* mcu) {
 
 void MPU6500::init() {
     uint8_t who_am_i;
-    _dt = IMU_CONTROLL_CYCLE;
+    _dt = CONTROLL_CYCLE;
     who_am_i = _read_byte(0x75);
     if (who_am_i == 0x70) {
         _write_byte(0x6B, 0x00);  // sleep mode解除

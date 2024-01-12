@@ -1,7 +1,9 @@
 /*
- * stm32f446AbstractionLayer.cpp
+ *  stm32f446AbstractionLayer.cpp
  *
  *  Created on: Dec 7, 2023
+ * 
+ *  Author: onlydcx, G4T1PR0
  */
 
 #include "stm32f446AbstractionLayer.hpp"

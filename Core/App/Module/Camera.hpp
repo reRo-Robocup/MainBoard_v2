@@ -3,11 +3,11 @@
  *
  *  Created on: Jan 1, 2024
  * 
- *  Author: User, G4T1PR0
+ *  Author: onlydcx, G4T1PR0
  */
 
-#ifndef __APP_MODULE_CAMERA_HPP__
-#define __APP_MODULE_CAMERA_HPP__
+#ifndef _APP_MODULE_CAMERA_HPP_
+#define _APP_MODULE_CAMERA_HPP_
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
@@ -27,4 +27,4 @@ class camera {
         void _read_by_header();
 };
 
-#endif 
+#endif /* _APP_MODULE_CAMERA_HPP_ */

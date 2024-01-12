@@ -1,11 +1,13 @@
 /*
- * UI.hpp
+ *  UI.hpp
  *
  *  Created on: Jan 10, 2024
+ * 
+ *  Author: onlydcx, G4T1PR0
  */
 
-#ifndef APP_DEVICES_DRIVER_UI_HPP_
-#define APP_DEVICES_DRIVER_UI_HPP_
+#ifndef _APP_MODULE_UI_HPP_
+#define _APP_MODULE_UI_HPP_
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
@@ -33,4 +35,4 @@ class Switch {
         MAL* _mcu;
 };
 
-#endif
+#endif /* _APP_MODULE_UI_HPP_ */

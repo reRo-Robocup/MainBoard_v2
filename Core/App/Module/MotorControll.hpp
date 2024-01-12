@@ -2,10 +2,12 @@
  * MotorControll.hpp
  *
  *  Created on: Dec 23, 2023
+ * 
+ *  Author: onlydcx, G4T1PR0
  */
 
-#ifndef APP_HARDWARECONTROLLER_MotorControll_HPP_
-#define APP_HARDWARECONTROLLER_MotorControll_HPP_
+#ifndef _APP_MODULE_MOTORCONTROLL_HPP_
+#define _APP_MODULE_MOTORCONTROLL_HPP_
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
@@ -25,4 +27,4 @@ class MotorControll {
     float _getBatteryVoltage();
 };
 
-#endif /* APP_HARDWARECONTROLLER_MotorControll_HPP_ */
+#endif /* _APP_MODULE_MOTORCONTROLL_HPP_ */

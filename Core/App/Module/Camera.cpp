@@ -3,7 +3,7 @@
  *
  *  Created on: Jan 1, 2024
  * 
- *  Author: User, G4T1PR0
+ *  Author: onlydcx, G4T1PR0
  */
 
 #include "Camera.hpp"
