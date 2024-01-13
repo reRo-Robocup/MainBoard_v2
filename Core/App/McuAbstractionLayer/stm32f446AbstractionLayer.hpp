@@ -49,7 +49,7 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
     virtual uint32_t millis(void);
 
     // Interrupt
-    virtual void interruptSetCallback(Peripheral_Interrupt p, void (*callback)(void)) = 0;
+    virtual void interruptSetCallback(Peripheral_Interrupt p, void (*callback)(void));
     static void (*_timerInterruptCallback[Peripheral_Interrupt::End_T])(void);
 
    private:
