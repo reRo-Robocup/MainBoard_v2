@@ -2,7 +2,7 @@
  *  baseMcuAbstractionLayer.hpp
  *
  *  Created on: Dec 7, 2023
- * 
+ *
  *  Author: onlydcx, G4T1PR0
  */
 
@@ -69,17 +69,26 @@ class baseMcuAbstractionLayer {
         End_I,
     };
 
+    enum Peripheral_Interrupt {
+        T1ms,
+        End_T
+    };
+
     virtual void init(void) = 0;
 
+    // ADC
     virtual uint16_t adcGetValue(Peripheral_ADC p) = 0;
     virtual bool isAdcConvCplt(Peripheral_ADC p) = 0;
 
+    // PWM
     virtual void pwmSetDuty(Peripheral_PWM p, float duty) = 0;
     virtual uint32_t getPWMConpare(Peripheral_PWM p) = 0;
 
+    // GPIO
     virtual void gpioSetValue(Peripheral_GPIO p, bool value) = 0;
     virtual bool gpioGetValue(Peripheral_GPIO p) = 0;
 
+    // UART
     virtual void uartPutChar(Peripheral_UART p, uint8_t data) = 0;
     virtual uint8_t uartGetChar(Peripheral_UART p) = 0;
 
@@ -87,12 +96,16 @@ class baseMcuAbstractionLayer {
     virtual void uartReadViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size) = 0;
     virtual uint32_t uartGetRxDataSize(Peripheral_UART p) = 0;
 
+    // SPI
     virtual void spiWriteViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) = 0;
     virtual void spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) = 0;
 
+    // DELAY
     virtual void delay_ms(uint32_t ms) = 0;
     virtual uint32_t millis(void) = 0;
 
+    // INTERRUPT
+    virtual void interruptSetCallback(Peripheral_Interrupt p, void (*callback)(void)) = 0;
 };
 
 typedef baseMcuAbstractionLayer MAL;

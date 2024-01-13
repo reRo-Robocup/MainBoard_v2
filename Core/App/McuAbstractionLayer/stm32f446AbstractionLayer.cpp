@@ -2,7 +2,7 @@
  *  stm32f446AbstractionLayer.cpp
  *
  *  Created on: Dec 7, 2023
- * 
+ *
  *  Author: onlydcx, G4T1PR0
  */
 
@@ -35,6 +35,8 @@ struct PeripheralAllocation {
     DMA_HandleTypeDef* UART_DMA[MAL::Peripheral_UART::End_U];
 
     SPI_HandleTypeDef* SPI[MAL::Peripheral_SPI::End_S];
+
+    TIM_HandleTypeDef* TimerInterrupt_TIM[MAL::Peripheral_Interrupt::End_T];
 };
 
 static PeripheralAllocation PAL;
@@ -125,18 +127,22 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
     PAL.GPIO_PORT[MAL::Peripheral_GPIO::IMU_CS] = IMU_CS_GPIO_Port;
     PAL.GPIO_PIN[MAL::Peripheral_GPIO::IMU_CS] = IMU_CS_Pin;
 
+    // UART
     PAL.UART[MAL::Peripheral_UART::Cam] = &huart6;
     PAL.UART[MAL::Peripheral_UART::Debug] = &huart2;
 
+    // SPI
     PAL.SPI[MAL::Peripheral_SPI::IMU] = &hspi2;
+
+    // Timer Interrupt
+    PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms] = &htim6;
 }
 
 void stm32f446AbstractionLayer::init() {
     _initADC();
     _initPWM();
     _initUART();
-    HAL_TIM_Base_Start_IT(&htim6);
-    HAL_TIM_Base_Start_IT(&htim7);
+    _initTimerInterrupt();
 }
 
 // ADC
@@ -196,15 +202,6 @@ void stm32f446AbstractionLayer::pwmSetDuty(Peripheral_PWM p, float duty) {
 
 uint32_t stm32f446AbstractionLayer::getPWMConpare(Peripheral_PWM p) {
     return __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p]);
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-  if(htim->Instance == TIM6) {
-
-  }
-  if(htim->Instance == TIM7) {
-    
-  }
 }
 
 // GPIO
@@ -342,4 +339,24 @@ void stm32f446AbstractionLayer::delay_ms(uint32_t ms) {
 
 uint32_t stm32f446AbstractionLayer::millis(void) {
     return HAL_GetTick();
+}
+
+// Interrupt
+
+void (*stm32f446AbstractionLayer::_timerInterruptCallback[Peripheral_Interrupt::End_T])(void);
+
+void stm32f446AbstractionLayer::_initTimerInterrupt() {
+    HAL_TIM_Base_Start(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]);
+}
+
+void stm32f446AbstractionLayer::interruptSetCallback(Peripheral_Interrupt p, void (*callback)(void)) {
+    if (p != Peripheral_Interrupt::End_T) {
+        _timerInterruptCallback[p] = callback;
+    }
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
+    if (htim == PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]) {
+        stm32f446AbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms]();
+    }
 }
