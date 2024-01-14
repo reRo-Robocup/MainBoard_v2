@@ -98,3 +98,18 @@ void LineSensor::setThreshold() {
         this->_threshold[i+32] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
     }
 }
+
+uint8_t LineSensor::getDisFromCenter() {
+    if(this->isonLine) {
+        int8_t continuous_Hpins[32] = {-1};
+        uint8_t continuous_cnt = 0;
+        uint16_t _prev_pin = 0;
+        for(int i = 0; i < 16; i++) {
+            if((isSensorONline[i] && (_prev_pin == (i - 1)))) {
+                continuous_cnt++;
+                continuous_Hpins[i] = i;
+            }
+
+        }
+    }
+}

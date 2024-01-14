@@ -18,6 +18,7 @@ class LineSensor {
     void update();
     void read();
     void setThreshold();
+    uint8_t getDisFromCenter();
     uint16_t sensorValue[32] = {0};
     bool isSensorONline[32] = {0};
     bool isonLine;
