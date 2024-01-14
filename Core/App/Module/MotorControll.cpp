@@ -15,6 +15,13 @@ const bool isMotorPinReversed[4] = {
     false, false, false, false
 };
 
+const MAL::Peripheral_PWM motor[4] = {
+    MAL::Peripheral_PWM::Motor1,
+    MAL::Peripheral_PWM::Motor2,
+    MAL::Peripheral_PWM::Motor3,
+    MAL::Peripheral_PWM::Motor4,
+};
+
 const float speed_constant = 0.2;
 const uint16_t _motorAngles[4] = {45, 135, 225, 315};  // モーターの配置角度
 
@@ -24,10 +31,9 @@ MotorControll::MotorControll(MAL* mcu) {
 }
 
 void MotorControll::init() {
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.5);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.5);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0.5);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.5);
+    for(int i = 0; i < 4; i++) {
+        _mcu->pwmSetDuty(motor[i], 0.5);
+    }
 }
 
 float MotorControll::_getBatteryVoltage() {
@@ -63,21 +69,17 @@ void MotorControll::run(uint8_t angle) {
     for (int i = 0; i < 4; i++) {
         _write_compare[i] = MotorControll::_duty_to_LAPduty(MPowerVector[i]) * (this->speed / 100);
     }
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, _write_compare[0]);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, _write_compare[1]);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, _write_compare[2]);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _write_compare[3]);
+
+    for(int i = 0; i < 4; i++) {
+        _mcu->pwmSetDuty(motor[i], _write_compare[i]);
+    }
 }
 
 void MotorControll::turn(bool cw) {
-    float _s[4] = {0.0};
     for(int i = 0; i < 4; i++) {
-        _s[i] = MotorControll::_duty_to_LAPduty(cw * (1 / speed));
+        float _s = MotorControll::_duty_to_LAPduty(cw * (1 / speed));
+        _mcu->pwmSetDuty(motor[i], _s);
     }
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor1, _s[0]);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor2, _s[1]);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor3, _s[2]);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Motor4, _s[3]);
 }
 
 void MotorControll::carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t IMU_yaw) {
