@@ -13,15 +13,21 @@ LineSensor::LineSensor(MAL* mcu) {
     _mcu = mcu;
 }
 
+const MAL::Peripheral_GPIO MuxPin[8] = {
+    MAL::Peripheral_GPIO::MuxA_Sig0,
+    MAL::Peripheral_GPIO::MuxA_Sig1,
+    MAL::Peripheral_GPIO::MuxA_Sig2,
+    MAL::Peripheral_GPIO::MuxA_Sig3,
+    MAL::Peripheral_GPIO::MuxB_Sig0,
+    MAL::Peripheral_GPIO::MuxB_Sig1,
+    MAL::Peripheral_GPIO::MuxB_Sig2,
+    MAL::Peripheral_GPIO::MuxB_Sig3,
+};
+
 void LineSensor::init() {
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig0, 0);
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig1, 0);
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig2, 0);
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig3, 0);
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig0, 0);
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig1, 0);
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig2, 0);
-    _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig3, 0);
+    for(int i = 0; i < 8; i++) {
+        _mcu->gpioSetValue(MuxPin[i], 0);
+    }
     for(int i = 0; i < 32; i++) {
         this->_sincosTable[i][0] = sin(deg_to_rad(360 / 32 * i));
         this->_sincosTable[i][1] = cos(deg_to_rad(360 / 32 * i));
@@ -30,24 +36,17 @@ void LineSensor::init() {
 
 void LineSensor::read() {
     for (int i = 0; i < 16; i++) {
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig0, SigPattern[i][0]);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig1, SigPattern[i][1]);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig2, SigPattern[i][2]);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig3, SigPattern[i][3]);
-
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig0, SigPattern[i][0]);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig1, SigPattern[i][1]);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig2, SigPattern[i][2]);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig3, SigPattern[i][3]);
-
+        for(int j = 0; j < 8; j++) {
+            _mcu->gpioSetValue(MuxPin[i], this->SigPattern[i]);
+        }
         //_mcu->wait_ms();
         while(!_mcu->isAdcConvCplt(MAL::Peripheral_ADC::MuxA))
             ;
         while(!_mcu->isAdcConvCplt(MAL::Peripheral_ADC::MuxB))
             ;
 
-        sensorValue[i]      = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
-        sensorValue[i + 16] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxB);
+        sensorValue[i]    = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
+        sensorValue[i+16] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxB);
     }
 }
 
@@ -81,7 +80,7 @@ void LineSensor::setThreshold() {
     uint32_t _tim = _mcu->millis();
     uint16_t _minVal[32] = {4096}, _maxVal[32] = {0};
     while((_mcu->millis() - _tim) < _up_tim) {
-        LineSensor::update();
+        this->update();
         for(int i = 0; i < 16; i++) {
             if(_minVal[i] > this->sensorValue[i])    
                 _minVal[i] = this->sensorValue[i];
@@ -100,6 +99,7 @@ void LineSensor::setThreshold() {
 }
 
 uint8_t LineSensor::getDisFromCenter() {
+    uint8_t r = 0;
     if(this->isonLine) {
         int8_t continuous_Hpins[32] = {-1};
         uint8_t continuous_cnt = 0;
@@ -112,4 +112,5 @@ uint8_t LineSensor::getDisFromCenter() {
 
         }
     }
+    return r;
 }
