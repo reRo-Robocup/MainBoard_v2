@@ -25,12 +25,15 @@ const MAL::Peripheral_GPIO MuxPin[8] = {
 };
 
 void LineSensor::init() {
+    this->_module_r = 11;
     for(int i = 0; i < 8; i++) {
         _mcu->gpioSetValue(MuxPin[i], 0);
     }
     for(int i = 0; i < 32; i++) {
         this->_sincosTable[i][0] = sin(deg_to_rad(360 / 32 * i));
         this->_sincosTable[i][1] = cos(deg_to_rad(360 / 32 * i));
+        this->_sensor_xy[i][0] = this->_module_r * cos(this->_sincosTable[i][0]);
+        this->_sensor_xy[i][1] = this->_module_r * sin(this->_sincosTable[i][1]);
     }
 }
 
@@ -100,17 +103,31 @@ void LineSensor::setThreshold() {
 
 uint8_t LineSensor::getDisFromCenter() {
     uint8_t r = 0;
+    float _tmp_xy[32][2] = {0};
     if(this->isonLine) {
-        int8_t continuous_Hpins[32] = {-1};
-        uint8_t continuous_cnt = 0;
-        uint16_t _prev_pin = 0;
         for(int i = 0; i < 16; i++) {
-            if((isSensorONline[i] && (_prev_pin == (i - 1)))) {
-                continuous_cnt++;
-                continuous_Hpins[i] = i;
+            // 反応してたら座標を代入
+            if(this->isSensorONline[i]) {
+                _tmp_xy[i][0] = this->_sensor_xy[i][0];
+                _tmp_xy[i][1] = this->_sensor_xy[i][1];
             }
-
+            if(this->isSensorONline[i]) {
+                _tmp_xy[i+16][0] = this->_sensor_xy[i+16][0];
+                _tmp_xy[i+16][1] = this->_sensor_xy[i+16][1];
+            }
+        }
+        // 反応した個数を取得
+        uint8_t _cnt = 0;
+        for(int i = 0; i < 16; i++) {
+            if(_tmp_xy[i][0] == 0 && _tmp_xy[i][1] == 0)
+                _cnt++;
+            if(_tmp_xy[i+16][0] == 0 && _tmp_xy[i+16][1] == 0)
+                _cnt++;
+        }
+        const uint8_t num = _cnt;
+        uint8_t isONsensor_Coordinate[num][2];
+        for(int i = 0; i < num; i++) {
+            
         }
     }
-    return r;
 }
