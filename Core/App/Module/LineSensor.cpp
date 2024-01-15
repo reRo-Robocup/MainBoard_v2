@@ -126,8 +126,12 @@ uint8_t LineSensor::getDisFromCenter() {
         }
         const uint8_t num = _cnt;
         uint8_t isONsensor_Coordinate[num][2];
+        uint8_t MaxDistance = 0;
         for(int i = 0; i < num; i++) {
-            
+            for(int j = num; j >=0; j--) {
+                float tmp_dis[2] = {0};
+                
+            }
         }
     }
 }
