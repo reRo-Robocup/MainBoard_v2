@@ -124,6 +124,7 @@ uint8_t LineSensor::getDisFromCenter() {
             if(_tmp_xy[i+16][0] == 0 && _tmp_xy[i+16][1] == 0)
                 _cnt++;
         }
+        // 反応したセンサの座標を代入
         const uint8_t num = _cnt;
         uint8_t isONsensor_Coordinate[num][2];
         uint8_t MaxDistance = 0;
