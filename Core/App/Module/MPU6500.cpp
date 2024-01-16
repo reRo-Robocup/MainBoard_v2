@@ -40,7 +40,7 @@ void MPU6500::calibration() {
         int16_t constant = 0;
         uint32_t tim = _mcu->millis();
         while((_mcu->millis() - tim) < 2000) {
-            MPU6500::_read_accel_data();
+            this->_read_accel_data();
             _data = za;
             if(_data > _tmp_za_max) _data = _tmp_za_max;
             if(_data < _tmp_za_min) _data = _tmp_za_min;
