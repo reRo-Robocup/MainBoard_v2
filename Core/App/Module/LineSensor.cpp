@@ -122,12 +122,28 @@ uint8_t LineSensor::getDisFromCenter() {
         // 反応したセンサの座標を代入
         const uint8_t num = _cnt;
         uint8_t isONsensor_Coordinate[num][2];
-        uint8_t MaxDistance = 0;
-        for(int i = 0; i < num; i++) {
-            for(int j = num; j >=0; j--) {
-                float tmp_dis[2] = {0};
-                
+        for(int i = 0; i < 32; i++) {
+            if(_tmp_xy[i][0] != 0 && _tmp_xy[i][1] != 0) {
+                isONsensor_Coordinate[i][0] = _tmp_xy[i][0];
+                isONsensor_Coordinate[i][1] = _tmp_xy[i][1];
             }
         }
+        // 最大距離を求める
+        uint8_t MaxDistance = 0;
+        uint8_t _tmp_ij[2];
+        for(int i = 0; i < num; i++) {
+            for(int j = num; j >= 0; j++) {
+                int16_t _x = isONsensor_Coordinate[i][0] - isONsensor_Coordinate[j][0];
+                int16_t _y = isONsensor_Coordinate[i][1] - isONsensor_Coordinate[j][1];
+                uint16_t _dis = abs(atan2(_y, _x));
+                if(_dis > MaxDistance) {
+                    MaxDistance = _dis;
+                    _tmp_ij[0] = i;
+                    _tmp_ij[1] = j;
+                }
+            }
+        }
+        return r;
     }
+    return 0;
 }
