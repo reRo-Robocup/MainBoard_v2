@@ -26,6 +26,10 @@ UI::UI(MAL* mcu) {
     _mcu = mcu;
 }
 
+void UI::init() {
+    
+}
+
 void UI::buzzer(uint16_t pulse, uint8_t tim) {
     _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, pulse / 4096);
 }

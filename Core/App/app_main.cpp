@@ -24,6 +24,7 @@ camera cam(&mcu);
 LineSensor line(&mcu);
 MPU6500 imu(&mcu);
 MotorControll motor(&mcu);
+UI ui(&mcu);
 
 void app_update();
 
@@ -33,7 +34,7 @@ void app_init() {
     line.init();
     imu.init();
     motor.init();
-
+    ui.init();
     mcu.interruptSetCallback(MAL::Peripheral_Interrupt::T1ms, &app_update);
 }
 

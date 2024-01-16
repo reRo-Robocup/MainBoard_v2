@@ -14,6 +14,7 @@
 class UI {
     public:
         UI(MAL* mcu);
+        void init();
         void buzzer(uint16_t pulse, uint8_t tim);
         uint8_t getRotarySW();
         bool getSW();
