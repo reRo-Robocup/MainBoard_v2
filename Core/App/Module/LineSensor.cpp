@@ -105,24 +105,19 @@ uint8_t LineSensor::getDisFromCenter() {
     uint8_t r = 0;
     float _tmp_xy[32][2] = {0};
     if(this->isonLine) {
+        uint8_t _cnt = 0;
         for(int i = 0; i < 16; i++) {
             // 反応してたら座標を代入
             if(this->isSensorONline[i]) {
                 _tmp_xy[i][0] = this->_sensor_xy[i][0];
                 _tmp_xy[i][1] = this->_sensor_xy[i][1];
+                _cnt++;
             }
             if(this->isSensorONline[i]) {
                 _tmp_xy[i+16][0] = this->_sensor_xy[i+16][0];
                 _tmp_xy[i+16][1] = this->_sensor_xy[i+16][1];
+                _cnt++;
             }
-        }
-        // 反応した個数を取得
-        uint8_t _cnt = 0;
-        for(int i = 0; i < 16; i++) {
-            if(_tmp_xy[i][0] == 0 && _tmp_xy[i][1] == 0)
-                _cnt++;
-            if(_tmp_xy[i+16][0] == 0 && _tmp_xy[i+16][1] == 0)
-                _cnt++;
         }
         // 反応したセンサの座標を代入
         const uint8_t num = _cnt;
