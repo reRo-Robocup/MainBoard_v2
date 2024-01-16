@@ -11,26 +11,12 @@
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
-class Buzzer {
+class UI {
     public:
-        Buzzer(MAL* mcu);
-        void on(uint16_t pulse, uint8_t ms);
-    private:
-        MAL* _mcu;
-};
-
-class RotarySW {
-    public:
-        RotarySW(MAL* mcu);
-        uint8_t getVal();
-    private:
-        MAL* _mcu;
-};
-
-class Switch {
-    public:
-        Switch(MAL* mcu);
-        bool getStates();
+        UI(MAL* mcu);
+        void buzzer(uint16_t pulse, uint8_t tim);
+        uint8_t getRotarySW();
+        bool getSW();
     private:
         MAL* _mcu;
 };
