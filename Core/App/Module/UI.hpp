@@ -17,6 +17,7 @@ class UI {
         void buzzer(uint16_t pulse, uint8_t tim);
         uint8_t getRotarySW();
         bool getSW();
+        void setLED(uint8_t pin, bool states);
     private:
         MAL* _mcu;
 };
