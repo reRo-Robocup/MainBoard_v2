@@ -9,8 +9,6 @@
 #include "MotorControll.hpp"
 #include "GlobalDefines.h"
 
-#define MOTOR_STOP_COMPARE (__HAL_TIM_GET_AUTORELOAD(&htim1) / 2)
-
 const bool isMotorPinReversed[4] = {
     false, false, false, false
 };
@@ -106,4 +104,7 @@ void MotorControll::approach_Ball(int16_t BallAngle, uint16_t BallDistance,  int
     kp[1] = _prev_Vy - IMU_Vy;
 
     // Ki 算出
+
+    _prev_Vx = IMU_Vx;
+    _prev_Vy = IMU_Vy;
 }
