@@ -55,11 +55,16 @@ void MPU6500::update() {
         _read_gyro_data();
         _read_accel_data();
     }
+
+    // yaw軸計算
     yaw += _dt * za + _drift_constant;
     while(yaw > 180)  yaw -= 360;
     while(yaw < -180) yaw += 360;
 
-    isRobotLift = (za > ZA_LIFTED);
+    // xyz速度計算
+    this->Vx = xa * _dt;
+    this->Vy = ya * _dt;
+    this->Vz = za * _dt;
 }
 
 void MPU6500::_read_gyro_data() {
@@ -69,8 +74,8 @@ void MPU6500::_read_gyro_data() {
 }
 
 void MPU6500::_read_accel_data() {
-    // xa = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
-    // ya = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
+    xa = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
+    ya = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
     za = ((int16_t)_read_byte(0x3F) << 8) | ((int16_t)_read_byte(0x40));
 }
 

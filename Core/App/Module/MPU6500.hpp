@@ -26,8 +26,7 @@ class MPU6500 {
     int16_t xg, yg, zg;
 
     int16_t yaw;
-    int16_t Vy, Vx;
-    float _dt;
+    int16_t Vy, Vx, Vz;
 
     bool isInitialized;
     bool isCalibrationed;
@@ -37,6 +36,7 @@ class MPU6500 {
    private:
     MAL* _mcu;
 
+    float _dt;
     int16_t _drift_constant;
 
     void _read_gyro_data();
