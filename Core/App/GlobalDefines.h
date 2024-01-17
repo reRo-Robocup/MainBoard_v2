@@ -1,5 +1,5 @@
 /*
- *  app_main.cpp
+ *  GlobalDefines.h
  *
  *  Created on: Dec 7, 2023
  * 
@@ -19,8 +19,6 @@
 #define BATT_MIN_V 10.8
 #define BATT_MAX_V 12.6
 
-#ifndef DEBUG
 #define DEBUG
-#endif
 
 #endif /* __APP_GLOBAL_DEFINES_H__ */
