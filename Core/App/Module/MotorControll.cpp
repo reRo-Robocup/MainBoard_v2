@@ -86,3 +86,24 @@ void MotorControll::carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t
     bool isRerativeGoalDir = signbit(TargetAngle);
     float _p = (IMU_yaw - TargetAngle) * 0.001;
 }
+
+int16_t _prev_Vx, _prev_Vy;
+
+void MotorControll::approach_Ball(int16_t BallAngle, uint16_t BallDistance,  int16_t IMU_yaw, int16_t IMU_Vx, int16_t IMU_Vy) {
+    float dt = CONTROLL_CYCLE;
+    float kp[2], ki[2], kd[2];
+    int16_t mAngle = 0;
+
+    mAngle = 450 - mAngle;
+    while(mAngle > 180)  mAngle -= 360;
+    while(mAngle <= -180) mAngle += 360;
+    float _mAngle_xy[2] = {0.0};
+    _mAngle_xy[0] = cos(rad_to_deg(mAngle)); // x成分
+    _mAngle_xy[1] = sin(rad_to_deg(mAngle)); // y成分
+
+    // kp 算出
+    kp[0] = _prev_Vx - IMU_Vx;
+    kp[1] = _prev_Vy - IMU_Vy;
+
+    // Ki 算出
+}

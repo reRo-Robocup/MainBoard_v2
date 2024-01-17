@@ -20,6 +20,7 @@ class MotorControll {
     void MotorRoll(int motor, float duty);
     void turn(bool cw);
     void carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t IMU_yaw);
+    void approach_Ball(int16_t BallAngle, uint16_t BallDistance, int16_t IMU_yaw, int16_t IMU_Vx, int16_t IMU_Vy);
 
    private:
     MAL* _mcu;

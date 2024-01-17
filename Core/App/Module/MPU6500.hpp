@@ -26,6 +26,7 @@ class MPU6500 {
     int16_t xg, yg, zg;
 
     int16_t yaw;
+    int16_t Vy, Vx;
     float _dt;
 
     bool isInitialized;
