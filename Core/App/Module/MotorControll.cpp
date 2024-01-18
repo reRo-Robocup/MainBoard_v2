@@ -80,7 +80,7 @@ void MotorControll::turn(bool cw) {
     }
 }
 
-void MotorControll::turnFront(int16_t yaw, int16_t za) {
+void MotorControll::turnFront(int16_t yaw, int16_t za, int16_t targetAgle = 0) {
     
 }
 
