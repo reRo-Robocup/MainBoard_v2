@@ -81,7 +81,13 @@ void MotorControll::turn(bool cw) {
 }
 
 void MotorControll::turnFront(int16_t yaw, int16_t za, int16_t targetAgle = 0) {
-    
+    static int16_t _prev_yaw = 0;
+    int16_t angle_diff = targetAgle - yaw;
+    int16_t prev_diff = _prev_yaw - yaw;
+    int8_t dir = signbit(angle_diff)? 1: -1;
+    float kp, ki, kd;
+    float _speed = kp * angle_diff + ki + kd;
+    _prev_yaw = yaw;
 }
 
 void MotorControll::carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t IMU_yaw) {
