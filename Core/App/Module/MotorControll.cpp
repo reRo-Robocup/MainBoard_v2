@@ -80,6 +80,10 @@ void MotorControll::turn(bool cw) {
     }
 }
 
+void MotorControll::turnFront(int16_t yaw, int16_t za) {
+    
+}
+
 void MotorControll::carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t IMU_yaw) {
     bool isRerativeGoalDir = signbit(TargetAngle);
     float _p = (IMU_yaw - TargetAngle) * 0.001;
