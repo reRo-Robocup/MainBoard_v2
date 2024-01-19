@@ -116,5 +116,5 @@ void MotorControll::approach_Ball(int16_t BallAngle, uint16_t BallDistance,  int
     // Ki 算出
 
     _prev_Vx = IMU_Vx;
-    _prev_Vy = IMU_Vy;
+    _prev_Vy = IMU_Vy; 
 }
