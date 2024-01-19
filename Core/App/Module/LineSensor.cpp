@@ -39,8 +39,8 @@ void LineSensor::init() {
 
 void LineSensor::read() {
     for (int i = 0; i < 16; i++) {
-        for(int j = 0; j < 8; j++) {
-            _mcu->gpioSetValue(MuxPin[i], this->SigPattern[i]);
+        for(int j = 0; j < 4; j++) {
+            _mcu->gpioSetValue(MuxPin[i], this->SigPattern[i][j]);
         }
         //_mcu->wait_ms();
         while(!_mcu->isAdcConvCplt(MAL::Peripheral_ADC::MuxA))
