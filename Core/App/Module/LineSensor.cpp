@@ -76,6 +76,7 @@ void LineSensor::update() {
         _angle = 1023;
     }
     this->angle = _angle;
+    this->_isONline_qty = _cnt;
 }
 
 void LineSensor::setThreshold() {
@@ -98,54 +99,44 @@ void LineSensor::setThreshold() {
 }
 
 uint8_t LineSensor::getDisFromCenter() {
-    uint8_t r = 0;
-    float _tmp_xy[32][2] = {0};
-    if(this->isonLine) {
-        // アルゴリズム
-        // 反応してるセンサの個数を取得
-        // そのセンサの座標を取得
-        // 全ての座標同士の距離を求め、最大値とその時の2つの座標を取る
-        // 傾きから法線を求め、(0,0)からの距離を求める
+    // アルゴリズム
+    // 反応してるセンサの個数を取得
+    // そのセンサの座標を取得
+    // 全ての座標同士の距離を求め、最大値とその時の2つの座標を取る
+    // 傾きから法線を求め、(0,0)からの距離を求める
+
+    if(this->_isONline_qty > 1) {
+
+        // 反応したセンサの座標だけが入る配列
+        const uint8_t num = _isONline_qty;
+        float _isONline_sensorXY[num][2];
         uint8_t _cnt = 0;
-        for(int i = 0; i < 16; i++) {
-            // 反応してたら座標を代入
-            if(this->isSensorONline[i]) {
-                _tmp_xy[i][0] = this->_sensor_xy[i][0];
-                _tmp_xy[i][1] = this->_sensor_xy[i][1];
-                _cnt++;
-            }
-            if(this->isSensorONline[i]) {
-                _tmp_xy[i+16][0] = this->_sensor_xy[i+16][0];
-                _tmp_xy[i+16][1] = this->_sensor_xy[i+16][1];
-                _cnt++;
-            }
-        }
-        // 反応したセンサの座標を代入
-        const uint8_t num = _cnt;
-        uint8_t isONsensor_Coordinate[num][2];
         for(int i = 0; i < 32; i++) {
-            if(_tmp_xy[i][0] != 0 && _tmp_xy[i][1] != 0) {
-                isONsensor_Coordinate[i][0] = _tmp_xy[i][0];
-                isONsensor_Coordinate[i][1] = _tmp_xy[i][1];
+            if(this->isSensorONline) {
+                _isONline_sensorXY[i][0] = _sensor_xy[i][0];
+                _isONline_sensorXY[i][1] = _sensor_xy[i][1];
+                _cnt++;
             }
         }
-        // 最大距離を求める
-        uint8_t MaxDistance = 0;
-        uint8_t _tmp_ij[2];
+
+        // 総当たりでセンサ同士の距離を調べる
+        float maxdis, slope;
         for(int i = 0; i < num; i++) {
-            for(int j = num; j >= 0; j++) {
-                int16_t _x = isONsensor_Coordinate[i][0] - isONsensor_Coordinate[j][0];
-                int16_t _y = isONsensor_Coordinate[i][1] - isONsensor_Coordinate[j][1];
-                uint16_t _dis = abs(atan2(_y, _x));
-                if(_dis > MaxDistance) {
-                    MaxDistance = _dis;
-                    _tmp_ij[0] = i;
-                    _tmp_ij[1] = j;
+            for(int j = num; j >= 0; j--) {
+                if(i != j) {
+                    float _dx, _dy, _dis;
+                    _dx = abs(_sensor_xy[i][0] - _sensor_xy[j][0]);
+                    _dy = abs(_sensor_xy[i][1] - _sensor_xy[j][1]);
+                    _dis = sqrt(pow(_dx,2) + pow(_dy,2));
+                    if(maxdis < _dis) {
+                        maxdis = _dis;
+                        slope = rad_to_deg(atan2(_dy, _dx));
+                    }
                 }
             }
         }
-        r = MaxDistance;
-        return r;
+        slope += 90;
+        while(slope > 180) slope -= 180;
+        while(slope < -180) slope += 180;
     }
-    return 0;
 }
