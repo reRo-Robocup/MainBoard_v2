@@ -85,19 +85,15 @@ void LineSensor::setThreshold() {
     while((_mcu->millis() - _tim) < _up_tim) {
         this->update();
         for(int i = 0; i < 16; i++) {
-            if(_minVal[i] > this->sensorValue[i])    
-                _minVal[i] = this->sensorValue[i];
-            if(_minVal[i+16] > this->sensorValue[i+16]) 
-                _minVal[i+16] = this->sensorValue[i+16];
-            if(_maxVal[i] < this->sensorValue[i])    
-                _minVal[i] = this->sensorValue[i];
-            if(_maxVal[i+16] < this->sensorValue[i+16]) 
-                _minVal[i+16] = this->sensorValue[i+16];
+            if(_minVal[i] > this->sensorValue[i])       _minVal[i] = this->sensorValue[i];
+            if(_minVal[i+16] > this->sensorValue[i+16]) _minVal[i+16] = this->sensorValue[i+16];
+            if(_maxVal[i] < this->sensorValue[i])       _minVal[i] = this->sensorValue[i];
+            if(_maxVal[i+16] < this->sensorValue[i+16]) _minVal[i+16] = this->sensorValue[i+16];
         }
     }
     for(int i = 0; i < 16; i++) {
         this->_threshold[i] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
-        this->_threshold[i+32] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
+        this->_threshold[i+16] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
     }
 }
 
@@ -105,6 +101,11 @@ uint8_t LineSensor::getDisFromCenter() {
     uint8_t r = 0;
     float _tmp_xy[32][2] = {0};
     if(this->isonLine) {
+        // アルゴリズム
+        // 反応してるセンサの個数を取得
+        // そのセンサの座標を取得
+        // 全ての座標同士の距離を求め、最大値とその時の2つの座標を取る
+        // 傾きから法線を求め、(0,0)からの距離を求める
         uint8_t _cnt = 0;
         for(int i = 0; i < 16; i++) {
             // 反応してたら座標を代入
