@@ -143,6 +143,7 @@ uint8_t LineSensor::getDisFromCenter() {
                 }
             }
         }
+        r = MaxDistance;
         return r;
     }
     return 0;
