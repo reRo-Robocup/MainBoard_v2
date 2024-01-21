@@ -26,26 +26,26 @@ void camera::updateFPS() {
 }
 
 void camera::_read_by_header() {
-    /*  UARTプロトコル
+    /*  - Dynamixel Protocol 2.0
         | header[4] | BallAngle(16bit) | YellowAngle(16bit) | BlueAngle(16bit)|
         | BallDis(8bit) | enable(8bit) |
     */
     const uint8_t header[4] = {0xFF, 0xFF, 0xFD, 0x00};
-    uint8_t _header_noerr = 0;
+    uint8_t _header_errcnt = 0;
 
     // ヘッダー 受信チェック
     for(int i = 0; i < 4; i++) {
         if(_mcu->uartGetChar(CAM) != header[i])
-            _header_noerr++;
+            _header_errcnt++;
     }
 
-    if(_header_noerr) {
+    if(_header_errcnt == 0) {
         // 角度 格納
         for(int i = 0; i < 2; i++) {
             uint8_t _Hdata, _Ldata;
             _Hdata = _mcu->uartGetChar(CAM);
             _Ldata = _mcu->uartGetChar(CAM);
-            angle[i] = ((_Hdata << 8) & 0x0000FF00) | ((_Ldata << 0) & 0x000000FF);
+            angle[i] = (_Hdata << 8) | _Ldata;
         }
         // 距離データ 格納
         for(int i = 0; i < 2; i++) {
