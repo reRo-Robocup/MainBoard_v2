@@ -58,8 +58,7 @@ void MPU6500::update() {
 
     // yaw軸計算
     yaw += _dt * za + _drift_constant;
-    while(yaw > 180)  yaw -= 360;
-    while(yaw < -180) yaw += 360;
+    map2_180(yaw);
 
     // xyz速度計算
     this->Vx = xa * _dt;

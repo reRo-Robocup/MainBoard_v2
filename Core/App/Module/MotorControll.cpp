@@ -44,10 +44,7 @@ float MotorControll::_duty_to_LAPduty(float duty) {
 
 void MotorControll::run(uint8_t angle) {
     angle = 450 - angle;
-    while (angle > 359)
-        angle -= 360;
-    while (angle < 0)
-        angle += 360;
+    map2_180(angle);
     float MPowerVector[4] = {0};  // 4つのモーターの出力比
     float MPowerMax = 0;          // 最大値
     for (int i = 0; i < 4; i++) {
@@ -103,8 +100,7 @@ void MotorControll::approach_Ball(int16_t BallAngle, uint16_t BallDistance,  int
     int16_t mAngle = 0;
 
     mAngle = 450 - mAngle;
-    while(mAngle > 180)  mAngle -= 360;
-    while(mAngle <= -180) mAngle += 360;
+    map2_180(mAngle);
     float _mAngle_xy[2] = {0.0};
     _mAngle_xy[0] = cos(rad_to_deg(mAngle)); // x成分
     _mAngle_xy[1] = sin(rad_to_deg(mAngle)); // y成分
