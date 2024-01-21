@@ -15,6 +15,10 @@ class BallControll {
     public:
         BallControll(MAL* mcu);
         void init();
+        void setBallThreshold(uint8_t valA, uint8_t valB);
+        bool isCatch(MAL::Peripheral_ADC p);
+        void dribble(bool cw, uint8_t speed = 100);
+        void kick(uint8_t pin);
 
     private:
         MAL* _mcu;
