@@ -11,7 +11,6 @@
  */
 
 #include "MPU6500.hpp"
-#include "GlobalDefines.h"
 
 #define ZA_LIFTED 9.8
 

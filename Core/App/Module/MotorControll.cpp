@@ -7,7 +7,6 @@
  */
 
 #include "MotorControll.hpp"
-#include "GlobalDefines.h"
 
 const bool isMotorPinReversed[4] = {
     false, false, false, false

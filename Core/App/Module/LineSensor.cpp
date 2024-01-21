@@ -7,7 +7,6 @@
  */
 
 #include "LineSensor.hpp"
-#include <GlobalDefines.h>
 
 LineSensor::LineSensor(MAL* mcu) {
     _mcu = mcu;

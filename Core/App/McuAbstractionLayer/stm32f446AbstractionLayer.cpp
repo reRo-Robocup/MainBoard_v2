@@ -14,6 +14,8 @@
 #include "tim.h"
 #include "usart.h"
 
+#include <App/GlobalDefines.h>
+
 struct PeripheralAllocation {
     enum STM_ADC {
         ADC_1,
