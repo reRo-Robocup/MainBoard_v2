@@ -16,12 +16,13 @@ class BallControll {
         BallControll(MAL* mcu);
         void init();
         void setBallThreshold(uint8_t valA, uint8_t valB);
-        bool isCatch(MAL::Peripheral_ADC p);
+        bool isCatch(uint8_t pin);
         void dribble(bool cw, uint8_t speed = 100);
         void kick(uint8_t pin);
 
     private:
         MAL* _mcu;
+        uint16_t _threshold[2];
 };
 
 #endif /* _APP_MODULE_BALLCONTROLL_HPP_ */
