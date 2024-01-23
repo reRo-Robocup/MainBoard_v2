@@ -11,6 +11,8 @@
 
 #include <stdint.h>
 
+#include <GlobalDefines.h>
+
 class baseMcuAbstractionLayer {
    public:
     enum Peripheral_ADC {
