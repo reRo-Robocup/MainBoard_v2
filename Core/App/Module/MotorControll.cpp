@@ -69,14 +69,7 @@ void MotorControll::run(uint8_t angle) {
     }
 }
 
-void MotorControll::turn(bool cw) {
-    for(int i = 0; i < 4; i++) {
-        float _s = MotorControll::_duty_to_LAPduty(cw * (1 / speed));
-        _mcu->pwmSetDuty(motor[i], _s);
-    }
-}
-
-void MotorControll::turnFront(int16_t yaw, int16_t za, int16_t targetAgle = 0) {
+void MotorControll::turn(int16_t yaw, int16_t za, int16_t targetAgle) {
     static int16_t _prev_yaw = 0;
     int16_t angle_diff = targetAgle - yaw;
     int16_t prev_diff = _prev_yaw - yaw;

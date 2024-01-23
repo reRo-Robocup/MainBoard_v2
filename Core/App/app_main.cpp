@@ -57,7 +57,7 @@ void app_main() {
         // 向き直し
         while (abs(imu.yaw) > 5) {
             bool dir = signbit(imu.yaw);
-            motor.turn(dir);
+            // motor.turn(dir);
         }
 
         // ラインセンサー処理
