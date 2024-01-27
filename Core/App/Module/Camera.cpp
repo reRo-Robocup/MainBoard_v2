@@ -31,15 +31,15 @@ void camera::_read_by_header() {
         | BallDis(8bit) | enable(8bit) |
     */
     const uint8_t header[4] = {0xFF, 0xFF, 0xFD, 0x00};
-    uint8_t _header_errcnt = 0;
+    uint8_t errcnt = 0;
 
     // ヘッダー 受信チェック
     for(int i = 0; i < 4; i++) {
         if(_mcu->uartGetChar(CAM) != header[i])
-            _header_errcnt++;
+            errcnt++;
     }
 
-    if(_header_errcnt == 0) {
+    if(errcnt == 0) {
         // 角度 格納
         for(int i = 0; i < 2; i++) {
             uint8_t _Hdata, _Ldata;
@@ -47,13 +47,16 @@ void camera::_read_by_header() {
             _Ldata = _mcu->uartGetChar(CAM);
             angle[i] = (_Hdata << 8) | _Ldata;
         }
+
         // 距離データ 格納
         for(int i = 0; i < 2; i++) {
             distance[i] = _mcu->uartGetChar(CAM);
         }
+
         // 検出できたか 格納
-        enable[0] = (_mcu->uartGetChar(CAM) & 0x10000000) >> 8;
-        enable[1] = (_mcu->uartGetChar(CAM) & 0x01000000) >> 8;
-        enable[2] = (_mcu->uartGetChar(CAM) & 0x00100000) >> 8;
+        uint8_t _data = _mcu->uartGetChar(CAM);
+        enable[0] = (bool)_data & 0b00000001;
+        enable[1] = (bool)_data & 0b00000010;
+        enable[2] = (bool)_data & 0b00000100;
     }
 }
