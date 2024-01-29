@@ -41,6 +41,10 @@ float MotorControll::_duty_to_LAPduty(float duty) {
     return (duty++)/2;
 }
 
+bool MotorControll::isDRVsleep() {
+    return _mcu->gpioGetValue(MAL::Peripheral_GPIO::isMotorEnabled);
+}
+
 void MotorControll::run(uint8_t angle) {
     angle = 450 - angle;
     map2_180(angle);

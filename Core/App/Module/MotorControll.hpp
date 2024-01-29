@@ -21,6 +21,7 @@ class MotorControll {
     void carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t IMU_yaw);
     void approach_Ball(int16_t BallAngle, uint16_t BallDistance, int16_t IMU_yaw, int16_t IMU_Vx, int16_t IMU_Vy);
     void turn(int16_t yaw, int16_t za, int16_t targetAgle);
+    bool isDRVsleep();
 
    private:
     MAL* _mcu;
