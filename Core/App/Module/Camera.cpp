@@ -60,3 +60,9 @@ void camera::_read_by_header() {
         enable[2] = (bool)_data & 0b00000100;
     }
 }
+
+void camera::_read_via_buffer() {
+    const uint8_t data_size = 10;
+    uint8_t data[data_size];
+    _mcu->uartReadViaBuffer(CAM, (uint8_t*) data, data_size);
+}

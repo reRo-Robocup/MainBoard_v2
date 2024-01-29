@@ -25,6 +25,7 @@ class camera {
     private:
         MAL* _mcu;
         void _read_by_header();
+        void _read_via_buffer();
 };
 
 #endif /* _APP_MODULE_CAMERA_HPP_ */
