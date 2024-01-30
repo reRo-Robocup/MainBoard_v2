@@ -65,4 +65,19 @@ void camera::_read_via_buffer() {
     const uint8_t data_size = 10;
     uint8_t data[data_size];
     _mcu->uartReadViaBuffer(CAM, (uint8_t*) data, data_size);
+
+    const uint8_t header[4] = {0xFF, 0xFF, 0xFD, 0x00};
+    uint8_t errcnt = 0;
+
+    for(int i = 0; i < 4; i++) {
+        if(data[i] != header[i])
+            errcnt++;
+    }
+
+    if(errcnt == 0) {
+        for(int i = 0; i < 3; i++) {
+            this->angle[i]    = ((data[4+i] << 8 )| data[5+i]);
+            this->distance[i] = data[10+i];
+        }
+    }
 }
