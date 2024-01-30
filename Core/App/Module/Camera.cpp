@@ -22,7 +22,7 @@ void camera::init() {
 }
 
 void camera::updateFPS() {
-    this->_read_by_header();
+    this->_read_via_buffer();
 }
 
 void camera::_read_by_header() {
