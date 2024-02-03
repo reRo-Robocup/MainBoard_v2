@@ -19,6 +19,7 @@ class UI {
         uint8_t getRotarySW();
         bool getSW();
         void setLED(uint8_t pin, bool states);
+        void Lchika();
     private:
         MAL* _mcu;
 };

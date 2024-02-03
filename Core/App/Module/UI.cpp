@@ -27,7 +27,9 @@ UI::UI(MAL* mcu) {
 }
 
 void UI::init() {
-    
+    for(int i = 0; i < 3; i++) {
+        this->setLED(i, 0);
+    }
 }
 
 void UI::buzzer(uint16_t pulse, uint8_t tim) {
@@ -44,4 +46,16 @@ uint8_t UI::getRotarySW() {
 
 void UI::setLED(uint8_t pin, bool states) {
     _mcu->gpioSetValue(LED[pin], states);
+}
+
+void UI::Lchika() {
+    for(int i = 0; i < 3; i++) {
+        this->setLED(i,0);
+        _mcu->delay_ms(200);
+    }
+
+    for(int i = 0; i < 3; i++) {
+        this->setLED(i,1);
+        _mcu->delay_ms(200);
+    }
 }
