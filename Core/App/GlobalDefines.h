@@ -10,6 +10,7 @@
 #define __APP_GLOBAL_DEFINES_H__
 
 #include "math.h"
+#include <stdio.h>
 
 #define CONTROLL_CYCLE 0.001   // 1KHz
 
