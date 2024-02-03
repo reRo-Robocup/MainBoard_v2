@@ -53,46 +53,68 @@ void app_main() {
 
     while (1) {
 
-        if(!isSleep) {
-            // 向き直し
-            while (abs(imu.yaw) > 5) {
-                bool dir = signbit(imu.yaw);
-                // motor.turn(dir);
-            }
-
-            // ラインセンサー処理
-            while (line.isonLine) {
-                motor.run(line.angle);
-            }
-
-            // キャッチした場合
-            while (mcu.adcGetValue(MAL::Peripheral_ADC::BallCatchA) > BallCatchThreshold[0]) {
-                int16_t GoalAngle = cam.angle[cam.AttackColor];
-                // 正面
-                if (abs(GoalAngle) > 15) {
-                    motor.run(GoalAngle);
-                }
-                // 狙える
-                else if (abs(GoalAngle > 45)) {
-                    motor.carryBall(GoalAngle, cam.distance[cam.AttackColor], imu.yaw);
-                }
-                // 狙えない
-                else {
-                    unsigned long tim = mcu.millis();
-                    while (((mcu.millis() - tim) < 2000) && (abs(cam.angle[cam.AttackColor])) > 45) {
-                        motor.run(180);
-                    }
-                }
-            }
-
-            // 回り込み
-            BallAngle = cam.angle[2];
-            if (abs(BallAngle) < isBallFront) {
-                angle = isBallFront;
-            } else {
-                angle = BallAngle + 30 * ((BallAngle) ? -1 : 1);
-            }
-            motor.run(angle);
+        for(int i = 0; i < 3; i++) {
+            ui.setLED(i,0);
+            mcu.delay_ms(200);
         }
+
+        for(int i = 0; i < 3; i++) {
+            ui.setLED(i,1);
+            mcu.delay_ms(200);
+        }
+
+        // ui.setLED(0,1);
+        // ui.setLED(1,1);
+        // ui.setLED(2,1);
+
+        // mcu.delay_ms(300);
+
+        // ui.setLED(0,0);
+        // ui.setLED(1,0);
+        // ui.setLED(2,0);
+
+        // mcu.delay_ms(300);
+
+        // if(!isSleep) {
+        //     // 向き直し
+        //     while (abs(imu.yaw) > 5) {
+        //         bool dir = signbit(imu.yaw);
+        //         // motor.turn(dir);
+        //     }
+
+        //     // ラインセンサー処理
+        //     while (line.isonLine) {
+        //         motor.run(line.angle);
+        //     }
+
+        //     // キャッチした場合
+        //     while (mcu.adcGetValue(MAL::Peripheral_ADC::BallCatchA) > BallCatchThreshold[0]) {
+        //         int16_t GoalAngle = cam.angle[cam.AttackColor];
+        //         // 正面
+        //         if (abs(GoalAngle) > 15) {
+        //             motor.run(GoalAngle);
+        //         }
+        //         // 狙える
+        //         else if (abs(GoalAngle > 45)) {
+        //             motor.carryBall(GoalAngle, cam.distance[cam.AttackColor], imu.yaw);
+        //         }
+        //         // 狙えない
+        //         else {
+        //             unsigned long tim = mcu.millis();
+        //             while (((mcu.millis() - tim) < 2000) && (abs(cam.angle[cam.AttackColor])) > 45) {
+        //                 motor.run(180);
+        //             }
+        //         }
+        //     }
+
+        //     // 回り込み
+        //     BallAngle = cam.angle[2];
+        //     if (abs(BallAngle) < isBallFront) {
+        //         angle = isBallFront;
+        //     } else {
+        //         angle = BallAngle + 30 * ((BallAngle) ? -1 : 1);
+        //     }
+        //     motor.run(angle);
+        // }
     }
 }
