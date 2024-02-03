@@ -33,6 +33,7 @@ void MPU6500::init() {
 }
 
 void MPU6500::calibration() {
+    printf("IMU Calibration\n");
     if(!isCalibrationed) {
         int16_t _tmp_za_min = INT16_MAX, _tmp_za_max = 0;
         int16_t _data = 0;
@@ -47,6 +48,7 @@ void MPU6500::calibration() {
         _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
         isCalibrationed = 1;
     }
+    printf("IMU Calibration END\n");
 }
 
 void MPU6500::update() {
