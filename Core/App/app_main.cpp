@@ -53,15 +53,18 @@ void app_main() {
 
     while (1) {
 
-        for(int i = 0; i < 3; i++) {
-            ui.setLED(i,0);
-            mcu.delay_ms(200);
-        }
+        uint16_t val = imu.zg;
+        printf("%u\n", val);
 
-        for(int i = 0; i < 3; i++) {
-            ui.setLED(i,1);
-            mcu.delay_ms(200);
-        }
+        // for(int i = 0; i < 3; i++) {
+        //     ui.setLED(i,0);
+        //     mcu.delay_ms(200);
+        // }
+
+        // for(int i = 0; i < 3; i++) {
+        //     ui.setLED(i,1);
+        //     mcu.delay_ms(200);
+        // }
 
         // ui.setLED(0,1);
         // ui.setLED(1,1);
