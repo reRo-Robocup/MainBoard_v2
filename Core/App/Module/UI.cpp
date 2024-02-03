@@ -18,8 +18,8 @@ const MAL::Peripheral_GPIO RotaryPin[4] = {
 
 const MAL::Peripheral_GPIO LED[3] = {
     MAL::Peripheral_GPIO::Debug_LED0,
-    MAL::Peripheral_GPIO::Debug_LED1,
     MAL::Peripheral_GPIO::Debug_LED2,
+    MAL::Peripheral_GPIO::Debug_LED1,
 };
 
 UI::UI(MAL* mcu) {
