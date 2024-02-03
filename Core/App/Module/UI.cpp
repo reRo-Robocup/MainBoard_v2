@@ -28,7 +28,7 @@ UI::UI(MAL* mcu) {
 
 void UI::init() {
     for(int i = 0; i < 3; i++) {
-        this->setLED(i, 0);
+        this->setLED(i, 1);
     }
 }
 

@@ -38,9 +38,12 @@ void app_update() {
     cam.updateFPS();
     line.update();
     imu.update();
+    printf("app_update\n");
 }
 
 void app_main() {
+    printf("app_start\n");
+
     app_init();
 
     uint16_t BallAngle = 0;
@@ -53,8 +56,8 @@ void app_main() {
 
     while (1) {
 
-        uint16_t val = imu.zg;
-        printf("%u\n", val);
+        // uint16_t val = imu.zg;
+        // printf("%u\n", val);
 
         // for(int i = 0; i < 3; i++) {
         //     ui.setLED(i,0);
