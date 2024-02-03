@@ -14,7 +14,6 @@
 #include "tim.h"
 #include "usart.h"
 
-
 struct PeripheralAllocation {
     enum STM_ADC {
         ADC_1,
@@ -347,7 +346,12 @@ uint32_t stm32f446AbstractionLayer::millis(void) {
 void (*stm32f446AbstractionLayer::_timerInterruptCallback[Peripheral_Interrupt::End_T])(void);
 
 void stm32f446AbstractionLayer::_initTimerInterrupt() {
-    HAL_TIM_Base_Start(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]);
+    if(HAL_TIM_Base_Start(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]) == HAL_ERROR) {
+        while(1) {
+
+        }
+    }
+    // HAL_TIM_Base_Start(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]);
 }
 
 void stm32f446AbstractionLayer::interruptSetCallback(Peripheral_Interrupt p, void (*callback)(void)) {
