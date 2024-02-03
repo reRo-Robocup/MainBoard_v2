@@ -46,6 +46,8 @@ void app_main() {
 
     app_init();
 
+    imu.calibration();
+
     uint16_t BallAngle = 0;
     uint8_t isBallFront = 5;
     uint16_t angle = 0;
