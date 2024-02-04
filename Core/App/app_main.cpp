@@ -57,7 +57,7 @@ void app_main() {
     const uint16_t BallCatchThreshold[2] = {2048, 2048};
 
     while (1) {
-
+        printf("app_main\n");
         // uint16_t val = imu.zg;
         // printf("%u\n", val);
 
