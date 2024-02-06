@@ -22,6 +22,7 @@ MPU6500 imu(&mcu);
 MotorControll motor(&mcu);
 UI ui(&mcu);
 
+void app_main();
 void app_update();
 
 void app_init() {
