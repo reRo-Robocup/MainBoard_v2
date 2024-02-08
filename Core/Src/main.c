@@ -114,7 +114,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // printf("Hello!!\n");
+//    printf("Hello!!\n");
     app_main();
     /* USER CODE END WHILE */
 
