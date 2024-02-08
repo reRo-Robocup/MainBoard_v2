@@ -32,8 +32,10 @@ void UI::init() {
     }
 }
 
-void UI::buzzer(uint16_t pulse, uint8_t tim) {
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, pulse / 4096);
+void UI::buzzer(float pulse, uint8_t tim) {
+    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, pulse);
+    _mcu->delay_ms(tim);
+    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, 0);
 }
 
 uint8_t UI::getRotarySW() {
