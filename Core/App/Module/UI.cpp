@@ -39,11 +39,25 @@ void UI::buzzer(float pulse, uint8_t tim) {
 }
 
 uint8_t UI::getRotarySW() {
+
+    /* 
+        1 IN0
+        2 IN1
+        4 IN2
+        8 IN3
+    */
+
+    uint8_t val = 0b0;
     bool _states[4] = {0};
     for(int i = 0; i < 4; i++) {
         _states[i] = _mcu->gpioGetValue(RotaryPin[i]);
     }
-    return ((_states[0] >> 8) || (_states[1] >> 4) || (_states[2] >> 2) || (_states[3] >> 1));
+    val = ((_states[0]) || (_states[1] << 1) || (_states[2] << 2) || (_states[3] << 3));
+    return val;
+}
+
+bool UI::getSW() {
+    return _mcu->gpioGetValue(MAL::Peripheral_GPIO::Debug_SW);
 }
 
 void UI::setLED(uint8_t pin, bool states) {
