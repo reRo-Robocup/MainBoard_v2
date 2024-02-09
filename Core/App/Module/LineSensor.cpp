@@ -135,6 +135,6 @@ uint8_t LineSensor::getDisFromCenter() {
             }
         }
         slope += 90;
-        map2_180(slope);
+        // map2_180(slope);
     }
 }

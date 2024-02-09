@@ -36,9 +36,9 @@ void app_init() {
 }
 
 void app_update() {
-    cam.updateFPS();
-    line.update();
-    imu.update();
+    // cam.updateFPS();
+    // line.update();
+    // imu.update();
     // printf("app_update\n");
 }
 
@@ -48,9 +48,11 @@ void app_main() {
     app_init();
 
     while (1) {
-        // bool x = motor.isDRVsleep();
-        // printf("%d\n",x);
-        ui.Lchika();
+
+        motor.run(0);
+        mcu.delay_ms(100);
+
+        // ui.Lchika();
         // printf("app_main\n\r");
         // mcu.delay_ms(25);
         // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 0);

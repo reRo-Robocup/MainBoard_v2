@@ -17,9 +17,6 @@
 #define deg_to_rad(deg) (((deg) / 360) * 2 * M_PI)
 #define rad_to_deg(rad) (((rad) / 2 / M_PI) * 360)
 
-#define map2_180(angle) while(angle >  180) angle -= 180;\
-    while(angle < -180) angle += 180;
-
 #define BATT_MIN_V 10.8
 #define BATT_MAX_V 12.6
 

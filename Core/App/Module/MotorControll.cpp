@@ -28,9 +28,9 @@ MotorControll::MotorControll(MAL* mcu) {
 }
 
 void MotorControll::init() {
-    // for(int i = 0; i < 4; i++) {
-    //     _mcu->pwmSetDuty(motor[i], 0.5);
-    // }
+    for(int i = 0; i < 4; i++) {
+        _mcu->pwmSetDuty(motor[i], 0.5);
+    }
     // for(int i = 0; i < 4; i++) {
     //     _mcu->pwmSetDuty(motor[i], 1.0);
     // }
@@ -45,7 +45,7 @@ float MotorControll::_getBatteryVoltage() {
 }
 
 float MotorControll::_duty_to_LAPduty(float duty) {
-    return (duty++)/2;
+    return ((duty + 1) / 2);
 }
 
 bool MotorControll::isDRVsleep() {
@@ -53,27 +53,44 @@ bool MotorControll::isDRVsleep() {
 }
 
 void MotorControll::run(uint8_t angle) {
+
     angle = 450 - angle;
-    map2_180(angle);
+
+    while(angle >= 180)  angle -= 360;
+    while(angle <= -180) angle += 360;
+
+    printf("angle : %d\n", angle);
+
     float MPowerVector[4] = {0};  // 4つのモーターの出力比
     float MPowerMax = 0;          // 最大値
+
     for (int i = 0; i < 4; i++) {
-        MPowerVector[i] = sin(deg_to_rad(angle - _motorAngles[i]));
-        if (MPowerMax < MPowerVector[i])
-            MPowerMax = MPowerVector[i];
-        if (isMotorPinReversed)
-            MPowerVector[i] *= -1;
+        float tmp = deg_to_rad(angle - _motorAngles[i]);
+        MPowerVector[i] = sin(tmp);
+        // if (MPowerMax < MPowerVector[i])
+        //     MPowerMax = MPowerVector[i];
+        // if (isMotorPinReversed)
+        //     MPowerVector[i] *= -1;
     }
-    if ((MPowerMax = !1) || (MPowerMax = !-1)) {
-        for (int i = 0; i < 4; i++) {
-            MPowerVector[i] *= (1 / MPowerMax);
-        }
-    }
+
+    // if ((MPowerMax = !1) || (MPowerMax = !-1)) {
+    //     for (int i = 0; i < 4; i++) {
+    //         MPowerVector[i] *= (1 / MPowerMax);
+    //     }
+    // }
+
     float _write_compare[4] = {0};
-    float speed_constant = 0.5;
+
     for (int i = 0; i < 4; i++) {
-        _write_compare[i] = MotorControll::_duty_to_LAPduty(MPowerVector[i]) * (this->speed / 100);
+        _write_compare[i] = MotorControll::_duty_to_LAPduty(MPowerVector[i]);
+        printf("%f ", MPowerVector[i]);
     }
+
+    // char tmp[64];
+    // sprintf(tmp, "%f %f %f %f", _write_compare[0],_write_compare[1],_write_compare[2],_write_compare[3]);
+    // printf("%s\n",tmp);
+
+    printf("\n");
 
     for(int i = 0; i < 4; i++) {
         _mcu->pwmSetDuty(motor[i], _write_compare[i]);
@@ -103,7 +120,7 @@ void MotorControll::approach_Ball(int16_t BallAngle, uint16_t BallDistance,  int
     int16_t mAngle = 0;
 
     mAngle = 450 - mAngle;
-    map2_180(mAngle);
+    this->map2_180(mAngle);
     float _mAngle_xy[2] = {0.0};
     _mAngle_xy[0] = cos(rad_to_deg(mAngle)); // x成分
     _mAngle_xy[1] = sin(rad_to_deg(mAngle)); // y成分

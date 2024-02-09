@@ -25,6 +25,7 @@ class MotorControll {
 
    private:
     MAL* _mcu;
+    int16_t map2_180(int16_t angle);
     float _duty_to_LAPduty(float duty);
     float _getBatteryVoltage();
 };
