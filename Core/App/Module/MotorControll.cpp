@@ -52,12 +52,12 @@ bool MotorControll::isDRVsleep() {
     return _mcu->gpioGetValue(MAL::Peripheral_GPIO::isMotorEnabled);
 }
 
-void MotorControll::run(uint8_t angle) {
+void MotorControll::run(int16_t angle) {
 
     angle = 450 - angle;
 
-    while(angle >= 180)  angle -= 360;
-    while(angle <= -180) angle += 360;
+    while(angle >= 360)  angle -= 360;
+    while(angle <= -360) angle += 360;
 
     printf("angle : %d\n", angle);
 
@@ -65,11 +65,13 @@ void MotorControll::run(uint8_t angle) {
     float MPowerMax = 0;          // 最大値
 
     for (int i = 0; i < 4; i++) {
-        float tmp = deg_to_rad(angle - _motorAngles[i]);
-        MPowerVector[i] = sin(tmp);
+        float tmp_angle = (angle - _motorAngles[i]) * (M_PI / 180);
+        MPowerVector[i] = cos(tmp_angle);
+        printf("%f ", MPowerVector[i]);
+
         // if (MPowerMax < MPowerVector[i])
         //     MPowerMax = MPowerVector[i];
-        // if (isMotorPinReversed)
+        // if (isMotorPinReversed[i])
         //     MPowerVector[i] *= -1;
     }
 
@@ -83,7 +85,6 @@ void MotorControll::run(uint8_t angle) {
 
     for (int i = 0; i < 4; i++) {
         _write_compare[i] = MotorControll::_duty_to_LAPduty(MPowerVector[i]);
-        printf("%f ", MPowerVector[i]);
     }
 
     // char tmp[64];
