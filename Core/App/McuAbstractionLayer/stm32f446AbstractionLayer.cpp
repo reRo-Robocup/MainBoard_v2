@@ -131,11 +131,15 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
     PAL.UART[MAL::Peripheral_UART::Cam] = &huart6;
     PAL.UART[MAL::Peripheral_UART::Debug] = &huart2;
 
+    // UART
+    PAL.UART_DMA[MAL::Peripheral_UART::Cam] = &huart6;
+    PAL.UART_DMA[MAL::Peripheral_UART::Debug] = &huart2;
+
     // SPI
     PAL.SPI[MAL::Peripheral_SPI::IMU] = &hspi2;
 
     // Timer Interrupt
-    PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms] = &htim6;
+    PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms] = &htim2;
 }
 
 void stm32f446AbstractionLayer::init() {
@@ -346,9 +350,8 @@ uint32_t stm32f446AbstractionLayer::millis(void) {
 void (*stm32f446AbstractionLayer::_timerInterruptCallback[Peripheral_Interrupt::End_T])(void);
 
 void stm32f446AbstractionLayer::_initTimerInterrupt() {
-    if(HAL_TIM_Base_Start(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]) == HAL_ERROR) {
-        while(1) {
-
+    if (HAL_TIM_Base_Start_IT(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]) == HAL_ERROR) {
+        while (1) {
         }
     }
     // HAL_TIM_Base_Start(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]);
@@ -362,6 +365,8 @@ void stm32f446AbstractionLayer::interruptSetCallback(Peripheral_Interrupt p, voi
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
     if (htim == PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]) {
-        stm32f446AbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms]();
+        if (stm32f446AbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms] != NULL) {
+            stm32f446AbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms]();
+        }
     }
 }

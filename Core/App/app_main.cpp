@@ -6,9 +6,9 @@
  *  Author: onlydcx, G4T1PR0
  */
 
+#include <GlobalDefines.h>
 #include <app_main.h>
 #include <McuAbstractionLayer/stm32f446AbstractionLayer.hpp>
-#include <GlobalDefines.h>
 #include <Module/Camera.hpp>
 #include <Module/LineSensor.hpp>
 #include <Module/MPU6500.hpp>
@@ -59,6 +59,10 @@ void app_main() {
 
     while (1) {
         printf("app_main\n");
+        mcu.delay_ms(100);
+        mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 0);
+        mcu.delay_ms(100);
+        mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
         // uint16_t val = imu.zg;
         // printf("%u\n", val);
 
