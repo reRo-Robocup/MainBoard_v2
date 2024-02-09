@@ -28,9 +28,16 @@ MotorControll::MotorControll(MAL* mcu) {
 }
 
 void MotorControll::init() {
-    for(int i = 0; i < 4; i++) {
-        _mcu->pwmSetDuty(motor[i], 0.5);
-    }
+    // for(int i = 0; i < 4; i++) {
+    //     _mcu->pwmSetDuty(motor[i], 0.5);
+    // }
+    // for(int i = 0; i < 4; i++) {
+    //     _mcu->pwmSetDuty(motor[i], 1.0);
+    // }
+    // _mcu->delay_ms(100000);
+    // for(int i = 0; i < 4; i++) {
+    //     _mcu->pwmSetDuty(motor[i], 0.5);
+    // }
 }
 
 float MotorControll::_getBatteryVoltage() {

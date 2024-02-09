@@ -69,7 +69,6 @@ void UI::Lchika() {
         this->setLED(i,0);
         _mcu->delay_ms(200);
     }
-
     for(int i = 0; i < 3; i++) {
         this->setLED(i,1);
         _mcu->delay_ms(200);

@@ -39,31 +39,25 @@ void app_update() {
     // cam.updateFPS();
     line.update();
     imu.update();
-    // printf("app_update\n");
+    printf("app_update\n");
 }
 
 void app_main() {
+
     printf("app_start\n\r");
 
     app_init();
 
-    imu.calibration();
-
-    uint16_t BallAngle = 0;
-    uint8_t isBallFront = 5;
-    uint16_t angle = 0;
-
-    bool isSleep = motor.isDRVsleep();
-
-    const uint16_t BallCatchThreshold[2] = {2048, 2048};
-
     while (1) {
+        // bool x = motor.isDRVsleep();
+        // printf("%d\n",x);
+        ui.Lchika();
         // printf("app_main\n\r");
-        mcu.delay_ms(25);
-        mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 0);
-        mcu.delay_ms(25);
-        mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
-        printf("Ax%d Ay:%d Az:%d Gz%d\n\r", imu.Vx, imu.Vy, imu.Vz, imu.yaw);
+        // mcu.delay_ms(25);
+        // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 0);
+        // mcu.delay_ms(25);
+        // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
+        // printf("Ax%d Ay:%d Az:%d Gz%d\n\r", imu.Vx, imu.Vy, imu.Vz, imu.zg);
         // uint16_t val = imu.zg;
         // printf("%u\n", val);
 
