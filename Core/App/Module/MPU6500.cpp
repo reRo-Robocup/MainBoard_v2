@@ -2,9 +2,9 @@
  *  MPU6500.cpp
  *
  *  Created on: Dec 23, 2023
- * 
+ *
  *  Author: iguchi, SHIMOTORI Haruki, (onlydcx, G4T1PR0)
- * 
+ *
  *  From : reRo_robotrace_board_public
  *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/MPU6500.c
  *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/IMU.cpp
@@ -33,22 +33,27 @@ void MPU6500::init() {
 }
 
 void MPU6500::calibration() {
-    printf("IMU Calibration\n");
-    if(!isCalibrationed) {
+    printf("IMU Calibration\n\r");
+    while (!isInitialized) {
+    }
+
+    if (!isCalibrationed) {
         int16_t _tmp_za_min = INT16_MAX, _tmp_za_max = 0;
         int16_t _data = 0;
         int16_t constant = 0;
         uint32_t tim = _mcu->millis();
-        while((_mcu->millis() - tim) < 2000) {
+        while ((_mcu->millis() - tim) < 2000) {
             this->_read_accel_data();
             _data = za;
-            if(_data > _tmp_za_max) _data = _tmp_za_max;
-            if(_data < _tmp_za_min) _data = _tmp_za_min;
+            if (_data > _tmp_za_max)
+                _data = _tmp_za_max;
+            if (_data < _tmp_za_min)
+                _data = _tmp_za_min;
         }
         _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
         isCalibrationed = 1;
     }
-    printf("IMU Calibration END\n");
+    printf("IMU Calibration END\n\r");
 }
 
 void MPU6500::update() {
@@ -58,7 +63,7 @@ void MPU6500::update() {
     }
 
     // yaw軸計算
-    yaw += _dt * za + _drift_constant;
+    yaw += _dt * zg + _drift_constant;
     map2_180(yaw);
 
     // xyz速度計算

@@ -36,14 +36,14 @@ void app_init() {
 }
 
 void app_update() {
-    cam.updateFPS();
-    line.update();
+    // cam.updateFPS();
+    // line.update();
     imu.update();
-    printf("app_update\n");
+    // printf("app_update\n");
 }
 
 void app_main() {
-    printf("app_start\n");
+    printf("app_start\n\r");
 
     app_init();
 
@@ -58,11 +58,12 @@ void app_main() {
     const uint16_t BallCatchThreshold[2] = {2048, 2048};
 
     while (1) {
-        printf("app_main\n");
-        mcu.delay_ms(100);
+        // printf("app_main\n\r");
+        mcu.delay_ms(25);
         mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 0);
-        mcu.delay_ms(100);
+        mcu.delay_ms(25);
         mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
+        printf("Ax%d Ay:%d Az:%d Gz%d\n\r", imu.Vx, imu.Vy, imu.Vz, imu.zg);
         // uint16_t val = imu.zg;
         // printf("%u\n", val);
 
