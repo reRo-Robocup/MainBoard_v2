@@ -37,7 +37,7 @@ void app_init() {
 
 void app_update() {
     // cam.updateFPS();
-    // line.update();
+    line.update();
     imu.update();
     // printf("app_update\n");
 }
@@ -63,7 +63,7 @@ void app_main() {
         mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 0);
         mcu.delay_ms(25);
         mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
-        printf("Ax%d Ay:%d Az:%d Gz%d\n\r", imu.Vx, imu.Vy, imu.Vz, imu.zg);
+        printf("Ax%d Ay:%d Az:%d Gz%d\n\r", imu.Vx, imu.Vy, imu.Vz, imu.yaw);
         // uint16_t val = imu.zg;
         // printf("%u\n", val);
 

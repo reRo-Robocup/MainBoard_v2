@@ -38,19 +38,19 @@ void MPU6500::calibration() {
     }
 
     if (!isCalibrationed) {
-        int16_t _tmp_za_min = INT16_MAX, _tmp_za_max = 0;
+        int16_t _tmp_zg_min = INT16_MAX, _tmp_zg_max = 0;
         int16_t _data = 0;
         int16_t constant = 0;
         uint32_t tim = _mcu->millis();
         while ((_mcu->millis() - tim) < 2000) {
-            this->_read_accel_data();
-            _data = za;
-            if (_data > _tmp_za_max)
-                _data = _tmp_za_max;
-            if (_data < _tmp_za_min)
-                _data = _tmp_za_min;
+            this->_read_gyro_data();
+            _data = zg;
+            if (_data > _tmp_zg_max)
+                _data = _tmp_zg_max;
+            if (_data < _tmp_zg_min)
+                _data = _tmp_zg_min;
         }
-        _drift_constant = (_tmp_za_max - _tmp_za_min) + constant;
+        _drift_constant = (_tmp_zg_max - _tmp_zg_min) + constant;
         isCalibrationed = 1;
     }
     printf("IMU Calibration END\n\r");
