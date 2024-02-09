@@ -32,7 +32,8 @@ struct PeripheralAllocation {
     uint16_t GPIO_PIN[MAL::Peripheral_GPIO::End_G];
 
     UART_HandleTypeDef* UART[MAL::Peripheral_UART::End_U];
-    DMA_HandleTypeDef* UART_DMA[MAL::Peripheral_UART::End_U];
+    DMA_HandleTypeDef* UART_DMA_TX[MAL::Peripheral_UART::End_U];
+    DMA_HandleTypeDef* UART_DMA_RX[MAL::Peripheral_UART::End_U];
 
     SPI_HandleTypeDef* SPI[MAL::Peripheral_SPI::End_S];
 
@@ -132,8 +133,8 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
     PAL.UART[MAL::Peripheral_UART::Debug] = &huart2;
 
     // UART DMA
-    // PAL.UART_DMA[MAL::Peripheral_UART::Cam] = &huart6;
-    // PAL.UART_DMA[MAL::Peripheral_UART::Debug] = &huart2;
+    PAL.UART_DMA_TX[MAL::Peripheral_UART::Cam] = &hdma_usart6_tx;
+    PAL.UART_DMA_RX[MAL::Peripheral_UART::Cam] = &hdma_usart6_rx;
 
     // SPI
     PAL.SPI[MAL::Peripheral_SPI::IMU] = &hspi2;
@@ -241,7 +242,7 @@ void stm32f446AbstractionLayer::_initUART() {
 
 uint32_t stm32f446AbstractionLayer::_uartCheckRxBufferDmaWriteAddress(Peripheral_UART p) {
     if (p != Peripheral_UART::End_U) {
-        return (UART_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(PAL.UART_DMA[p])) % UART_BUFFER_SIZE;
+        return (UART_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(PAL.UART_DMA_RX[p])) % UART_BUFFER_SIZE;
     }
     return 0;
 }

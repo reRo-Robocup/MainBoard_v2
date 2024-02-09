@@ -36,14 +36,13 @@ void app_init() {
 }
 
 void app_update() {
-    // cam.updateFPS();
+    cam.updateFPS();
     line.update();
     imu.update();
-    printf("app_update\n");
+    // printf("app_update\n");
 }
 
 void app_main() {
-
     printf("app_start\n\r");
 
     app_init();
