@@ -26,6 +26,7 @@ MotorControll::MotorControll(MAL* mcu) {
 }
 
 void MotorControll::_write_pwm(uint8_t pin, float duty) {
+    if(isMotorPinReversed[pin]) duty *= -1;
     duty = (duty + 1) / 2;
     _mcu->pwmSetDuty(motor[pin], duty);
 }
@@ -58,8 +59,6 @@ void MotorControll::run(int16_t angle) {
 
         // if (MPowerMax < MPowerVector[i])
         //     MPowerMax = MPowerVector[i];
-        // if (isMotorPinReversed[i])
-        //     MPowerVector[i] *= -1;
     }
 
     // if ((MPowerMax = !1) || (MPowerMax = !-1)) {
