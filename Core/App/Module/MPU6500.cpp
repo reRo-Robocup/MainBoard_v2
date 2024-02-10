@@ -33,25 +33,9 @@ void MPU6500::init() {
 
 void MPU6500::calibration() {
     printf("IMU Calibration START\n\r");
-    while (!isInitialized) {
-    }
-
-    if (!isCalibrationed) {
-        int16_t Gz_min = INT16_MAX, Gz_max = 0;
-        int16_t _data = 0;
-        uint32_t tim = _mcu->millis();
-        while ((_mcu->millis() - tim) < 2000) {
-            this->_read_gyro_data();
-            _data = rGz;
-            if (_data > Gz_max)
-                Gz_max = _data;
-            if (_data < Gz_min)
-                Gz_min = _data;
-        }
-        _drift_constant = (Gz_max - Gz_min);
-        printf("Drift Constant : %d", _drift_constant);
-        isCalibrationed = 1;
-    }
+    _offset_Zero();
+    isCalibrationed = true;
+    printf("imu Z offset : %d", _drift_constant);
     printf("IMU Calibration END\n\r");
 }
 
@@ -76,7 +60,7 @@ void MPU6500::_read_gyro_data() {
     // rGx = ((int16_t)read_byte(0x43) << 8) | ((int16_t)read_byte(0x44));
     // rGy = ((int16_t)read_byte(0x45) << 8) | ((int16_t)read_byte(0x46));
     rGz = ((int16_t)_read_byte(0x47) << 8) | ((int16_t)_read_byte(0x48));
-    rGz += 195;
+    rGz -= _drift_constant;
 }
 
 void MPU6500::_read_accel_data() {
@@ -109,4 +93,16 @@ uint8_t MPU6500::_read_byte(uint8_t reg) {
     _mcu->gpioSetValue(MAL::Peripheral_GPIO::IMU_CS, 1);
 
     return val;
+}
+
+
+void MPU6500::_offset_Zero() {
+    uint32_t tim = _mcu->millis();
+    uint16_t cnt = 40000;
+    int32_t sum = 0;
+    for (int i = 0; i < cnt; i++) {
+    	this->_read_gyro_data();
+    	sum += rGz;
+    }
+    _drift_constant = sum / cnt;
 }
