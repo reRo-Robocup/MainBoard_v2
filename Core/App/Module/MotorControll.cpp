@@ -9,7 +9,7 @@
 #include "MotorControll.hpp"
 
 const bool isMotorPinReversed[4] = {
-    false, false, false, true
+    false, false, true, true
 };
 
 const MAL::Peripheral_PWM motor[4] = {
@@ -29,6 +29,7 @@ MotorControll::MotorControll(MAL* mcu) {
 
 void MotorControll::init() {
     for(int i = 0; i < 4; i++) {
+        // this->_write_duty(i, 1);
         _mcu->pwmSetDuty(motor[i], 0.5);
     }
     // for(int i = 0; i < 4; i++) {
@@ -98,7 +99,7 @@ void MotorControll::run(int16_t angle) {
     }
 }
 
-void MotorControll::turn(int16_t yaw, int16_t za, int16_t targetAgle) {
+void MotorControll::turn() {
     // static int16_t _prev_yaw = 0;
     // int16_t angle_diff = targetAgle - yaw;
     // int16_t prev_diff = _prev_yaw - yaw;
@@ -107,7 +108,7 @@ void MotorControll::turn(int16_t yaw, int16_t za, int16_t targetAgle) {
     // float _speed = kp * angle_diff + ki + kd;
     // _prev_yaw = yaw;
     for(int i = 0; i < 4; i++) {
-        _mcu->pwmSetDuty(motor[i], 1);
+        // this->_write_duty(motor[i], 0);
     }
 }
 
@@ -137,4 +138,20 @@ void MotorControll::approach_Ball(int16_t BallAngle, uint16_t BallDistance,  int
 
     _prev_Vx = IMU_Vx;
     _prev_Vy = IMU_Vy; 
+}
+
+
+void MotorControll::roll(float M1duty, float M2duty, float M3duty, float M4duty) {
+    M1duty = this->_duty_to_LAPduty(M1duty);
+    M2duty = this->_duty_to_LAPduty(M2duty);
+
+    M3duty *= -1;
+
+    M3duty = this->_duty_to_LAPduty(M3duty);
+    M4duty = this->_duty_to_LAPduty(M4duty);
+
+    _mcu->pwmSetDuty(motor[0], M1duty);
+    _mcu->pwmSetDuty(motor[1], M2duty);
+    _mcu->pwmSetDuty(motor[2], M3duty);
+    _mcu->pwmSetDuty(motor[3], M4duty);
 }
