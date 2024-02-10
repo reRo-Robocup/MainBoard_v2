@@ -2,9 +2,9 @@
  *  MPU6500.hpp
  *
  *  Created on: Dec 23, 2023
- * 
+ *
  *  Author: iguchi, SHIMOTORI Haruki, (onlydcx, G4T1PR0)
- * 
+ *
  *  From : reRo_robotrace_board_public
  *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/MPU6500.c
  *  https://github.com/shimotoriharuki/reRo_robotrace_board_public/blob/master/main_code/Core/Src/IMU.cpp
@@ -22,16 +22,17 @@ class MPU6500 {
     void update();
     void calibration();
 
-    int16_t xa, ya, za;
-    int16_t xg, yg, zg;
+    int16_t rAx, rAy, rAz;  // raw value
+    int16_t rGx, rGy, rGz;  // raw value
 
-    int16_t yaw;
-    int16_t Vy, Vx, Vz;
+    float Ax, Ay, Az;
+    float Gx, Gy, Gz;
+
+    float Yaw, Pitch, Roll;
+    float Vy, Vx, Vz;
 
     bool isInitialized;
     bool isCalibrationed;
-
-    bool isRobotLift;
 
    private:
     MAL* _mcu;

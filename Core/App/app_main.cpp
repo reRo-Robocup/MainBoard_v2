@@ -36,9 +36,9 @@ void app_init() {
 }
 
 void app_update() {
-    // cam.updateFPS();
-    // line.update();
-    // imu.update();
+    cam.updateFPS();
+    line.update();
+    imu.update();
     // printf("app_update\n");
 }
 
@@ -46,21 +46,20 @@ void app_main() {
     printf("app_start\n\r");
 
     app_init();
+    imu.calibration();
 
     while (1) {
-
-        motor.run(0);
+        // motor.run(0);
         mcu.delay_ms(100);
 
         // ui.Lchika();
         // printf("app_main\n\r");
-        // mcu.delay_ms(25);
-        // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 0);
-        // mcu.delay_ms(25);
-        // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
-        // printf("Ax%d Ay:%d Az:%d Gz%d\n\r", imu.Vx, imu.Vy, imu.Vz, imu.zg);
-        // uint16_t val = imu.zg;
-        // printf("%u\n", val);
+        mcu.delay_ms(10);
+        mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
+        printf("rGz: %d Gz: %.4f Yaw: %.4f\n\r", imu.rGz, imu.Gz, imu.Yaw);
+        // printf("Ax%.4f Ay:%.4f Az:%.4f Gz%.4f\n\r", imu.Ax, imu.Ay, imu.Az, imu.Yaw);
+        //  uint16_t val = imu.zg;
+        //  printf("%u\n", val);
 
         // for(int i = 0; i < 3; i++) {
         //     ui.setLED(i,0);

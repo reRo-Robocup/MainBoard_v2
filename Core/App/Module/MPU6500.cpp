@@ -12,8 +12,6 @@
 
 #include "MPU6500.hpp"
 
-#define ZA_LIFTED 9.8
-
 MPU6500::MPU6500(MAL* mcu) {
     _mcu = mcu;
 }
@@ -26,7 +24,8 @@ void MPU6500::init() {
         _write_byte(0x6B, 0x00);  // sleep mode解除
         _mcu->delay_ms(100);
         _write_byte(0x1A, 0x00);
-        _write_byte(0x1B, 0x18);
+        //_write_byte(0x1B, 0x18);
+        _write_byte(0x1B, 0x00);
         isInitialized = 1;
     }
     isCalibrationed = 0;
@@ -38,6 +37,7 @@ void MPU6500::calibration() {
     }
 
     if (!isCalibrationed) {
+        /*
         int16_t _tmp_zg_min = INT16_MAX, _tmp_zg_max = 0;
         int16_t _data = 0;
         int16_t constant = 0;
@@ -51,6 +51,7 @@ void MPU6500::calibration() {
                 _data = _tmp_zg_min;
         }
         _drift_constant = (_tmp_zg_max - _tmp_zg_min) + constant;
+        */
         isCalibrationed = 1;
     }
     printf("IMU Calibration END\n\r");
@@ -60,28 +61,30 @@ void MPU6500::update() {
     if (isInitialized && isCalibrationed) {
         _read_gyro_data();
         _read_accel_data();
+
+        Gx = (float)(rGx / 131.0);
+        Gy = (float)(rGy / 131.0);
+        Gz = (float)(rGz / 131.0);
+
+        Ax = (float)(rAx / 16384.0);
+        Ay = (float)(rAy / 16384.0);
+        Az = (float)(rAz / 16384.0);
+
+        Yaw += Gz * 0.001;
     }
-
-    // yaw軸計算
-    yaw += _dt * zg + _drift_constant;
-    // map2_180(yaw);
-
-    // xyz速度計算
-    this->Vx = xa * _dt;
-    this->Vy = ya * _dt;
-    this->Vz = za * _dt;
 }
 
 void MPU6500::_read_gyro_data() {
-    // xg = ((int16_t)read_byte(0x43) << 8) | ((int16_t)read_byte(0x44));
-    // yg = ((int16_t)read_byte(0x45) << 8) | ((int16_t)read_byte(0x46));
-    zg = ((int16_t)_read_byte(0x47) << 8) | ((int16_t)_read_byte(0x48));
+    // rGx = ((int16_t)read_byte(0x43) << 8) | ((int16_t)read_byte(0x44));
+    // rGy = ((int16_t)read_byte(0x45) << 8) | ((int16_t)read_byte(0x46));
+    rGz = ((int16_t)_read_byte(0x47) << 8) | ((int16_t)_read_byte(0x48));
+    rGz += 200;
 }
 
 void MPU6500::_read_accel_data() {
-    xa = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
-    ya = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
-    za = ((int16_t)_read_byte(0x3F) << 8) | ((int16_t)_read_byte(0x40));
+    rAx = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
+    rAy = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
+    rAz = ((int16_t)_read_byte(0x3F) << 8) | ((int16_t)_read_byte(0x40));
 }
 
 void MPU6500::_write_byte(uint8_t reg, uint8_t val) {
