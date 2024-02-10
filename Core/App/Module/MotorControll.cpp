@@ -9,7 +9,7 @@
 #include "MotorControll.hpp"
 
 const bool isMotorPinReversed[4] = {
-    false, false, false, false
+    false, false, false, true
 };
 
 const MAL::Peripheral_PWM motor[4] = {
@@ -99,13 +99,16 @@ void MotorControll::run(int16_t angle) {
 }
 
 void MotorControll::turn(int16_t yaw, int16_t za, int16_t targetAgle) {
-    static int16_t _prev_yaw = 0;
-    int16_t angle_diff = targetAgle - yaw;
-    int16_t prev_diff = _prev_yaw - yaw;
-    int8_t dir = signbit(angle_diff)? 1: -1;
-    float kp, ki, kd;
-    float _speed = kp * angle_diff + ki + kd;
-    _prev_yaw = yaw;
+    // static int16_t _prev_yaw = 0;
+    // int16_t angle_diff = targetAgle - yaw;
+    // int16_t prev_diff = _prev_yaw - yaw;
+    // int8_t dir = signbit(angle_diff)? 1: -1;
+    // float kp, ki, kd;
+    // float _speed = kp * angle_diff + ki + kd;
+    // _prev_yaw = yaw;
+    for(int i = 0; i < 4; i++) {
+        _mcu->pwmSetDuty(motor[i], 1);
+    }
 }
 
 void MotorControll::carryBall(int16_t TargetAngle, uint8_t GoalDistance, int16_t IMU_yaw) {
