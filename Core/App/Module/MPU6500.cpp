@@ -44,9 +44,9 @@ void MPU6500::calibration() {
             this->_read_gyro_data();
             _data = rGz;
             if (_data > Gz_max)
-                _data = Gz_max;
+                Gz_max = _data;
             if (_data < Gz_min)
-                _data = Gz_min;
+                Gz_min = _data;
         }
         _drift_constant = (Gz_max - Gz_min);
         printf("Drift Constant : %d", _drift_constant);
@@ -76,7 +76,7 @@ void MPU6500::_read_gyro_data() {
     // rGx = ((int16_t)read_byte(0x43) << 8) | ((int16_t)read_byte(0x44));
     // rGy = ((int16_t)read_byte(0x45) << 8) | ((int16_t)read_byte(0x46));
     rGz = ((int16_t)_read_byte(0x47) << 8) | ((int16_t)_read_byte(0x48));
-    rGz += 200;
+    rGz += 195;
 }
 
 void MPU6500::_read_accel_data() {

@@ -50,13 +50,12 @@ void app_main() {
 
     while (1) {
         // motor.run(0);
-        mcu.delay_ms(100);
 
         // ui.Lchika();
         // printf("app_main\n\r");
-        mcu.delay_ms(10);
+        mcu.delay_ms(100);
         mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
-        printf("rGz: %d Gz: %.4f Yaw: %.4f\n\r", imu.rGz, imu.Gz, imu.Yaw);
+        printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.rGz, imu.Gz, imu.Yaw);
         // printf("Ax%.4f Ay:%.4f Az:%.4f Gz%.4f\n\r", imu.Ax, imu.Ay, imu.Az, imu.Yaw);
         //  uint16_t val = imu.zg;
         //  printf("%u\n", val);
