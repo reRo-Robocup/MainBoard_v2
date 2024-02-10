@@ -32,26 +32,24 @@ void MPU6500::init() {
 }
 
 void MPU6500::calibration() {
-    printf("IMU Calibration\n\r");
+    printf("IMU Calibration START\n\r");
     while (!isInitialized) {
     }
 
     if (!isCalibrationed) {
-        /*
-        int16_t _tmp_zg_min = INT16_MAX, _tmp_zg_max = 0;
+        int16_t Gz_min = INT16_MAX, Gz_max = 0;
         int16_t _data = 0;
-        int16_t constant = 0;
         uint32_t tim = _mcu->millis();
         while ((_mcu->millis() - tim) < 2000) {
             this->_read_gyro_data();
-            _data = zg;
-            if (_data > _tmp_zg_max)
-                _data = _tmp_zg_max;
-            if (_data < _tmp_zg_min)
-                _data = _tmp_zg_min;
+            _data = rGz;
+            if (_data > Gz_max)
+                _data = Gz_max;
+            if (_data < Gz_min)
+                _data = Gz_min;
         }
-        _drift_constant = (_tmp_zg_max - _tmp_zg_min) + constant;
-        */
+        _drift_constant = (Gz_max - Gz_min);
+        printf("Drift Constant : %d", _drift_constant);
         isCalibrationed = 1;
     }
     printf("IMU Calibration END\n\r");
