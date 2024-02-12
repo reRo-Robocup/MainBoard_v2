@@ -38,26 +38,32 @@ void app_init() {
 void app_update() {
     cam.updateFPS();
     line.update();
-    imu.update();
+    // imu.calibration();
+    // imu.update();
     // printf("app_update\n");
 }
 
+// extern "C" {
 void app_main() {
+
+
     printf("app_start\n\r");
 
     app_init();
-    imu.calibration();
+    // imu.calibration();
 
     while (1) {
 
+        motor.run(0);
 
-        if(imu.Yaw < 0) {
-            motor.roll(0.2, 0.2, 0.2, 0.2);
-        }
 
-        else {
-            motor.roll(-0.2,-0.2,-0.2,-0.2);
-        }
+        // if(imu.Yaw < 0) {
+        //     motor.roll(0.2, 0.2, 0.2, 0.2);
+        // }
+
+        // else {
+        //     motor.roll(-0.2,-0.2,-0.2,-0.2);
+        // }
 
         // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.8);
         // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.8);
@@ -68,10 +74,10 @@ void app_main() {
 
         // ui.Lchika();
         // printf("app_main\n\r");
-        mcu.delay_ms(100);
-        mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
+        // mcu.delay_ms(100);
+        // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
         // printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.rGz, imu.Gz, imu.Yaw);
-        printf("Yaw : %.4f\n\r", imu.Yaw);
+        // printf("Yaw : %.4f\n\r", imu.Yaw);
         // printf("Ax%.4f Ay:%.4f Az:%.4f Gz%.4f\n\r", imu.Ax, imu.Ay, imu.Az, imu.Yaw);
         //  uint16_t val = imu.zg;
         //  printf("%u\n", val);
@@ -141,3 +147,4 @@ void app_main() {
         // }
     }
 }
+// }

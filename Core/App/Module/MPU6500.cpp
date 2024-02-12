@@ -29,14 +29,36 @@ void MPU6500::init() {
         isInitialized = 1;
     }
     isCalibrationed = 0;
+    _drift_constant = 0;
 }
 
+bool isCalled = 0;
+uint32_t cl_st = 0;
+int32_t sum = 0;
+uint16_t cl_tim = 2000;
+
 void MPU6500::calibration() {
-    printf("IMU Calibration START\n\r");
-    _offset_Zero();
-    isCalibrationed = true;
-    printf("imu Z offset : %d", _drift_constant);
-    printf("IMU Calibration END\n\r");
+    if(!isCalibrationed) {
+
+        if(!isCalled) {
+            // 最初に一回呼ばれる
+            cl_st = _mcu->millis(); // 開始時間
+            printf("calibration start tim:\n", cl_st);
+            isCalled = 1;
+        }
+
+        if(!isCalibrationed) {
+            if((_mcu->millis() - cl_st) < cl_tim) {
+                printf("integral rGz\n");
+                this->_read_gyro_data();
+                sum += rGz;
+            }
+            else {
+                _drift_constant = sum / cl_tim;
+                isCalibrationed = 1;
+            }
+        }
+    }
 }
 
 void MPU6500::update() {
@@ -53,6 +75,9 @@ void MPU6500::update() {
         Az = (float)(rAz / 16384.0);
 
         Yaw += Gz * 0.001;
+    }
+    else {
+        printf("IMU not init\n");
     }
 }
 
@@ -93,16 +118,4 @@ uint8_t MPU6500::_read_byte(uint8_t reg) {
     _mcu->gpioSetValue(MAL::Peripheral_GPIO::IMU_CS, 1);
 
     return val;
-}
-
-
-void MPU6500::_offset_Zero() {
-    uint32_t tim = _mcu->millis();
-    uint16_t cnt = 40000;
-    int32_t sum = 0;
-    for (int i = 0; i < cnt; i++) {
-    	this->_read_gyro_data();
-    	sum += rGz;
-    }
-    _drift_constant = sum / cnt;
 }
