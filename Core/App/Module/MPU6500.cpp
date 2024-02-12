@@ -17,6 +17,7 @@ MPU6500::MPU6500(MAL* mcu) {
 }
 
 void MPU6500::init() {
+    _mode = 0;
     uint8_t who_am_i;
     _dt = CONTROLL_CYCLE;
     who_am_i = _read_byte(0x75);
@@ -32,66 +33,66 @@ void MPU6500::init() {
     _drift_constant = 0;
 }
 
-bool isCalled = 0;
-uint32_t cl_st = 0;
-int32_t sum = 0;
-uint16_t cl_tim = 2000;
-
-void MPU6500::calibration() {
-    if(!isCalibrationed) {
-
-        if(!isCalled) {
-            // 最初に一回呼ばれる
-            cl_st = _mcu->millis(); // 開始時間
-            printf("calibration start tim:\n", cl_st);
-            isCalled = 1;
-        }
-
-        if(!isCalibrationed) {
-            if((_mcu->millis() - cl_st) < cl_tim) {
-                printf("integral rGz\n");
-                this->_read_gyro_data();
-                sum += rGz;
-            }
-            else {
-                _drift_constant = sum / cl_tim;
-                isCalibrationed = 1;
-            }
-        }
-    }
-}
-
 void MPU6500::update() {
-    if (isInitialized && isCalibrationed) {
-        _read_gyro_data();
-        _read_accel_data();
+    switch (_mode) {
+        case 0:  //
+            if (isInitialized) {
+                _mode = 1;
+            }
+            break;
 
-        Gx = (float)(rGx / 131.0);
-        Gy = (float)(rGy / 131.0);
-        Gz = (float)(rGz / 131.0);
+        case 1:
+            _calibratio_start_time = _mcu->millis();
+            _calibration_sum_cnt = 0;
+            _read_gyro_data();
+            if (raw_Gz != 0) {
+                _mode = 2;
+            }
+            break;
 
-        Ax = (float)(rAx / 16384.0);
-        Ay = (float)(rAy / 16384.0);
-        Az = (float)(rAz / 16384.0);
+        case 2:
+            if (_mcu->millis() - _calibratio_start_time > 1000) {
+                _Gz_drift_constant = _calibration_Gz / _calibration_sum_cnt;
+                _mode = 10;
+            } else {
+                _read_gyro_data();
+                _calibration_Gz += raw_Gz;
+                _calibration_sum_cnt++;
+            }
 
-        Yaw += Gz * 0.001;
-    }
-    else {
-        printf("IMU not init\n");
+            break;
+
+        case 10:
+            _read_gyro_data();
+            _read_accel_data();
+
+            Gx = (float)(raw_Gx / 131.0);
+            Gy = (float)(raw_Gy / 131.0);
+            Gz = (float)(raw_Gz / 131.0);
+
+            Ax = (float)(raw_Ax / 16384.0);
+            Ay = (float)(raw_Ay / 16384.0);
+            Az = (float)(raw_Az / 16384.0);
+
+            Yaw += Gz * 0.001;
+            break;
+
+        default:
+            break;
     }
 }
 
 void MPU6500::_read_gyro_data() {
     // rGx = ((int16_t)read_byte(0x43) << 8) | ((int16_t)read_byte(0x44));
     // rGy = ((int16_t)read_byte(0x45) << 8) | ((int16_t)read_byte(0x46));
-    rGz = ((int16_t)_read_byte(0x47) << 8) | ((int16_t)_read_byte(0x48));
-    rGz -= _drift_constant;
+    raw_Gz = ((int16_t)_read_byte(0x47) << 8) | ((int16_t)_read_byte(0x48));
+    raw_Gz -= _Gz_drift_constant;
 }
 
 void MPU6500::_read_accel_data() {
-    rAx = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
-    rAy = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
-    rAz = ((int16_t)_read_byte(0x3F) << 8) | ((int16_t)_read_byte(0x40));
+    raw_Ax = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
+    raw_Ay = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
+    raw_Az = ((int16_t)_read_byte(0x3F) << 8) | ((int16_t)_read_byte(0x40));
 }
 
 void MPU6500::_write_byte(uint8_t reg, uint8_t val) {

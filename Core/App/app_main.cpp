@@ -38,24 +38,19 @@ void app_init() {
 void app_update() {
     cam.updateFPS();
     line.update();
-    // imu.calibration();
     // imu.update();
     // printf("app_update\n");
 }
 
 // extern "C" {
 void app_main() {
-
-
     printf("app_start\n\r");
 
     app_init();
     // imu.calibration();
 
     while (1) {
-
         motor.run(0);
-
 
         // if(imu.Yaw < 0) {
         //     motor.roll(0.2, 0.2, 0.2, 0.2);

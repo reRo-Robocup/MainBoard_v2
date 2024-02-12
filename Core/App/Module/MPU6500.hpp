@@ -20,10 +20,9 @@ class MPU6500 {
     MPU6500(MAL* mcu);
     void init();
     void update();
-    void calibration();
 
-    int16_t rAx, rAy, rAz;  // raw value
-    int16_t rGx, rGy, rGz;  // raw value
+    int16_t raw_Ax, raw_Ay, raw_Az;
+    int16_t raw_Gx, raw_Gy, raw_Gz;
 
     float Ax, Ay, Az;
     float Gx, Gy, Gz;
@@ -34,21 +33,25 @@ class MPU6500 {
     bool isInitialized;
     bool isCalibrationed;
 
-
    private:
     MAL* _mcu;
 
     float _dt;
-    int16_t _drift_constant;
+    int16_t _Gz_drift_constant;
+    int16_t _mode;
 
-    void _read_gyro_data();
+    uint32_t _calibration_start_time;
+    int32_t _calibration_Gz;
+    u_int32_t _calibration_sum_cnt;
+
+    void
+    _read_gyro_data();
     void _read_accel_data();
-
 
     void _write_byte(uint8_t reg, uint8_t val);
     uint8_t _read_byte(uint8_t reg);
 
-     void _offset_Zero();
+    void _offset_Zero();
 };
 
 #endif /* _APP_MODULE_MPU6500_HPP_ */
