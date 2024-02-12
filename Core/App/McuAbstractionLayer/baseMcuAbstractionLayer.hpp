@@ -81,6 +81,7 @@ class baseMcuAbstractionLayer {
     // ADC
     virtual uint16_t adcGetValue(Peripheral_ADC p) = 0;
     virtual bool isAdcConvCplt(Peripheral_ADC p) = 0;
+    virtual void adcWaitConvCplt(Peripheral_ADC p) = 0;
 
     // PWM
     virtual void pwmSetDuty(Peripheral_PWM p, float duty) = 0;

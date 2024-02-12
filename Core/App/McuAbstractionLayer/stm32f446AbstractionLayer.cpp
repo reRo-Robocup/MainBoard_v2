@@ -179,6 +179,12 @@ bool stm32f446AbstractionLayer::isAdcConvCplt(Peripheral_ADC p) {
     return ret;
 }
 
+void stm32f446AbstractionLayer::adcWaitConvCplt(Peripheral_ADC p) {
+    _adcCplt[PAL.ADC_Connected[p]] = false;
+    while (_adcCplt[PAL.ADC_Connected[p]] == false) {
+    }
+}
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
     if (AdcHandle->Instance == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->Instance) {
         stm32f446AbstractionLayer::_adcCplt[0] = true;
