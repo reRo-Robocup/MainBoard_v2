@@ -22,7 +22,7 @@ class MotorControll {
     void turn(int16_t targetAngle, int16_t yaw);
 
     bool isDRVsleep();
-    uint8_t speed;
+    float speed;
 
    private:
     MAL* _mcu;

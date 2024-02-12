@@ -26,6 +26,7 @@ MotorControll::MotorControll(MAL* mcu) {
 }
 
 void MotorControll::_write_pwm(uint8_t pin, float duty) {
+    duty *= speed;
     if(isMotorPinReversed[pin]) duty *= -1;
     duty = (duty + 1) / 2;
     _mcu->pwmSetDuty(motor[pin], duty);
@@ -35,6 +36,7 @@ void MotorControll::init() {
     for(int i = 0; i < 4; i++) {
         this->_write_pwm(motor[i], 0);
     }
+    speed = 0.2;
 }
 
 float MotorControll::_getBatteryVoltage() {
@@ -57,15 +59,16 @@ void MotorControll::run(int16_t angle) {
         MPowerVector[i] = cos(tmp_angle);
         printf("%f ", MPowerVector[i]);
 
-        // if (MPowerMax < MPowerVector[i])
-        //     MPowerMax = MPowerVector[i];
+        if (MPowerMax < MPowerVector[i])
+            MPowerMax = MPowerVector[i];
     }
+    printf("\n");
 
-    // if ((MPowerMax = !1) || (MPowerMax = !-1)) {
-    //     for (int i = 0; i < 4; i++) {
-    //         MPowerVector[i] *= (1 / MPowerMax);
-    //     }
-    // }
+    if ((MPowerMax = !1) || (MPowerMax = !-1)) {
+        for (int i = 0; i < 4; i++) {
+            MPowerVector[i] *= (1 / MPowerMax);
+        }
+    }
 
     for(int i = 0; i < 4; i++) {
         this->_write_pwm(motor[i], MPowerVector[i]);
