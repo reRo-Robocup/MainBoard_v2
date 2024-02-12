@@ -42,7 +42,7 @@ class MPU6500 {
 
     uint32_t _calibration_start_time;
     int32_t _calibration_Gz;
-    u_int32_t _calibration_sum_cnt;
+    uint32_t _calibration_sum_cnt;
 
     void
     _read_gyro_data();

@@ -30,7 +30,7 @@ void MPU6500::init() {
         isInitialized = 1;
     }
     isCalibrationed = 0;
-    _drift_constant = 0;
+    _Gz_drift_constant = 0;
 }
 
 void MPU6500::update() {
@@ -42,7 +42,7 @@ void MPU6500::update() {
             break;
 
         case 1:
-            _calibratio_start_time = _mcu->millis();
+            _calibration_start_time = _mcu->millis();
             _calibration_sum_cnt = 0;
             _read_gyro_data();
             if (raw_Gz != 0) {
@@ -51,7 +51,7 @@ void MPU6500::update() {
             break;
 
         case 2:
-            if (_mcu->millis() - _calibratio_start_time > 1000) {
+            if (_mcu->millis() - _calibration_start_time > 1000) {
                 _Gz_drift_constant = _calibration_Gz / _calibration_sum_cnt;
                 _mode = 10;
             } else {
