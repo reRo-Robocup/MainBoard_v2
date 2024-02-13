@@ -27,7 +27,7 @@ class LineSensor {
    private:
     MAL* _mcu;
     uint32_t _threshold[32] = {0};
-    int8_t _module_r;
+    uint8_t _module_r;
     float _sensor_xy[32][2];
     float _sincosTable[32][2] = {0.0};
     uint8_t _isONline_qty;
