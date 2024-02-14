@@ -155,15 +155,15 @@ uint16_t stm32f446AbstractionLayer::_data[3][3] = {0};
 bool stm32f446AbstractionLayer::_adcCplt[3] = {0};
 
 void stm32f446AbstractionLayer::_initADC(void) {
-    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1], (uint32_t*)this->_data[0], sizeof(uint16_t)) * PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->Init.NbrOfConversion !=
+    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1], (uint32_t*)this->_data[0], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
     }
-    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2], (uint32_t*)this->_data[1], sizeof(uint16_t)) * PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Init.NbrOfConversion !=
+    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2], (uint32_t*)this->_data[1], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
     }
-    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3], (uint32_t*)this->_data[2], sizeof(uint16_t)) * PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->Init.NbrOfConversion !=
+    if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3], (uint32_t*)this->_data[2], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
     }
