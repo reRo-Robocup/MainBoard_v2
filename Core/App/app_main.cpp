@@ -37,9 +37,9 @@ void app_init() {
 
 void app_update() {
     cam.updateFPS();
-    line.update();
+    // line.update();
     // imu.update();
-    // printf("app_update\n");
+    printf("app_update\n\r");
 }
 
 // extern "C" {

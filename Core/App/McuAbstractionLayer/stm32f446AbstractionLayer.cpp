@@ -22,6 +22,7 @@ struct PeripheralAllocation {
         ADC_END
     };
     ADC_HandleTypeDef* ADC_Ins[ADC_END];
+    DMA_HandleTypeDef* ADC_DMA_Ins[ADC_END];
     STM_ADC ADC_Connected[MAL::Peripheral_ADC::End_A];
     uint8_t ADC_RANK[MAL::Peripheral_ADC::End_A];
 
@@ -46,6 +47,10 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1] = &hadc1;
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2] = &hadc2;
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3] = &hadc3;
+
+    PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_1] = &hdma_adc1;
+    PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_2] = &hdma_adc2;
+    PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_3] = &hdma_adc3;
 
     PAL.ADC_Connected[MAL::Peripheral_ADC::MuxA] = PeripheralAllocation::STM_ADC::ADC_1;
     PAL.ADC_Connected[MAL::Peripheral_ADC::MuxB] = PeripheralAllocation::STM_ADC::ADC_3;
@@ -159,14 +164,19 @@ void stm32f446AbstractionLayer::_initADC(void) {
         HAL_OK) {
         Error_Handler();
     }
+    __HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_1], DMA_IT_TC | DMA_IT_HT);
+
     if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2], (uint32_t*)this->_data[1], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
     }
+    __HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_2], DMA_IT_TC | DMA_IT_HT);
+
     if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3], (uint32_t*)this->_data[2], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
     }
+    __HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_3], DMA_IT_TC | DMA_IT_HT);
 }
 
 uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {
