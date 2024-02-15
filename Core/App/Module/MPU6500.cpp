@@ -30,7 +30,12 @@ void MPU6500::init() {
         isInitialized = 1;
     }
     isCalibrationed = 0;
+
+    _Gx_drift_constant = 0;
+    _Gy_drift_constant = 0;
     _Gz_drift_constant = 0;
+    Yaw = 180;
+    _madgwick.begin(1000.0);
 }
 
 void MPU6500::update() {
@@ -51,11 +56,19 @@ void MPU6500::update() {
 
         case 2:
             if (_calibration_sum_cnt >= 1000) {
-                _Gz_drift_constant = _calibration_Gz / _calibration_sum_cnt;
+                _Gx_drift_constant = _calibration_sum_Gx / _calibration_sum_cnt;
+                _Gy_drift_constant = _calibration_sum_Gy / _calibration_sum_cnt;
+                _Gz_drift_constant = _calibration_sum_Gz / _calibration_sum_cnt;
+
+                isCalibrationed = true;
                 _mode = 10;
             } else {
+                _read_accel_data();
                 _read_gyro_data();
-                _calibration_Gz += raw_Gz;
+
+                _calibration_sum_Gx += raw_Gx;
+                _calibration_sum_Gy += raw_Gy;
+                _calibration_sum_Gz += raw_Gz;
                 _calibration_sum_cnt++;
             }
 
@@ -77,7 +90,10 @@ void MPU6500::update() {
             Ay = (float)(raw_Ay / 16384.0);
             Az = (float)(raw_Az / 16384.0);
 
-            Yaw += Gz * 0.001;
+            _madgwick.updateIMU(Gx, Gy, Gz, Ax, Ay, Az);
+
+            // Yaw += Gz * 0.001;
+            Yaw = _madgwick.getYaw();
             break;
 
         default:
@@ -86,9 +102,12 @@ void MPU6500::update() {
 }
 
 void MPU6500::_read_gyro_data() {
-    // rGx = ((int16_t)read_byte(0x43) << 8) | ((int16_t)read_byte(0x44));
-    // rGy = ((int16_t)read_byte(0x45) << 8) | ((int16_t)read_byte(0x46));
+    raw_Gx = ((int16_t)_read_byte(0x43) << 8) | ((int16_t)_read_byte(0x44));
+    raw_Gy = ((int16_t)_read_byte(0x45) << 8) | ((int16_t)_read_byte(0x46));
     raw_Gz = ((int16_t)_read_byte(0x47) << 8) | ((int16_t)_read_byte(0x48));
+
+    raw_Gx -= _Gx_drift_constant;
+    raw_Gy -= _Gy_drift_constant;
     raw_Gz -= _Gz_drift_constant;
 }
 

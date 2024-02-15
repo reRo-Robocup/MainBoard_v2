@@ -10,15 +10,20 @@
 #ifndef _APP_MODULE_ATTITUDECONTROLLER_HPP_
 #define _APP_MODULE_ATTITUDECONTROLLER_HPP_
 
+#include <Lib/pid.hpp>
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
+#include <Module/MPU6500.hpp>
 
 class AttitudeController {
    public:
-    AttitudeController(baseMcuAbstractionLayer* mcu);
+    AttitudeController(baseMcuAbstractionLayer* mcu, MPU6500* imu);
     void init();
     void update();
 
     void setMode(int mode);
+
+    void setGoStraightAngle(int16_t angle);
+    void setTurnAngle(int angle);
 
     enum TractionMotors {
         Motor1,
@@ -37,7 +42,12 @@ class AttitudeController {
 
    private:
     baseMcuAbstractionLayer* _mcu;
+    MPU6500* _imu;
+    PID _turn_angle_pid;
     int _mode;
+
+    int _go_straight_angle;
+    int _turn_angle;
 
     void _setPWM(TractionMotors motor, float duty);
 };

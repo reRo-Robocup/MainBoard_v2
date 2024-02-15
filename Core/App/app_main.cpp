@@ -20,7 +20,7 @@ stm32f446AbstractionLayer mcu;
 camera cam(&mcu);
 LineSensor line(&mcu);
 MPU6500 imu(&mcu);
-AttitudeController atc(&mcu);
+AttitudeController atc(&mcu, &imu);
 UI ui(&mcu);
 
 void app_main();
@@ -41,7 +41,7 @@ void app_update() {
     line.update();
     imu.update();
     atc.update();
-    // printf("app_update\n\r");
+    //  printf("app_update\n\r");
 }
 
 // extern "C" {
@@ -49,14 +49,29 @@ void app_main() {
     printf("app_start\n\r");
 
     app_init();
-    // imu.calibration();
+    while (!imu.isCalibrationed) {
+    }
+    printf("IMU is Calibrated\n\r");
 
     while (1) {
-        atc.setMode(0);
+        atc.setMode(2);
+        atc.setTurnAngle(180);
         mcu.delay_ms(1000);
-        atc.setMode(1);
+        atc.setTurnAngle(90);
         mcu.delay_ms(1000);
-        // motor.run(0);
+
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.75);
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.75);
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0.75);
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.75);
+        // mcu.delay_ms(1000);
+        // atc.setMode(1);
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.5);
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.5);
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0.5);
+        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.5);
+        // mcu.delay_ms(1000);
+        //  motor.run(0);
 
         // if(imu.Yaw < 0) {
         //     motor.roll(0.2, 0.2, 0.2, 0.2);
@@ -78,7 +93,7 @@ void app_main() {
         // mcu.delay_ms(100);
         // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
         // printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.raw_Gz, imu.Gz, imu.Yaw);
-        printf("Yaw : %.4f\n\r", imu.Yaw);
+        // printf("Yaw : %.4f\n\r", imu.Yaw);
         // printf("Ax%.4f Ay:%.4f Az:%.4f Gz%.4f\n\r", imu.Ax, imu.Ay, imu.Az, imu.Yaw);
         //  uint16_t val = imu.zg;
         //  printf("%u\n", val);
