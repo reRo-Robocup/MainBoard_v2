@@ -9,6 +9,7 @@
 #include <GlobalDefines.h>
 #include <app_main.h>
 #include <McuAbstractionLayer/stm32f446AbstractionLayer.hpp>
+#include <Module/AttitudeController.hpp>
 #include <Module/Camera.hpp>
 #include <Module/LineSensor.hpp>
 #include <Module/MPU6500.hpp>
@@ -19,7 +20,7 @@ stm32f446AbstractionLayer mcu;
 camera cam(&mcu);
 LineSensor line(&mcu);
 MPU6500 imu(&mcu);
-MotorControll motor(&mcu);
+AttitudeController atc(&mcu);
 UI ui(&mcu);
 
 void app_main();
@@ -30,16 +31,17 @@ void app_init() {
     cam.init();
     line.init();
     imu.init();
-    motor.init();
+    atc.init();
     ui.init();
     mcu.interruptSetCallback(MAL::Peripheral_Interrupt::T1ms, &app_update);
 }
 
 void app_update() {
     cam.updateFPS();
-    // line.update();
-    // imu.update();
-    printf("app_update\n\r");
+    line.update();
+    imu.update();
+    atc.update();
+    // printf("app_update\n\r");
 }
 
 // extern "C" {
@@ -50,7 +52,11 @@ void app_main() {
     // imu.calibration();
 
     while (1) {
-        motor.run(0);
+        atc.setMode(0);
+        mcu.delay_ms(1000);
+        atc.setMode(1);
+        mcu.delay_ms(1000);
+        // motor.run(0);
 
         // if(imu.Yaw < 0) {
         //     motor.roll(0.2, 0.2, 0.2, 0.2);
@@ -71,8 +77,8 @@ void app_main() {
         // printf("app_main\n\r");
         // mcu.delay_ms(100);
         // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
-        // printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.rGz, imu.Gz, imu.Yaw);
-        // printf("Yaw : %.4f\n\r", imu.Yaw);
+        // printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.raw_Gz, imu.Gz, imu.Yaw);
+        printf("Yaw : %.4f\n\r", imu.Yaw);
         // printf("Ax%.4f Ay:%.4f Az:%.4f Gz%.4f\n\r", imu.Ax, imu.Ay, imu.Az, imu.Yaw);
         //  uint16_t val = imu.zg;
         //  printf("%u\n", val);

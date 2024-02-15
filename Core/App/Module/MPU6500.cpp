@@ -25,8 +25,8 @@ void MPU6500::init() {
         _write_byte(0x6B, 0x00);  // sleep mode解除
         _mcu->delay_ms(100);
         _write_byte(0x1A, 0x00);
-        //_write_byte(0x1B, 0x18);
-        _write_byte(0x1B, 0x00);
+        _write_byte(0x1B, 0x18);  // FS_SEL = 3
+        //_write_byte(0x1B, 0x00); // FS_SEL = 0
         isInitialized = 1;
     }
     isCalibrationed = 0;
@@ -42,7 +42,6 @@ void MPU6500::update() {
             break;
 
         case 1:
-            _calibration_start_time = _mcu->millis();
             _calibration_sum_cnt = 0;
             _read_gyro_data();
             if (raw_Gz != 0) {
@@ -51,7 +50,7 @@ void MPU6500::update() {
             break;
 
         case 2:
-            if (_mcu->millis() - _calibration_start_time > 1000) {
+            if (_calibration_sum_cnt >= 1000) {
                 _Gz_drift_constant = _calibration_Gz / _calibration_sum_cnt;
                 _mode = 10;
             } else {
@@ -66,9 +65,13 @@ void MPU6500::update() {
             _read_gyro_data();
             _read_accel_data();
 
-            Gx = (float)(raw_Gx / 131.0);
-            Gy = (float)(raw_Gy / 131.0);
-            Gz = (float)(raw_Gz / 131.0);
+            // Gx = (float)(raw_Gx / 131.0);
+            // Gy = (float)(raw_Gy / 131.0);
+            // Gz = (float)(raw_Gz / 131.0);
+
+            Gx = (float)(raw_Gx / 16.4);
+            Gy = (float)(raw_Gy / 16.4);
+            Gz = (float)(raw_Gz / 16.4);
 
             Ax = (float)(raw_Ax / 16384.0);
             Ay = (float)(raw_Ay / 16384.0);

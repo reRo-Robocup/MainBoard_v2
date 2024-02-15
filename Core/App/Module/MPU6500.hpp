@@ -40,9 +40,8 @@ class MPU6500 {
     int16_t _Gz_drift_constant;
     int16_t _mode;
 
-    uint32_t _calibration_start_time;
     int32_t _calibration_Gz;
-    uint32_t _calibration_sum_cnt;
+    int32_t _calibration_sum_cnt;
 
     void
     _read_gyro_data();

@@ -2,15 +2,14 @@
  * MotorControll.cpp
  *
  *  Created on: Dec 23, 2023
- * 
+ *
  *  Author: onlydcx, G4T1PR0
  */
 
 #include "MotorControll.hpp"
 
 const bool isMotorPinReversed[4] = {
-    0, 0, 1, 0
-};
+    0, 0, 1, 0};
 
 const MAL::Peripheral_PWM motor[4] = {
     MAL::Peripheral_PWM::Motor1,
@@ -27,13 +26,14 @@ MotorControll::MotorControll(MAL* mcu) {
 
 void MotorControll::_write_pwm(uint8_t pin, float duty) {
     duty *= speed;
-    if(isMotorPinReversed[pin]) duty *= -1;
+    if (isMotorPinReversed[pin])
+        duty *= -1;
     duty = (duty + 1) / 2;
     _mcu->pwmSetDuty(motor[pin], duty);
 }
 
 void MotorControll::init() {
-    for(int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         this->_write_pwm(motor[i], 0);
     }
     speed = 0.2;
@@ -49,8 +49,10 @@ bool MotorControll::isDRVsleep() {
 
 void MotorControll::run(int16_t angle) {
     angle = 450 - angle;
-    while(angle >= 360)  angle -= 360;
-    while(angle <= -360) angle += 360;
+    while (angle >= 360)
+        angle -= 360;
+    while (angle <= -360)
+        angle += 360;
     float MPowerVector[4] = {0};  // 4つのモーターの出力比
     float MPowerMax = 0;          // 最大値
 
@@ -64,13 +66,13 @@ void MotorControll::run(int16_t angle) {
     }
     printf("\n");
 
-    if ((MPowerMax = !1) || (MPowerMax = !-1)) {
+    if ((MPowerMax != 1) || (MPowerMax != -1)) {
         for (int i = 0; i < 4; i++) {
             MPowerVector[i] *= (1 / MPowerMax);
         }
     }
 
-    for(int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         this->_write_pwm(motor[i], MPowerVector[i]);
     }
 }
@@ -78,7 +80,7 @@ void MotorControll::run(int16_t angle) {
 void MotorControll::turn(int16_t targetAngle, int16_t yaw) {
     int16_t diff = targetAngle - yaw;
     float duty[4] = {0};
-    for(int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         this->roll(motor[i], duty[i]);
     }
 }
