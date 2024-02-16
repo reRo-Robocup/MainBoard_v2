@@ -164,7 +164,7 @@ void stm32f446AbstractionLayer::_initADC(void) {
         HAL_OK) {
         Error_Handler();
     }
-    __HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_1], DMA_IT_TC | DMA_IT_HT);
+    //__HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_1], DMA_IT_HT);
 
     if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2], (uint32_t*)this->_data[1], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Init.NbrOfConversion) !=
         HAL_OK) {
@@ -176,7 +176,7 @@ void stm32f446AbstractionLayer::_initADC(void) {
         HAL_OK) {
         Error_Handler();
     }
-    __HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_3], DMA_IT_TC | DMA_IT_HT);
+    //__HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_3], DMA_IT_HT);
 }
 
 uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {
@@ -196,11 +196,11 @@ void stm32f446AbstractionLayer::adcWaitConvCplt(Peripheral_ADC p) {
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
-    if (AdcHandle->Instance == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->Instance) {
+    if (AdcHandle == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]) {
         stm32f446AbstractionLayer::_adcCplt[0] = true;
-    } else if (AdcHandle->Instance == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Instance) {
+    } else if (AdcHandle == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]) {
         stm32f446AbstractionLayer::_adcCplt[1] = true;
-    } else if (AdcHandle->Instance == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->Instance) {
+    } else if (AdcHandle == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]) {
         stm32f446AbstractionLayer::_adcCplt[2] = true;
     }
 }

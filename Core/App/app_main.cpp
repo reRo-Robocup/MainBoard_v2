@@ -54,11 +54,11 @@ void app_main() {
     printf("IMU is Calibrated\n\r");
 
     while (1) {
-        atc.setMode(2);
-        atc.setTurnAngle(180);
-        mcu.delay_ms(1000);
-        atc.setTurnAngle(90);
-        mcu.delay_ms(1000);
+        // atc.setMode(2);
+        // atc.setTurnAngle(180);
+        // mcu.delay_ms(1000);
+        // atc.setTurnAngle(90);
+        // mcu.delay_ms(1000);
 
         // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.75);
         // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.75);
@@ -90,6 +90,15 @@ void app_main() {
 
         // ui.Lchika();
         // printf("app_main\n\r");
+        // printf("Line: %f\n\r", line.angle);
+        for (int i = 0; i < 16; i++) {
+            printf("%d", line.sensorValue[i] > 800 ? 1 : 0);
+        }
+        printf(" ");
+        for (int i = 16; i < 32; i++) {
+            printf("%d", line.sensorValue[i] > 800 ? 1 : 0);
+        }
+        printf("\n\r");
         // mcu.delay_ms(100);
         // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
         // printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.raw_Gz, imu.Gz, imu.Yaw);

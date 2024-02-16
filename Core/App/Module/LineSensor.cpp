@@ -34,36 +34,54 @@ void LineSensor::init() {
         this->_sensor_xy[i][0] = this->_module_r * cos(this->_sincosTable[i][0]);
         this->_sensor_xy[i][1] = this->_module_r * sin(this->_sincosTable[i][1]);
     }
+    setThreshold();
 }
 
 void LineSensor::read() {
     for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 4; j++) {
-            _mcu->gpioSetValue(MuxPin[i], this->SigPattern[i][j]);
-        }
-        //_mcu->wait_ms();
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig0, i & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig1, (i >> 1) & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig2, (i >> 2) & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig3, (i >> 3) & 0x01);
+
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig0, i & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig1, (i >> 1) & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig2, (i >> 2) & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig3, (i >> 3) & 0x01);
+
         _mcu->adcWaitConvCplt(MAL::Peripheral_ADC::MuxA);
         _mcu->adcWaitConvCplt(MAL::Peripheral_ADC::MuxB);
 
         sensorValue[i] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
         sensorValue[i + 16] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxB);
     }
+    for (int i = 0; i < 10; i++) {
+    }
 }
 
 void LineSensor::update() {
+    this->read();
     float x = 0.0;
     float y = 0.0;
     uint8_t _cnt = 0;
     for (int i = 0; i < 32; i++) {
-        if (sensorValue[i] > this->_threshold[i]) {
+        // if (sensorValue[i] > this->_threshold[i]) {
+        //     _cnt++;
+        //     x += _sincosTable[1][i];
+        //     y += _sincosTable[0][i];
+        // }
+        if (sensorValue[i] > 800) {
             _cnt++;
             x += _sincosTable[1][i];
             y += _sincosTable[0][i];
         }
     }
-    uint16_t _angle = 0;
+    float _angle = 0;
     this->isonLine = _cnt > 0;
     if (isonLine) {
+        float r = atan2(y, x);
+        float t = rad_to_deg(atan2(y, x));
+        float tt = rad_to_deg(atan2(y, x)) - 90;
         _angle = rad_to_deg(atan2(y, x)) - 90;
         if (_angle > 359)
             _angle -= 360;

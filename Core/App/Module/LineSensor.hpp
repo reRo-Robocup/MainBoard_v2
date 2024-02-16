@@ -2,7 +2,7 @@
  *  LineSensor.hpp
  *
  *  Created on: Dec 7, 2023
- * 
+ *
  *  Author: onlydcx, G4T1PR0
  */
 
@@ -22,7 +22,7 @@ class LineSensor {
     uint16_t sensorValue[32] = {0};
     bool isSensorONline[32] = {0};
     bool isonLine;
-    uint16_t angle;
+    float angle;
 
    private:
     MAL* _mcu;
@@ -32,8 +32,7 @@ class LineSensor {
     float _sincosTable[32][2] = {0.0};
     uint8_t _isONline_qty;
     const bool SigPattern[16][4] = {
-        0
-    };
+        0};
 };
 
 #endif /* _APP_MODULE_LINESENSOR_HPP_ */
