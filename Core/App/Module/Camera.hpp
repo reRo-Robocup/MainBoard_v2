@@ -18,9 +18,15 @@ class camera {
         void updateFPS();
         bool AttackColor;
 
-        uint16_t angle[3] = {0};
-        uint8_t distance[3] = {0};
-        bool enable[3] = {false};
+        struct camera_object {
+            uint16_t angle;
+            uint8_t dis;
+            bool snable;
+        };
+        
+        // uint16_t angle[3] = {0};
+        // uint8_t distance[3] = {0};
+        // bool enable[3] = {false};
 
     private:
         MAL* _mcu;

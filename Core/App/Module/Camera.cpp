@@ -13,6 +13,11 @@
 
 #define CAM MAL::Peripheral_UART::Cam
 
+struct camera_object ball;
+struct camera_object at_goal;
+struct camera_object df_goal;
+
+
 camera::camera(MAL* mcu) {
     _mcu = mcu;
 }
