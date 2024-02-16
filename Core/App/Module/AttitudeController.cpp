@@ -118,7 +118,7 @@ void AttitudeController::setTurnAngle(int angle) {
 
 void AttitudeController::_setPWM(TractionMotors motor, float duty) {
     if (motor_data[motor].isConnectionReserved) {
-        duty = -duty;
+        duty *= -1;
     }
     float lap_duty = (duty + 1) / 2;
     _mcu->pwmSetDuty(motor_data[motor].pin, lap_duty);
