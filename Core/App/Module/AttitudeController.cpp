@@ -31,7 +31,7 @@ void AttitudeController::init() {
     motor_data[TractionMotors::Motor4].motorAngle = 315;
     motor_data[TractionMotors::Motor4].isConnectionReserved = false;
 
-    _turn_angle_pid.setPID(0.015, 0.0, 0.0);
+    _turn_angle_pid.setPID(0.03, 0.0, 0.0);
 
     _mode = 0;
 }
