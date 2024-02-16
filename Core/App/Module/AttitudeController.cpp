@@ -17,19 +17,19 @@ AttitudeController::AttitudeController(baseMcuAbstractionLayer* mcu, MPU6500* im
 void AttitudeController::init() {
     motor_data[TractionMotors::Motor1].pin = MAL::Peripheral_PWM::Motor1;
     motor_data[TractionMotors::Motor1].motorAngle = 45;
-    motor_data[TractionMotors::Motor1].isConnectionReserved = false;
+    motor_data[TractionMotors::Motor1].isConnectionReversed = false;
 
     motor_data[TractionMotors::Motor2].pin = MAL::Peripheral_PWM::Motor2;
     motor_data[TractionMotors::Motor2].motorAngle = 135;
-    motor_data[TractionMotors::Motor2].isConnectionReserved = false;
+    motor_data[TractionMotors::Motor2].isConnectionReversed = false;
 
     motor_data[TractionMotors::Motor3].pin = MAL::Peripheral_PWM::Motor3;
     motor_data[TractionMotors::Motor3].motorAngle = 225;
-    motor_data[TractionMotors::Motor3].isConnectionReserved = true;
+    motor_data[TractionMotors::Motor3].isConnectionReversed = true;
 
     motor_data[TractionMotors::Motor4].pin = MAL::Peripheral_PWM::Motor4;
     motor_data[TractionMotors::Motor4].motorAngle = 315;
-    motor_data[TractionMotors::Motor4].isConnectionReserved = false;
+    motor_data[TractionMotors::Motor4].isConnectionReversed = false;
 
     _turn_angle_pid.setPID(0.03, 0.0, 0.0);
 
@@ -117,8 +117,8 @@ void AttitudeController::setTurnAngle(int angle) {
 }
 
 void AttitudeController::_setPWM(TractionMotors motor, float duty) {
-    if (motor_data[motor].isConnectionReserved) {
-        duty *= -1;
+    if (motor_data[motor].isConnectionReversed) {
+        duty = -duty;
     }
     float lap_duty = (duty + 1) / 2;
     _mcu->pwmSetDuty(motor_data[motor].pin, lap_duty);

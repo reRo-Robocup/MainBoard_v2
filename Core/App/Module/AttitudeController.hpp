@@ -35,7 +35,7 @@ class AttitudeController {
     struct MotorData {
         MAL::Peripheral_PWM pin;
         int motorAngle;
-        bool isConnectionReserved;
+        bool isConnectionReversed;
     };
 
     MotorData motor_data[4];
