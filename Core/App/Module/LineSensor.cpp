@@ -39,18 +39,23 @@ void LineSensor::init() {
 
 void LineSensor::read() {
     for (int i = 0; i < 16; i++) {
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig0, i & 0x01);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig1, (i >> 1) & 0x01);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig2, (i >> 2) & 0x01);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig3, (i >> 3) & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig0, SigPattern[i][0]);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig1, SigPattern[i][1]);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig2, SigPattern[i][2]);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxA_Sig3, SigPattern[i][3]);
 
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig0, i & 0x01);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig1, (i >> 1) & 0x01);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig2, (i >> 2) & 0x01);
-        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig3, (i >> 3) & 0x01);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig0, SigPattern[i][0]);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig1, SigPattern[i][1]);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig2, SigPattern[i][2]);
+        _mcu->gpioSetValue(MAL::Peripheral_GPIO::MuxB_Sig3, SigPattern[i][3]);
 
-        _mcu->adcWaitConvCplt(MAL::Peripheral_ADC::MuxA);
-        _mcu->adcWaitConvCplt(MAL::Peripheral_ADC::MuxB);
+        _mcu->adcConvCpltClearFlag(MAL::Peripheral_ADC::MuxA);
+        _mcu->adcConvCpltClearFlag(MAL::Peripheral_ADC::MuxB);
+
+        while (!_mcu->adcConvCpltGetFlag(MAL::Peripheral_ADC::MuxA)) {
+        }
+        while (!_mcu->adcConvCpltGetFlag(MAL::Peripheral_ADC::MuxB)) {
+        }
 
         sensorValue[i] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
         sensorValue[i + 16] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxB);

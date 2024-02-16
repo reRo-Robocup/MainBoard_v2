@@ -183,10 +183,12 @@ uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {
     return _data[PAL.ADC_Connected[p]][PAL.ADC_RANK[p]];
 }
 
-bool stm32f446AbstractionLayer::isAdcConvCplt(Peripheral_ADC p) {
-    bool ret = _adcCplt[PAL.ADC_Connected[p]];
+bool stm32f446AbstractionLayer::adcConvCpltGetFlag(Peripheral_ADC p) {
+    return _adcCplt[PAL.ADC_Connected[p]];
+}
+
+void stm32f446AbstractionLayer::adcConvCpltClearFlag(Peripheral_ADC p) {
     _adcCplt[PAL.ADC_Connected[p]] = false;
-    return ret;
 }
 
 void stm32f446AbstractionLayer::adcWaitConvCplt(Peripheral_ADC p) {

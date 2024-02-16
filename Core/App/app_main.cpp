@@ -90,13 +90,13 @@ void app_main() {
 
         // ui.Lchika();
         // printf("app_main\n\r");
-        // printf("Line: %f\n\r", line.angle);
+        printf("Line: %f ", line.angle);
         for (int i = 0; i < 16; i++) {
-            printf("%d", line.sensorValue[i] > 800 ? 1 : 0);
+            printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
         }
         printf(" ");
         for (int i = 16; i < 32; i++) {
-            printf("%d", line.sensorValue[i] > 800 ? 1 : 0);
+            printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
         }
         printf("\n\r");
         // mcu.delay_ms(100);

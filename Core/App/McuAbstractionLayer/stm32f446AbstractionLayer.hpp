@@ -21,7 +21,8 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
 
     // ADC
     virtual uint16_t adcGetValue(Peripheral_ADC p);
-    virtual bool isAdcConvCplt(Peripheral_ADC p);
+    virtual bool adcConvCpltGetFlag(Peripheral_ADC p);
+    virtual void adcConvCpltClearFlag(Peripheral_ADC p);
     virtual void adcWaitConvCplt(Peripheral_ADC p);
     static bool _adcCplt[3];
 
