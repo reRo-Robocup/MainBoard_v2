@@ -18,13 +18,17 @@
 
 stm32f446AbstractionLayer mcu;
 camera cam(&mcu);
-LineSensor line(&mcu);
 MPU6500 imu(&mcu);
 AttitudeController atc(&mcu, &imu);
 UI ui(&mcu);
+LineSensor line(&mcu, &ui);
 
-void app_main();
-void app_update();
+// extern "C" {
+    void app_init();
+    void app_main();
+    void app_update();
+// };
+
 
 void app_init() {
     mcu.init();
@@ -54,6 +58,20 @@ void app_main() {
     printf("IMU is Calibrated\n\r");
 
     while (1) {
+
+        // uint8_t data = mcu.uartGetChar(MAL::Peripheral_UART::Cam);
+
+
+        // uint8_t data[64];
+        // mcu.uartReadViaBuffer(MAL::Peripheral_UART::Cam, (uint8_t*) data, 64);
+
+        // for(int i = 0; i < 4; i++) {
+        //     printf("%#x\t", data[i]);
+        // }
+
+        // printf("\n");
+
+        // HAL_UART_Receive(&huartx, (uint8_t*)buf, sizeof(buf)/sizeof(buf[0]), 0xFFFF);
         // atc.setMode(2);
         // atc.setTurnAngle(180);
         // mcu.delay_ms(1000);
@@ -89,16 +107,15 @@ void app_main() {
         // motor.run(0);
 
         // ui.Lchika();
-        // printf("app_main\n\r");
-        printf("Line: %f ", line.angle);
-        for (int i = 0; i < 16; i++) {
-            printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
-        }
-        printf(" ");
-        for (int i = 16; i < 32; i++) {
-            printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
-        }
-        printf("\n\r");
+        // printf("Line: %f ", line.angle);
+        // for (int i = 0; i < 16; i++) {
+        //     printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
+        // }
+        // printf(" ");
+        // for (int i = 16; i < 32; i++) {
+        //     printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
+        // }
+        // printf("\n\r");
         // mcu.delay_ms(100);
         // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
         // printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.raw_Gz, imu.Gz, imu.Yaw);

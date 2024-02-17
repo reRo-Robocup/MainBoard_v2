@@ -11,7 +11,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-void app_main();
+    void app_main();
 };
 #else
 void app_main();
