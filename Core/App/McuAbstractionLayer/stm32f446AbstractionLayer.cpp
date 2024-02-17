@@ -248,13 +248,13 @@ bool stm32f446AbstractionLayer::gpioGetValue(Peripheral_GPIO p) {
 
 // UART
 
-uint8_t stm32f446AbstractionLayer::_uartRxBuffer[Peripheral_UART::End_U][UART_BUFFER_SIZE] = {0};
+RingBuffer<uint8_t, UART_BUFFER_SIZE> stm32f446AbstractionLayer::_uartRxBuffer[Peripheral_UART::End_U];
 
 void stm32f446AbstractionLayer::_initUART() {
-    while (HAL_UART_Receive_DMA(PAL.UART[MAL::Peripheral_UART::Cam], _uartRxBuffer[MAL::Peripheral_UART::Cam], UART_BUFFER_SIZE) != HAL_OK) {
+    while (HAL_UART_Receive_DMA(PAL.UART[MAL::Peripheral_UART::Cam], _uartRxBuffer[MAL::Peripheral_UART::Cam].Buffer, UART_BUFFER_SIZE) != HAL_OK) {
     }
 
-    while (HAL_UART_Receive_DMA(PAL.UART[MAL::Peripheral_UART::Debug], _uartRxBuffer[MAL::Peripheral_UART::Debug], UART_BUFFER_SIZE) != HAL_OK) {
+    while (HAL_UART_Receive_DMA(PAL.UART[MAL::Peripheral_UART::Debug], _uartRxBuffer[MAL::Peripheral_UART::Debug].Buffer, UART_BUFFER_SIZE) != HAL_OK) {
     }
 }
 
@@ -275,10 +275,8 @@ void stm32f446AbstractionLayer::uartPutChar(Peripheral_UART p, uint8_t data) {
 uint8_t stm32f446AbstractionLayer::uartGetChar(Peripheral_UART p) {
     uint8_t data = 0;
     if (p != Peripheral_UART::End_U) {
-        if (_uartCheckRxBufferDmaWriteAddress(p) != _uartRxBufferReadAddress[p]) {
-            data = _uartRxBuffer[p][_uartRxBufferReadAddress[p]++];
-            _uartRxBufferReadAddress[p] %= UART_BUFFER_SIZE;
-        }
+        _uartRxBuffer[p].setWritePos(_uartCheckRxBufferDmaWriteAddress(p));
+        data = _uartRxBuffer[p].pop();
     }
     return data;
 }
@@ -291,56 +289,18 @@ void stm32f446AbstractionLayer::uartWriteViaBuffer(Peripheral_UART p, uint8_t* d
 }
 
 void stm32f446AbstractionLayer::uartReadViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size) {
-    uint32_t dmaWriteAddress = _uartCheckRxBufferDmaWriteAddress(p);
-
-    if (dmaWriteAddress > _uartRxBufferReadAddress[p]) {
-        uint32_t diff_readAddress2dmaWriteAddress = dmaWriteAddress - _uartRxBufferReadAddress[p];
-
-        if (diff_readAddress2dmaWriteAddress > size) {
-            memcpy(data, &_uartRxBuffer[p][_uartRxBufferReadAddress[p]], size);
-            _uartRxBufferReadAddress[p] += size;
-        } else {
-            memcpy(data, &_uartRxBuffer[p][_uartRxBufferReadAddress[p]], diff_readAddress2dmaWriteAddress);
-            _uartRxBufferReadAddress[p] = dmaWriteAddress;
-        }
-
-    } else if (dmaWriteAddress < _uartRxBufferReadAddress[p]) {
-        uint32_t diff_readAddress2BufferEndAddress = UART_BUFFER_SIZE - 1 - _uartRxBufferReadAddress[p];
-        uint32_t buff_cp_cnt = 0;
-
-        if (diff_readAddress2BufferEndAddress > size) {
-            memcpy(data, &_uartRxBuffer[p][_uartRxBufferReadAddress[p]], size);
-            _uartRxBufferReadAddress[p] += size;
-        } else {
-            memcpy(data, &_uartRxBuffer[p][_uartRxBufferReadAddress[p]], diff_readAddress2BufferEndAddress);
-            _uartRxBufferReadAddress[p] = 0;
-            buff_cp_cnt = diff_readAddress2BufferEndAddress;
-
-            uint32_t diff_readAddress2dmaWriteAddress = dmaWriteAddress - _uartRxBufferReadAddress[p];
-
-            if (diff_readAddress2dmaWriteAddress > 0) {
-                if (diff_readAddress2dmaWriteAddress + buff_cp_cnt > size) {
-                    memcpy(&data[diff_readAddress2dmaWriteAddress], &_uartRxBuffer[p][_uartRxBufferReadAddress[p]], size - buff_cp_cnt);
-                    _uartRxBufferReadAddress[p] += size - buff_cp_cnt;
-                } else {
-                    memcpy(&data[diff_readAddress2BufferEndAddress], &_uartRxBuffer[p][_uartRxBufferReadAddress[p]], diff_readAddress2dmaWriteAddress);
-                    _uartRxBufferReadAddress[p] = dmaWriteAddress;
-                }
-            }
-        }
+    if (p != Peripheral_UART::End_U) {
+        _uartRxBuffer[p].setWritePos(_uartCheckRxBufferDmaWriteAddress(p));
+        _uartRxBuffer[p].pop(data, size);
     }
 }
 
 uint32_t stm32f446AbstractionLayer::uartGetRxDataSize(Peripheral_UART p) {
-    uint32_t dmaWriteAddress = _uartCheckRxBufferDmaWriteAddress(p);
     uint32_t size = 0;
-
-    if (dmaWriteAddress > _uartRxBufferReadAddress[p]) {
-        size = dmaWriteAddress - _uartRxBufferReadAddress[p];
-    } else if (dmaWriteAddress < _uartRxBufferReadAddress[p]) {
-        size = UART_BUFFER_SIZE - _uartRxBufferReadAddress[p] + dmaWriteAddress;
+    if (p != Peripheral_UART::End_U) {
+        _uartRxBuffer[p].setWritePos(_uartCheckRxBufferDmaWriteAddress(p));
+        size = _uartRxBuffer[p].size();
     }
-
     return size;
 }
 

@@ -10,6 +10,7 @@
 #define _APP_MCUBASEABSTRACTIONLAYER_STM32F446ABSTRACTIONLAYER_HPP_
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
+#include "RingBuffer.hpp"
 
 #define UART_BUFFER_SIZE 64
 
@@ -64,8 +65,8 @@ class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
 
     // UART
     void _initUART();
+    static RingBuffer<uint8_t, UART_BUFFER_SIZE> _uartRxBuffer[Peripheral_UART::End_U];
     uint32_t _uartCheckRxBufferDmaWriteAddress(Peripheral_UART p);
-    static uint8_t _uartRxBuffer[Peripheral_UART::End_U][UART_BUFFER_SIZE];
     uint32_t _uartRxBufferReadAddress[Peripheral_UART::End_U] = {0};
 
     // Interrupt
