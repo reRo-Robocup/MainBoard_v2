@@ -28,11 +28,16 @@ class LineSensor {
    private:
     MAL* _mcu;
     UI* _ui;
+
+    uint16_t _value[32];
+    bool _isonline[32];
     uint32_t _threshold[32] = {0};
-    uint8_t _module_r;
-    float _sensor_xy[32][2];
-    float _sincosTable[32][2] = {0.0};
+
+    float _sens_XYvector[32][2];
+    float _SinCosTable[32][2] = {0.0};
+    
     uint8_t _isONline_qty;
+    uint8_t _module_r;
 
     const bool SigPattern[16][4] = {
         {1, 1, 1, 0},  // In0 S7

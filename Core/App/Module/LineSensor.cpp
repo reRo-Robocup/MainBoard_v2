@@ -25,15 +25,17 @@ const MAL::Peripheral_GPIO MuxPin[8] = {
 };
 
 void LineSensor::init() {
-    this->_module_r = 11;
+    // this->_module_r = 11;
     for (int i = 0; i < 8; i++) {
         _mcu->gpioSetValue(MuxPin[i], 0);
     }
     for (int i = 0; i < 32; i++) {
-        this->_sincosTable[i][0] = sin(deg_to_rad(360 / 32 * i));
-        this->_sincosTable[i][1] = cos(deg_to_rad(360 / 32 * i));
-        this->_sensor_xy[i][0] = _module_r * cos(_sincosTable[i][0]);
-        this->_sensor_xy[i][1] = _module_r * sin(_sincosTable[i][1]);
+        this->_SinCosTable[i][0] = sin(deg_to_rad(360 / 32 * i));
+        this->_SinCosTable[i][1] = cos(deg_to_rad(360 / 32 * i));
+        this->_sens_XYvector[i][0] = _module_r * cos(_SinCosTable[i][0]);
+        this->_sens_XYvector[i][1] = _module_r * sin(_SinCosTable[i][1]);
+
+        this->_threshold[i] = 600;
     }
     // setThreshold();
 }
@@ -58,32 +60,33 @@ void LineSensor::read() {
         while (!_mcu->adcConvCpltGetFlag(MAL::Peripheral_ADC::MuxB)) {
         }
 
-        sensorValue[i] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
+        sensorValue[i]      = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
         sensorValue[i + 16] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxB);
-    }
-    for (int i = 0; i < 10; i++) {
     }
 }
 
 void LineSensor::update() {
     this->read();
-    float x = 0.0;
-    float y = 0.0;
+    float x, y;
     uint8_t _cnt = 0;
+
     for (int i = 0; i < 32; i++) {
-        // if (sensorValue[i] > this->_threshold[i]) {
-        //     _cnt++;
-        //     x += _sincosTable[1][i];
-        //     y += _sincosTable[0][i];
-        // }
-        if (sensorValue[i] > 800) {
+        if (sensorValue[i] > _threshold[i]) {
+            this->_isonline[i] = 1;
             _cnt++;
-            x += _sincosTable[1][i];
-            y += _sincosTable[0][i];
+            x += _SinCosTable[1][i];
+            y += _SinCosTable[0][i];
         }
+        else {
+            this->_isonline[i] = 0;
+        }
+        // printf("%u ", this->_isonline[i]);
     }
+    // printf("\n");
+
     float _angle = 0;
     this->isonLine = _cnt > 0;
+
     if (isonLine) {
         float r = atan2(y, x);
         float t = rad_to_deg(atan2(y, x));
@@ -96,6 +99,7 @@ void LineSensor::update() {
     } else {
         _angle = 1023;
     }
+
     this->angle = _angle;
     this->_isONline_qty = _cnt;
 }
@@ -139,8 +143,8 @@ uint8_t LineSensor::getDisFromCenter() {
         uint8_t _cnt = 0;
         for (int i = 0; i < 32; i++) {
             if (this->isSensorONline) {
-                _isONline_sensorXY[i][0] = _sensor_xy[i][0];
-                _isONline_sensorXY[i][1] = _sensor_xy[i][1];
+                _isONline_sensorXY[i][0] = _sens_XYvector[i][0];
+                _isONline_sensorXY[i][1] = _sens_XYvector[i][1];
                 _cnt++;
             }
         }
@@ -151,8 +155,8 @@ uint8_t LineSensor::getDisFromCenter() {
             for (int j = num; j >= 0; j--) {
                 if (i != j) {
                     float _dx, _dy, _dis;
-                    _dx = abs(_sensor_xy[i][0] - _sensor_xy[j][0]);
-                    _dy = abs(_sensor_xy[i][1] - _sensor_xy[j][1]);
+                    _dx = abs(_sens_XYvector[i][0] - _sens_XYvector[j][0]);
+                    _dy = abs(_sens_XYvector[i][1] - _sens_XYvector[j][1]);
                     _dis = sqrt(pow(_dx, 2) + pow(_dy, 2));
                     if (maxdis < _dis) {
                         maxdis = _dis;
