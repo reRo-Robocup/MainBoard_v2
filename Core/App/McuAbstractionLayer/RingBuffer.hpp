@@ -7,8 +7,6 @@
  * Author: G4T1PR0
  */
 
-#include <iostream>
-
 template <typename T, int capacity>
 class RingBuffer {
    public:
