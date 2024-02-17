@@ -10,10 +10,11 @@
 #define _APP_MODULE_LINESENSOR_HPP_
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
+#include <Module/UI.hpp>
 
 class LineSensor {
    public:
-    LineSensor(MAL* mcu);
+    LineSensor(MAL* mcu, UI* ui);
     void init();
     void update();
     void read();
@@ -26,6 +27,7 @@ class LineSensor {
 
    private:
     MAL* _mcu;
+    UI* _ui;
     uint32_t _threshold[32] = {0};
     uint8_t _module_r;
     float _sensor_xy[32][2];

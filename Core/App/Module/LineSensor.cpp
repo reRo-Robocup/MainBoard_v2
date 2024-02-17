@@ -8,8 +8,9 @@
 
 #include "LineSensor.hpp"
 
-LineSensor::LineSensor(MAL* mcu) {
+LineSensor::LineSensor(MAL* mcu, UI* ui) {
     _mcu = mcu;
+    _ui = ui;
 }
 
 const MAL::Peripheral_GPIO MuxPin[8] = {
@@ -31,10 +32,10 @@ void LineSensor::init() {
     for (int i = 0; i < 32; i++) {
         this->_sincosTable[i][0] = sin(deg_to_rad(360 / 32 * i));
         this->_sincosTable[i][1] = cos(deg_to_rad(360 / 32 * i));
-        this->_sensor_xy[i][0] = this->_module_r * cos(this->_sincosTable[i][0]);
-        this->_sensor_xy[i][1] = this->_module_r * sin(this->_sincosTable[i][1]);
+        this->_sensor_xy[i][0] = _module_r * cos(_sincosTable[i][0]);
+        this->_sensor_xy[i][1] = _module_r * sin(_sincosTable[i][1]);
     }
-    setThreshold();
+    // setThreshold();
 }
 
 void LineSensor::read() {
@@ -100,6 +101,7 @@ void LineSensor::update() {
 }
 
 void LineSensor::setThreshold() {
+    _ui->buzzer(0.5,100);
     uint16_t _up_tim = 3000;
     uint32_t _tim = _mcu->millis();
     uint16_t _minVal[32] = {4096}, _maxVal[32] = {0};
@@ -120,6 +122,7 @@ void LineSensor::setThreshold() {
         this->_threshold[i] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
         this->_threshold[i + 16] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
     }
+    _ui->buzzer(0.5,100);
 }
 
 uint8_t LineSensor::getDisFromCenter() {
