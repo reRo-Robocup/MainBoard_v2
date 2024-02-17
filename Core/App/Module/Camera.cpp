@@ -13,9 +13,9 @@
 
 #define CAM MAL::Peripheral_UART::Cam
 
-struct camera_object ball;
-struct camera_object at_goal;
-struct camera_object df_goal;
+// struct camera_object ball;
+// struct camera_object at_goal;
+// struct camera_object df_goal;
 
 
 camera::camera(MAL* mcu) {
@@ -27,7 +27,8 @@ void camera::init() {
 }
 
 void camera::updateFPS() {
-    this->_read_via_buffer();
+    // this->_read_via_buffer();
+    // printf("%u\n", _mcu->uartGetChar(MAL::Peripheral_UART::Cam));
 }
 
 void camera::_read_by_header() {
