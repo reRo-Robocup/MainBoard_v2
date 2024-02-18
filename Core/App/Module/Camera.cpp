@@ -45,26 +45,26 @@ void camera::_read_by_header() {
             errcnt++;
     }
 
-    if (errcnt == 0) {
-        // 角度 格納
-        for (int i = 0; i < 2; i++) {
-            uint8_t _Hdata, _Ldata;
-            _Hdata = _mcu->uartGetChar(CAM);
-            _Ldata = _mcu->uartGetChar(CAM);
-            angle[i] = (_Hdata << 8) | _Ldata;
-        }
+    // if (errcnt == 0) {
+    //     // 角度 格納
+    //     for (int i = 0; i < 2; i++) {
+    //         uint8_t _Hdata, _Ldata;
+    //         _Hdata = _mcu->uartGetChar(CAM);
+    //         _Ldata = _mcu->uartGetChar(CAM);
+    //         angle[i] = (_Hdata << 8) | _Ldata;
+    //     }
 
-        // 距離データ 格納
-        for (int i = 0; i < 2; i++) {
-            distance[i] = _mcu->uartGetChar(CAM);
-        }
+    //     // 距離データ 格納
+    //     for (int i = 0; i < 2; i++) {
+    //         distance[i] = _mcu->uartGetChar(CAM);
+    //     }
 
-        // 検出できたか 格納
-        uint8_t _data = _mcu->uartGetChar(CAM);
-        enable[0] = (bool)_data & 0b00000001;
-        enable[1] = (bool)_data & 0b00000010;
-        enable[2] = (bool)_data & 0b00000100;
-    }
+    //     // 検出できたか 格納
+    //     uint8_t _data = _mcu->uartGetChar(CAM);
+    //     enable[0] = (bool)_data & 0b00000001;
+    //     enable[1] = (bool)_data & 0b00000010;
+    //     enable[2] = (bool)_data & 0b00000100;
+    // }
 }
 
 void camera::_read_via_buffer() {
@@ -123,8 +123,8 @@ void camera::_read_via_buffer() {
 
             case 7:
                 camera_rx_data.camera_rx_buffer[2] = data[i];
-                this->angle[0] = camera_rx_data.data.ball_angle;
-                this->angle[1] = camera_rx_data.data.ball_distance;
+                this->angle = camera_rx_data.data.ball_angle;
+                this->distance = camera_rx_data.data.ball_distance;
                 _rx_mode = 0;
                 break;
 

@@ -23,8 +23,6 @@ class camera {
         uint16_t ball_distance;
     };
 
-    uint16_t angle[3] = {0};
-    uint8_t distance[3] = {0};
     bool enable[3] = {false};
 
     uint16_t angle;
