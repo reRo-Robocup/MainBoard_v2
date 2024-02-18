@@ -58,16 +58,17 @@ void app_main() {
     }
     printf("IMU is Calibrated\n\r");
 
-    atc.setMode(1);
     ui.buzzer(2000, 50);
     mcu.delay_ms(100);
     ui.buzzer(1000, 50);
 
     while (1) {
-        printf("%u\n", cam.angle);
-        float x = cos(cam.angle);
+        // printf("%u\n\r", cam.angle);
+        // float x = cos(cam.angle);
 
-        atc.setGoStraightAngle(x);
+        atc.setMode(1);
+        atc.setGoStraightAngle(0);
+
         // printf("ball angle: %d ball dis: %d\n\r", cam.angle[0]);
         //  uint8_t data = mcu.uartGetChar(MAL::Peripheral_UART::Cam);
 

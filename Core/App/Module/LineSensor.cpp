@@ -85,7 +85,7 @@ void LineSensor::update() {
     this->isonLine = (_cnt > 0);
 
     if (isonLine && (x != 0) && (y != 0)) {
-        printf("Vx: %f\tVy:%f\n", x, y);
+        // printf("Vx: %f\tVy:%f\n", x, y);
         _angle = atan2(y, x);
         _angle *= (M_PI / 180);
         // printf("%f\n", _angle);

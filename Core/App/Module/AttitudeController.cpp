@@ -31,7 +31,7 @@ void AttitudeController::init() {
     motor_data[TractionMotors::Motor4].motorAngle = 315;
     motor_data[TractionMotors::Motor4].isConnectionReversed = false;
 
-    _turn_angle_pid.setPID(0.03, 0.0, 0.0);
+    _turn_angle_pid.setPID(0.02, 0.0, 0);
 
     _mode = 0;
 }
@@ -66,7 +66,7 @@ void AttitudeController::update() {
 
             if ((MPowerMax != 1) || (MPowerMax != -1)) {
                 for (int i = 0; i < 4; i++) {
-                    MPowerVector[i] *= (1 / MPowerMax);
+                    MPowerVector[i] *= (_go_straight_power / MPowerMax);
                 }
             }
 
@@ -92,7 +92,10 @@ void AttitudeController::update() {
         } break;
 
         case 3:  // 移動+旋回
-
+            _setPWM(TractionMotors::Motor1, 0.3);
+            _setPWM(TractionMotors::Motor2, 0.3);
+            _setPWM(TractionMotors::Motor3, 0.3);
+            _setPWM(TractionMotors::Motor4, 0.3);
             break;
 
         default:
@@ -110,6 +113,10 @@ void AttitudeController::setMode(int mode) {
 
 void AttitudeController::setGoStraightAngle(int16_t angle) {
     _go_straight_angle = angle;
+}
+
+void AttitudeController::setGoStraightPower(float power) {
+    _go_straight_power = power;
 }
 
 void AttitudeController::setTurnAngle(int angle) {
