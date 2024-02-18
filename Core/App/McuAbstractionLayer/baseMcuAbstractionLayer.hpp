@@ -86,7 +86,7 @@ class baseMcuAbstractionLayer {
 
     // PWM
     virtual void pwmSetDuty(Peripheral_PWM p, float duty) = 0;
-    virtual uint32_t getPWMConpare(Peripheral_PWM p) = 0;
+    virtual void pwmSetFrequency(Peripheral_PWM p, uint32_t frequency) = 0;
 
     // GPIO
     virtual void gpioSetValue(Peripheral_GPIO p, bool value) = 0;

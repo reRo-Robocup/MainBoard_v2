@@ -2,7 +2,7 @@
  *  UI.cpp
  *
  *  Created on: Jan 10, 2024
- * 
+ *
  *  Author: onlydcx, G4T1PR0
  */
 
@@ -27,20 +27,41 @@ UI::UI(MAL* mcu) {
 }
 
 void UI::init() {
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         this->setLED(i, 1);
     }
 }
 
-void UI::buzzer(float pulse, uint8_t tim) {
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, pulse);
-    _mcu->delay_ms(tim);
-    _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, 0);
+void UI::update() {
+    switch (_buzzer_mode) {
+        case 0:
+            if (_buzzer_time > 0) {
+                _mcu->pwmSetFrequency(MAL::Peripheral_PWM::Buzzer, _buzzer_Hz);
+                _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, 0.5);
+                _buzzer_mode = 1;
+            }
+            break;
+
+        case 1:
+            if ((_mcu->millis() - _buzzer_start_time) > _buzzer_time) {
+                _mcu->pwmSetDuty(MAL::Peripheral_PWM::Buzzer, 0);
+                _buzzer_time = 0;
+                _buzzer_mode = 0;
+            }
+
+        default:
+            break;
+    }
+}
+
+void UI::buzzer(uint32_t Hz, uint32_t tim) {
+    _buzzer_start_time = _mcu->millis();
+    _buzzer_time = tim;
+    _buzzer_Hz = Hz;
 }
 
 uint8_t UI::getRotarySW() {
-
-    /* 
+    /*
         1 IN0
         2 IN1
         4 IN2
@@ -49,7 +70,7 @@ uint8_t UI::getRotarySW() {
 
     uint8_t val = 0b0;
     bool _states[4] = {0};
-    for(int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         _states[i] = _mcu->gpioGetValue(RotaryPin[i]);
     }
     val = ((_states[0]) || (_states[1] << 1) || (_states[2] << 2) || (_states[3] << 3));
@@ -65,12 +86,12 @@ void UI::setLED(uint8_t pin, bool states) {
 }
 
 void UI::Lchika() {
-    for(int i = 0; i < 3; i++) {
-        this->setLED(i,0);
+    for (int i = 0; i < 3; i++) {
+        this->setLED(i, 0);
         _mcu->delay_ms(200);
     }
-    for(int i = 0; i < 3; i++) {
-        this->setLED(i,1);
+    for (int i = 0; i < 3; i++) {
+        this->setLED(i, 1);
         _mcu->delay_ms(200);
     }
 }

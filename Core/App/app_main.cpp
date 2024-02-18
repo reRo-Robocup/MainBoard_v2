@@ -44,6 +44,7 @@ void app_update() {
     line.update();
     imu.update();
     atc.update();
+    ui.update();
     //  printf("app_update\n\r");
 }
 
@@ -52,11 +53,15 @@ void app_main() {
     printf("app_start\n\r");
 
     app_init();
+    ui.buzzer(1000, 1000);
     while (!imu.isCalibrationed) {
     }
     printf("IMU is Calibrated\n\r");
 
     atc.setMode(1);
+    ui.buzzer(2000, 50);
+    mcu.delay_ms(100);
+    ui.buzzer(1000, 50);
 
     while (1) {
         printf("%u\n", cam.angle);

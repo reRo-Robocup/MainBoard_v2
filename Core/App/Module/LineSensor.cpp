@@ -60,7 +60,7 @@ void LineSensor::read() {
         while (!_mcu->adcConvCpltGetFlag(MAL::Peripheral_ADC::MuxB)) {
         }
 
-        sensorValue[i]      = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
+        sensorValue[i] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxA);
         sensorValue[i + 16] = _mcu->adcGetValue(MAL::Peripheral_ADC::MuxB);
     }
 }
@@ -76,8 +76,7 @@ void LineSensor::update() {
             _cnt++;
             x += _SinCosTable[1][i];
             y += _SinCosTable[0][i];
-        }
-        else {
+        } else {
             this->_isonline[i] = 0;
         }
     }
@@ -86,7 +85,7 @@ void LineSensor::update() {
     this->isonLine = (_cnt > 0);
 
     if (isonLine && (x != 0) && (y != 0)) {
-        printf("Vx: %f\tVy:%f\n", x,y);
+        printf("Vx: %f\tVy:%f\n", x, y);
         _angle = atan2(y, x);
         _angle *= (M_PI / 180);
         // printf("%f\n", _angle);
@@ -99,7 +98,7 @@ void LineSensor::update() {
 }
 
 void LineSensor::setThreshold() {
-    _ui->buzzer(0.5,100);
+    _ui->buzzer(1000, 100);
     uint16_t _up_tim = 3000;
     uint32_t _tim = _mcu->millis();
     uint16_t _minVal[32] = {4096}, _maxVal[32] = {0};
@@ -120,7 +119,7 @@ void LineSensor::setThreshold() {
         this->_threshold[i] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
         this->_threshold[i + 16] = _minVal[i] + (_maxVal[i] - _minVal[i]) / 2;
     }
-    _ui->buzzer(0.5,100);
+    _ui->buzzer(1000, 100);
 }
 
 uint8_t LineSensor::getDisFromCenter() {
