@@ -22,7 +22,6 @@ struct PeripheralAllocation {
         ADC_END
     };
     ADC_HandleTypeDef* ADC_Ins[ADC_END];
-    DMA_HandleTypeDef* ADC_DMA_Ins[ADC_END];
     STM_ADC ADC_Connected[MAL::Peripheral_ADC::End_A];
     uint8_t ADC_RANK[MAL::Peripheral_ADC::End_A];
 
@@ -33,8 +32,6 @@ struct PeripheralAllocation {
     uint16_t GPIO_PIN[MAL::Peripheral_GPIO::End_G];
 
     UART_HandleTypeDef* UART[MAL::Peripheral_UART::End_U];
-    DMA_HandleTypeDef* UART_DMA_TX[MAL::Peripheral_UART::End_U];
-    DMA_HandleTypeDef* UART_DMA_RX[MAL::Peripheral_UART::End_U];
 
     SPI_HandleTypeDef* SPI[MAL::Peripheral_SPI::End_S];
 
@@ -47,10 +44,6 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1] = &hadc1;
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2] = &hadc2;
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3] = &hadc3;
-
-    PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_1] = &hdma_adc1;
-    PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_2] = &hdma_adc2;
-    PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_3] = &hdma_adc3;
 
     PAL.ADC_Connected[MAL::Peripheral_ADC::MuxA] = PeripheralAllocation::STM_ADC::ADC_1;
     PAL.ADC_Connected[MAL::Peripheral_ADC::MuxB] = PeripheralAllocation::STM_ADC::ADC_3;
@@ -137,10 +130,6 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
     PAL.UART[MAL::Peripheral_UART::Cam] = &huart6;
     PAL.UART[MAL::Peripheral_UART::Debug] = &huart2;
 
-    // UART DMA
-    PAL.UART_DMA_TX[MAL::Peripheral_UART::Cam] = &hdma_usart6_tx;
-    PAL.UART_DMA_RX[MAL::Peripheral_UART::Cam] = &hdma_usart6_rx;
-
     // SPI
     PAL.SPI[MAL::Peripheral_SPI::IMU] = &hspi2;
 
@@ -164,19 +153,19 @@ void stm32f446AbstractionLayer::_initADC(void) {
         HAL_OK) {
         Error_Handler();
     }
-    //__HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_1], DMA_IT_HT);
+    //__HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->DMA_Handle, DMA_IT_HT);
 
     if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2], (uint32_t*)this->_data[1], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
     }
-    __HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_2], DMA_IT_TC | DMA_IT_HT);
+    __HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->DMA_Handle, DMA_IT_TC | DMA_IT_HT);
 
     if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3], (uint32_t*)this->_data[2], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
     }
-    //__HAL_DMA_DISABLE_IT(PAL.ADC_DMA_Ins[PeripheralAllocation::STM_ADC::ADC_3], DMA_IT_HT);
+    //__HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->DMA_Handle, DMA_IT_HT);
 }
 
 uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {
@@ -260,7 +249,7 @@ void stm32f446AbstractionLayer::_initUART() {
 
 uint32_t stm32f446AbstractionLayer::_uartCheckRxBufferDmaWriteAddress(Peripheral_UART p) {
     if (p != Peripheral_UART::End_U) {
-        return (UART_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(PAL.UART_DMA_RX[p])) % UART_BUFFER_SIZE;
+        return (UART_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(PAL.UART[p]->hdmarx)) % UART_BUFFER_SIZE;
     }
     return 0;
 }

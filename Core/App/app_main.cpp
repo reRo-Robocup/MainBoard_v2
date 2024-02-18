@@ -24,11 +24,10 @@ UI ui(&mcu);
 LineSensor line(&mcu, &ui);
 
 // extern "C" {
-    void app_init();
-    void app_main();
-    void app_update();
+void app_init();
+void app_main();
+void app_update();
 // };
-
 
 void app_init() {
     mcu.init();
@@ -41,7 +40,7 @@ void app_init() {
 }
 
 void app_update() {
-    cam.updateFPS();
+    cam.update();
     line.update();
     imu.update();
     atc.update();
@@ -58,9 +57,8 @@ void app_main() {
     printf("IMU is Calibrated\n\r");
 
     while (1) {
-
-        // uint8_t data = mcu.uartGetChar(MAL::Peripheral_UART::Cam);
-
+        // printf("ball angle: %d ball dis: %d\n\r", cam.angle[0]);
+        //  uint8_t data = mcu.uartGetChar(MAL::Peripheral_UART::Cam);
 
         // uint8_t data[64];
         // mcu.uartReadViaBuffer(MAL::Peripheral_UART::Cam, (uint8_t*) data, 64);
