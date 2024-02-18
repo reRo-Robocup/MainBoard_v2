@@ -226,8 +226,8 @@ void stm32f446AbstractionLayer::pwmSetFrequency(Peripheral_PWM p, uint32_t frequ
         apb1_timer_clocks *= (RCC_ClkInitStruct.APB1CLKDivider == RCC_HCLK_DIV1) ? 1 : 2;
         apb2_timer_clocks *= (RCC_ClkInitStruct.APB2CLKDivider == RCC_HCLK_DIV1) ? 1 : 2;
 
-        printf("apb1_timer_clocks: %u\n\r", apb1_timer_clocks);
-        printf("apb2_timer_clocks: %u\n\r", apb2_timer_clocks);
+        // printf("apb1_timer_clocks: %u\n\r", apb1_timer_clocks);
+        // printf("apb2_timer_clocks: %u\n\r", apb2_timer_clocks);
 
         if ((uint32_t)PAL.PWM_TIM[p]->Instance >= APB2PERIPH_BASE) {
             timer_clock = apb2_timer_clocks;
@@ -238,10 +238,10 @@ void stm32f446AbstractionLayer::pwmSetFrequency(Peripheral_PWM p, uint32_t frequ
         for (uint32_t prescaler = 0; prescaler < 65536; prescaler++) {
             for (uint32_t period = 0; period < 65536; period++) {
                 if ((timer_clock / ((prescaler + 1) * (period + 1))) == frequency) {
-                    printf("frequency: %u\n\r", (timer_clock / ((prescaler + 1) * (period + 1))));
-                    printf("timer_clock: %u\n\r", timer_clock);
-                    printf("prescaler: %u\n\r", prescaler + 1);
-                    printf("period: %u\n\r", period + 1);
+                    // printf("frequency: %u\n\r", (timer_clock / ((prescaler + 1) * (period + 1))));
+                    // printf("timer_clock: %u\n\r", timer_clock);
+                    // printf("prescaler: %u\n\r", prescaler + 1);
+                    // printf("period: %u\n\r", period + 1);
                     __HAL_TIM_SET_PRESCALER(PAL.PWM_TIM[p], prescaler);
                     __HAL_TIM_SET_AUTORELOAD(PAL.PWM_TIM[p], period);
                     if (__HAL_TIM_GET_COUNTER(PAL.PWM_TIM[p]) >= __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p])) {
