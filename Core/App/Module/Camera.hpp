@@ -27,6 +27,9 @@ class camera {
     uint8_t distance[3] = {0};
     bool enable[3] = {false};
 
+    uint16_t angle;
+    uint16_t distance;
+
    private:
     MAL* _mcu;
     void _read_by_header();
