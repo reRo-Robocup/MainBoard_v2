@@ -30,12 +30,12 @@ void LineSensor::init() {
         _mcu->gpioSetValue(MuxPin[i], 0);
     }
     for (int i = 0; i < 32; i++) {
-        this->_SinCosTable[i][0] = sin(deg_to_rad(360 / 32 * i));
-        this->_SinCosTable[i][1] = cos(deg_to_rad(360 / 32 * i));
+        this->_SinCosTable[i][0] = sin((360 / 32 * i) * (180 / M_PI));
+        this->_SinCosTable[i][1] = cos((360 / 32 * i) * (180 / M_PI));
         this->_sens_XYvector[i][0] = _module_r * cos(_SinCosTable[i][0]);
         this->_sens_XYvector[i][1] = _module_r * sin(_SinCosTable[i][1]);
-
-        this->_threshold[i] = 600;
+        this->_threshold[i] = 700;
+        // printf("TrigTable %u: Sin:%f Cos:%f\n", i, _SinCosTable[i][1], _SinCosTable[i][0]);
     }
     // setThreshold();
 }
@@ -80,22 +80,16 @@ void LineSensor::update() {
         else {
             this->_isonline[i] = 0;
         }
-        // printf("%u ", this->_isonline[i]);
     }
-    // printf("\n");
 
     float _angle = 0;
-    this->isonLine = _cnt > 0;
+    this->isonLine = (_cnt > 0);
 
-    if (isonLine) {
-        float r = atan2(y, x);
-        float t = rad_to_deg(atan2(y, x));
-        float tt = rad_to_deg(atan2(y, x)) - 90;
-        _angle = rad_to_deg(atan2(y, x)) - 90;
-        if (_angle > 359)
-            _angle -= 360;
-        else if (_angle < 0)
-            _angle += 360;
+    if (isonLine && (x != 0) && (y != 0)) {
+        printf("Vx: %f\tVy:%f\n", x,y);
+        _angle = atan2(y, x);
+        _angle *= (M_PI / 180);
+        // printf("%f\n", _angle);
     } else {
         _angle = 1023;
     }
