@@ -47,6 +47,7 @@ void AttitudeController::update() {
 
         case 1:  // 直線移動
         {
+            _go_straight_angle += 90;
             _go_straight_angle = 450 - _go_straight_angle;
             while (_go_straight_angle >= 360)
                 _go_straight_angle -= 360;
