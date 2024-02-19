@@ -71,11 +71,12 @@ void camera::_read_via_buffer() {
     uint8_t data[64] = {0};
     uint32_t data_size = _mcu->uartGetRxDataSize(CAM);
     _mcu->uartReadViaBuffer(CAM, data, data_size);
+    const uint8_t header[4] = {0xFF, 0xFF, 0xFD, 0x00};
 
     for (uint32_t i = 0; i < data_size; i++) {
         switch (_rx_mode) {
             case 0:
-                if (data[i] == 0xFF) {
+                if (data[i] == header[0]) {
                     _rx_mode = 1;
                 } else {
                     _rx_mode = 0;
@@ -83,7 +84,7 @@ void camera::_read_via_buffer() {
                 break;
 
             case 1:
-                if (data[i] == 0xFF) {
+                if (data[i] == header[1]) {
                     _rx_mode = 2;
                 } else {
                     _rx_mode = 0;
@@ -91,7 +92,7 @@ void camera::_read_via_buffer() {
                 break;
 
             case 2:
-                if (data[i] == 0xFD) {
+                if (data[i] == header[2]) {
                     _rx_mode = 3;
                 } else {
                     _rx_mode = 0;
@@ -99,7 +100,7 @@ void camera::_read_via_buffer() {
                 break;
 
             case 3:
-                if (data[i] == 0x00) {
+                if (data[i] == header[3]) {
                     _rx_mode = 4;
                 } else {
                     _rx_mode = 0;
