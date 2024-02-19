@@ -67,7 +67,7 @@ void LineSensor::read() {
 
 void LineSensor::update() {
     this->read();
-    float x, y;
+    double x, y;
     uint8_t _cnt = 0;
 
     for (int i = 0; i < 32; i++) {
@@ -82,18 +82,22 @@ void LineSensor::update() {
     }
 
     float _angle = 0;
-    this->isonLine = (_cnt > 0);
 
     if (isonLine && (x != 0) && (y != 0)) {
-        // printf("Vx: %f\tVy:%f\n", x, y);
         _angle = atan2(y, x);
-        _angle *= (M_PI / 180);
+        _angle *= (180 / M_PI);
+        // printf("Vx: %f\tVy:%f\tatan2: %lf\n", x, y, _angle);
+        // printf("Vx: %f\tVy:%f\tatan2: %lf\n", x, y, _angle);
+        // _angle *= (M_PI / 180);
         // printf("%f\n", _angle);
+        while(_angle > 180) _angle -= 360;
+        while(_angle < -180)_angle += 360;
     } else {
         _angle = 1023;
     }
 
-    this->angle = _angle;
+    this->isonLine = (_cnt > 0);
+    this->angle = (int16_t)_angle;
     this->_isONline_qty = _cnt;
 }
 

@@ -23,7 +23,7 @@ class LineSensor {
     uint16_t sensorValue[32] = {0};
     bool isSensorONline[32] = {0};
     bool isonLine;
-    float angle;
+    int16_t angle;
 
    private:
     MAL* _mcu;
@@ -33,8 +33,8 @@ class LineSensor {
     bool _isonline[32];
     uint32_t _threshold[32] = {0};
 
-    float _sens_XYvector[32][2];
-    float _SinCosTable[32][2] = {0.0};
+    double _sens_XYvector[32][2];
+    double _SinCosTable[32][2] = {0.0};
     
     uint8_t _isONline_qty;
     uint8_t _module_r;
