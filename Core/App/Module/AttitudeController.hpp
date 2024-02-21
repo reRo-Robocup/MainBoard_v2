@@ -44,7 +44,7 @@ class AttitudeController {
    private:
     baseMcuAbstractionLayer* _mcu;
     MPU6500* _imu;
-    PID _turn_angle_pid;
+    PID<float> _turn_angle_pid;
     int _mode;
 
     int _go_straight_angle;

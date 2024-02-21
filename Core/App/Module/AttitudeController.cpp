@@ -45,7 +45,7 @@ void AttitudeController::update() {
             _setPWM(TractionMotors::Motor4, 0);
             break;
 
-        case 1:  // 直線移動
+        case 1:  // 移動のみ
         {
             _go_straight_angle += 90;
             _go_straight_angle = 450 - _go_straight_angle;
@@ -77,7 +77,7 @@ void AttitudeController::update() {
             _setPWM(TractionMotors::Motor4, MPowerVector[3]);
         } break;
 
-        case 2:  // 旋回
+        case 2:  // 角度制御のみ
         {
             float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw);
             if (output > 0.99) {
@@ -92,12 +92,58 @@ void AttitudeController::update() {
             _setPWM(TractionMotors::Motor4, output);
         } break;
 
-        case 3:  // 移動+旋回
-            _setPWM(TractionMotors::Motor1, 0.3);
-            _setPWM(TractionMotors::Motor2, 0.3);
-            _setPWM(TractionMotors::Motor3, 0.3);
-            _setPWM(TractionMotors::Motor4, 0.3);
-            break;
+        case 3:  // 角度制御あり移動
+        {
+            _go_straight_angle += 90;
+            _go_straight_angle = 450 - _go_straight_angle;
+            while (_go_straight_angle >= 360)
+                _go_straight_angle -= 360;
+            while (_go_straight_angle <= -360)
+                _go_straight_angle += 360;
+            float MPowerVector[4] = {0};  // 4つのモーターの出力比
+            float MPowerMax = 0;          // 最大値
+
+            for (int i = 0; i < 4; i++) {
+                float tmp_angle = (_go_straight_angle - motor_data[i].motorAngle) * (M_PI / 180);
+                MPowerVector[i] = cos(tmp_angle);
+                // printf("%f ", MPowerVector[i]);
+
+                if (MPowerMax < MPowerVector[i])
+                    MPowerMax = MPowerVector[i];
+            }
+
+            if ((MPowerMax != 1) || (MPowerMax != -1)) {
+                for (int i = 0; i < 4; i++) {
+                    MPowerVector[i] *= (_go_straight_power / MPowerMax);
+                }
+            }
+
+            float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw);
+
+            if (output > 0.94) {
+                output = 0.94;
+            }
+            if (output < -0.94) {
+                output = -0.94;
+            }
+
+            if (abs(output) > 0.4) {
+                _setPWM(TractionMotors::Motor1, output);
+                _setPWM(TractionMotors::Motor2, output);
+                _setPWM(TractionMotors::Motor3, output);
+                _setPWM(TractionMotors::Motor4, output);
+            } else {
+                for (int i = 0; i < 4; i++) {
+                    MPowerVector[i] += output;
+                }
+
+                _setPWM(TractionMotors::Motor1, MPowerVector[0]);
+                _setPWM(TractionMotors::Motor2, MPowerVector[1]);
+                _setPWM(TractionMotors::Motor3, MPowerVector[2]);
+                _setPWM(TractionMotors::Motor4, MPowerVector[3]);
+            }
+
+        } break;
 
         default:
             _setPWM(TractionMotors::Motor1, 0);

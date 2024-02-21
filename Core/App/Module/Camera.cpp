@@ -114,7 +114,8 @@ void camera::_read_via_buffer() {
 
             case 5:
                 camera_rx_data.camera_rx_buffer[0] = data[i];
-                _rx_mode = 6;
+                this->angle = camera_rx_data.data.ball_angle;
+                _rx_mode = 0;
                 break;
 
             case 6:
@@ -124,7 +125,6 @@ void camera::_read_via_buffer() {
 
             case 7:
                 camera_rx_data.camera_rx_buffer[2] = data[i];
-                this->angle = camera_rx_data.data.ball_angle;
                 this->distance = camera_rx_data.data.ball_distance;
                 _rx_mode = 0;
                 break;

@@ -62,99 +62,25 @@ void app_main() {
     mcu.delay_ms(100);
     ui.buzzer(1000, 50);
 
+    int mode = 0;
+
     while (1) {
-        // printf("%u\n\r", cam.angle);
-        // float x = cos(cam.angle);
+        switch (mode) {
+            case 0:
+                atc.setMode(3);
+                atc.setGoStraightAngle(0);
+                atc.setTurnAngle(10);
+                atc.setGoStraightPower(0.1);
+                // printf("ball_angle: %d\n\r", cam.angle);
 
-        atc.setMode(1);
-        atc.setGoStraightAngle(0);
+                break;
 
-        // printf("ball angle: %d ball dis: %d\n\r", cam.angle[0]);
-        //  uint8_t data = mcu.uartGetChar(MAL::Peripheral_UART::Cam);
+            case 1:
+                break;
 
-        // uint8_t data[64];
-        // mcu.uartReadViaBuffer(MAL::Peripheral_UART::Cam, (uint8_t*) data, 64);
-
-        // for(int i = 0; i < 4; i++) {
-        //     printf("%#x\t", data[i]);
-        // }
-
-        // printf("\n");
-
-        // HAL_UART_Receive(&huartx, (uint8_t*)buf, sizeof(buf)/sizeof(buf[0]), 0xFFFF);
-        // atc.setMode(2);
-        // atc.setTurnAngle(180);
-        // mcu.delay_ms(1000);
-        // atc.setTurnAngle(90);
-        // mcu.delay_ms(1000);
-
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.75);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.75);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0.75);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.75);
-        // mcu.delay_ms(1000);
-        // atc.setMode(1);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.5);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.5);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0.5);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.5);
-        // mcu.delay_ms(1000);
-        //  motor.run(0);
-
-        // if(imu.Yaw < 0) {
-        //     motor.roll(0.2, 0.2, 0.2, 0.2);
-        // }
-
-        // else {
-        //     motor.roll(-0.2,-0.2,-0.2,-0.2);
-        // }
-
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor1, 0.8);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor2, 0.8);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor3, 0.8);
-        // mcu.pwmSetDuty(MAL::Peripheral_PWM::Motor4, 0.8);
-
-        // motor.run(0);
-
-        // ui.Lchika();
-        // printf("Line: %f ", line.angle);
-        // for (int i = 0; i < 16; i++) {
-        //     printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
-        // }
-        // printf(" ");
-        // for (int i = 16; i < 32; i++) {
-        //     printf("%d", line.sensorValue[i] > 600 ? 1 : 0);
-        // }
-        // printf("\n\r");
-        // mcu.delay_ms(100);
-        // mcu.gpioSetValue(MAL::Peripheral_GPIO::Debug_LED0, 1);
-        // printf("rGz: %.4d Gz: %.4f Yaw: %.4f\n\r", imu.raw_Gz, imu.Gz, imu.Yaw);
-        // printf("Yaw : %.4f\n\r", imu.Yaw);
-        // printf("Ax%.4f Ay:%.4f Az:%.4f Gz%.4f\n\r", imu.Ax, imu.Ay, imu.Az, imu.Yaw);
-        //  uint16_t val = imu.zg;
-        //  printf("%u\n", val);
-
-        // for(int i = 0; i < 3; i++) {
-        //     ui.setLED(i,0);
-        //     mcu.delay_ms(200);
-        // }
-
-        // for(int i = 0; i < 3; i++) {
-        //     ui.setLED(i,1);
-        //     mcu.delay_ms(200);
-        // }
-
-        // ui.setLED(0,1);
-        // ui.setLED(1,1);
-        // ui.setLED(2,1);
-
-        // mcu.delay_ms(300);
-
-        // ui.setLED(0,0);
-        // ui.setLED(1,0);
-        // ui.setLED(2,0);
-
-        // mcu.delay_ms(300);
+            default:
+                break;
+        }
 
         // if(!isSleep) {
         //     // 向き直し
@@ -199,4 +125,3 @@ void app_main() {
         // }
     }
 }
-// }
