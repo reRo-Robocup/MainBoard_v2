@@ -133,4 +133,6 @@ void camera::_read_via_buffer() {
                 break;
         }
     }
+    this->ball_xVector = cos(angle * (M_PI / 180));
+    this->ball_yVector = sin(angle * (M_PI / 180));
 }
