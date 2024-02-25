@@ -13,10 +13,6 @@
 
 #define CAM MAL::Peripheral_UART::Cam
 
-// struct camera_object ball;
-// struct camera_object at_goal;
-// struct camera_object df_goal;
-
 camera::camera(MAL* mcu) {
     _mcu = mcu;
 }
@@ -32,7 +28,7 @@ void camera::update() {
 }
 
 void camera::_read_by_header() {
-    /*  -Protocol
+    /*  - Protocol
         | header[4] | BallAngle(16bit) | YellowAngle(16bit) | BlueAngle(16bit)|
         | BallDis(8bit) | enable(8bit) |
     */
@@ -71,6 +67,7 @@ void camera::_read_via_buffer() {
     uint8_t data[64] = {0};
     uint32_t data_size = _mcu->uartGetRxDataSize(CAM);
     _mcu->uartReadViaBuffer(CAM, data, data_size);
+
     const uint8_t header[4] = {0xFF, 0xFF, 0xFD, 0x00};
 
     for (uint32_t i = 0; i < data_size; i++) {
@@ -114,7 +111,8 @@ void camera::_read_via_buffer() {
 
             case 5:
                 camera_rx_data.camera_rx_buffer[0] = data[i];
-                this->angle = camera_rx_data.data.ball_angle;
+                // this->angle = camera_rx_data.data.ball_angle;
+                this->ball.angle = camera_rx_data.data.angle;
                 _rx_mode = 0;
                 break;
 
@@ -125,7 +123,8 @@ void camera::_read_via_buffer() {
 
             case 7:
                 camera_rx_data.camera_rx_buffer[2] = data[i];
-                this->distance = camera_rx_data.data.ball_distance;
+                // this->distance = camera_rx_data.data.ball_distance;
+                this->ball.distance = camera_rx_data.data.distance;
                 _rx_mode = 0;
                 break;
 
@@ -133,6 +132,4 @@ void camera::_read_via_buffer() {
                 break;
         }
     }
-    this->ball_xVector = cos(angle * (M_PI / 180));
-    this->ball_yVector = sin(angle * (M_PI / 180));
 }

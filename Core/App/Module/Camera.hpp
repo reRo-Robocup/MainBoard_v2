@@ -19,17 +19,14 @@ class camera {
     bool AttackColor;
 
     struct camera_object {
-        uint16_t ball_angle;
-        uint16_t ball_distance;
+        uint16_t angle;
+        uint16_t distance;
+        bool enable;
     };
 
-    float ball_xVector = 0;
-    float ball_yVector = 0;
-
-    bool enable[3] = {false};
-
-    uint16_t angle;
-    uint16_t distance;
+    struct camera_object ball;
+    struct camera_object at_goal;
+    struct camera_object df_goal;
 
    private:
     MAL* _mcu;

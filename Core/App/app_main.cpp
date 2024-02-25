@@ -63,5 +63,6 @@ void app_main() {
 
     while (1) {
         atc.setTurnAngle(180);
+        printf("%u\n", cam.ball.angle);
     }
 }
