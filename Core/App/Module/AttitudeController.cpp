@@ -34,6 +34,7 @@ void AttitudeController::init() {
     // _turn_angle_pid.setPID(0.02, 0.0, 0);
     _turn_angle_pid.setPID(0.005, 0.0, 0);
     _mode = 0;
+    this->_turn_angle = 180;
 }
 
 void AttitudeController::update() {
