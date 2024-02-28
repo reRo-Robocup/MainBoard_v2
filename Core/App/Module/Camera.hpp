@@ -19,14 +19,16 @@ class camera {
     bool AttackColor;
 
     struct camera_object {
-        uint16_t angle;
-        uint16_t distance;
-        bool enable;
+        uint16_t ball_angle;
+        uint16_t yellow_angle;
+        uint16_t blue_angle;
+        uint16_t ball_distance;
+        uint16_t yellow_distance;
+        uint16_t blue_distance;
+        uint8_t enable;
     };
 
-    struct camera_object ball;
-    struct camera_object at_goal;
-    struct camera_object df_goal;
+    camera_object data;
 
    private:
     MAL* _mcu;
@@ -34,11 +36,12 @@ class camera {
     void _read_via_buffer();
 
     int _rx_mode = 0;
+    unsigned int _rx_data_index;
 
     union {
-        uint8_t camera_rx_buffer[8];
-        camera_object data;
-    } camera_rx_data;
+        uint8_t rx_buffer[sizeof(camera_object)];
+        camera_object parsed_data;
+    } camera_rx_data_parser;
 };
 
 #endif /* _APP_MODULE_CAMERA_HPP_ */

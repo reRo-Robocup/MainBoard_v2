@@ -105,27 +105,12 @@ void camera::_read_via_buffer() {
                 break;
 
             case 4:
-                camera_rx_data.camera_rx_buffer[1] = data[i];
-                _rx_mode = 5;
-                break;
-
-            case 5:
-                camera_rx_data.camera_rx_buffer[0] = data[i];
-                // this->angle = camera_rx_data.data.ball_angle;
-                this->ball.angle = camera_rx_data.data.angle;
-                _rx_mode = 0;
-                break;
-
-            case 6:
-                camera_rx_data.camera_rx_buffer[3] = data[i];
-                _rx_mode = 7;
-                break;
-
-            case 7:
-                camera_rx_data.camera_rx_buffer[2] = data[i];
-                // this->distance = camera_rx_data.data.ball_distance;
-                this->ball.distance = camera_rx_data.data.distance;
-                _rx_mode = 0;
+                camera_rx_data_parser.rx_buffer[_rx_data_index++] = data[i];
+                if (_rx_data_index > sizeof(camera_rx_data_parser.rx_buffer)) {
+                    _rx_mode = 0;
+                    _rx_data_index = 0;
+                    this->data = camera_rx_data_parser.parsed_data;
+                }
                 break;
 
             default:

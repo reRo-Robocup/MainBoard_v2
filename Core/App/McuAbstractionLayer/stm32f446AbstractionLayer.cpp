@@ -153,7 +153,7 @@ void stm32f446AbstractionLayer::_initADC(void) {
         HAL_OK) {
         Error_Handler();
     }
-    //__HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->DMA_Handle, DMA_IT_HT);
+    __HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->DMA_Handle, DMA_IT_HT);
 
     if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2], (uint32_t*)this->_data[1], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]->Init.NbrOfConversion) !=
         HAL_OK) {
@@ -165,7 +165,7 @@ void stm32f446AbstractionLayer::_initADC(void) {
         HAL_OK) {
         Error_Handler();
     }
-    //__HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->DMA_Handle, DMA_IT_HT);
+    __HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->DMA_Handle, DMA_IT_HT);
 }
 
 uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {

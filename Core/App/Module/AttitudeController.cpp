@@ -31,8 +31,8 @@ void AttitudeController::init() {
     motor_data[TractionMotors::Motor4].motorAngle = 315;
     motor_data[TractionMotors::Motor4].isConnectionReversed = false;
 
-    _turn_angle_pid.setPID(0.02, 0.0, 0);
-
+    // _turn_angle_pid.setPID(0.02, 0.0, 0);
+    _turn_angle_pid.setPID(0.005, 0.0, 0);
     _mode = 0;
 }
 
@@ -80,11 +80,11 @@ void AttitudeController::update() {
         case 2:  // 角度制御のみ
         {
             float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw);
-            if (output > 0.99) {
-                output = 0.99;
+            if (output > 0.94) {
+                output = 0.94;
             }
-            if (output < -0.99) {
-                output = -0.99;
+            if (output < -0.94) {
+                output = -0.94;
             }
             _setPWM(TractionMotors::Motor1, output);
             _setPWM(TractionMotors::Motor2, output);
