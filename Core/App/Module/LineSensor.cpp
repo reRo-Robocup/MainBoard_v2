@@ -101,6 +101,25 @@ void LineSensor::update() {
     this->_isONline_qty = _cnt;
 }
 
+int16_t LineSensor::getMoveAngle(int16_t yaw, int16_t toMove) {
+    int16_t _angle = toMove;
+    if(!this->isonLine) {
+        // 反応してない時
+        return _angle;
+    }
+    else {
+        // 反応してる
+        float _sens_Xvector, _sens_Yvector;
+        _sens_Xvector = cos(this->angle * deg_to_rad);
+        _sens_Yvector = sin(this->angle * deg_to_rad);
+        float Xvector, Yvector;
+        Xvector = cos(toMove * deg_to_rad) + _sens_Xvector;
+        Yvector = sin(toMove * deg_to_rad) + _sens_Yvector;
+        _angle = atan2(Yvector, Xvector) * rad_to_deg;
+    }
+    return _angle;
+}
+
 void LineSensor::setThreshold() {
     _ui->buzzer(1000, 100);
     uint16_t _up_tim = 3000;

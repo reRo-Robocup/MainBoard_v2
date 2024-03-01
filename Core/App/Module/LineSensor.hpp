@@ -24,6 +24,7 @@ class LineSensor {
     bool isSensorONline[32] = {0};
     bool isonLine;
     int16_t angle;
+    int16_t getMoveAngle(int16_t yaw, int16_t toMove);
 
    private:
     MAL* _mcu;
