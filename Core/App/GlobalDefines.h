@@ -14,8 +14,8 @@
 
 #define CONTROLL_CYCLE 0.001  // 1KHz
 
-#define deg_to_rad(deg) (((deg) / 360) * 2 * M_PI)
-#define rad_to_deg(rad) (((rad) / 2 / M_PI) * 360)
+#define deg_to_rad (M_PI / 180)
+#define rad_to_deg (180 / M_PI)
 
 #define BATT_MIN_V 10.8
 #define BATT_MAX_V 12.6
