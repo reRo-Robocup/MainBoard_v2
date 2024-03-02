@@ -29,7 +29,7 @@ class RaspberryPiCommunicationController {
     MPU6500* _imu;
 
     union TxData {
-        uint8_t tx_buffer;
+        uint8_t tx_buffer[2];
         uint16_t yaw_angle;
     };
 
