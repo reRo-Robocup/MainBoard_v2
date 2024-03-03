@@ -20,6 +20,9 @@ class stm32halAbstractionLayer : public baseMcuAbstractionLayer {
 
     virtual void init(void);
 
+    // RESET
+    virtual void systemReset();
+
     // ADC
     virtual uint16_t adcGetValue(Peripheral_ADC p);
     virtual bool adcConvCpltGetFlag(Peripheral_ADC p);

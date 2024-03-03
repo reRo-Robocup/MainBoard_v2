@@ -6,11 +6,11 @@
  *  Author: onlydcx, G4T1PR0
  */
 
+#include "stm32halAbstractionLayer.hpp"
 #include <cstring>
 #include "adc.h"
 #include "gpio.h"
 #include "spi.h"
-#include "stm32halAbstractionLayer.hpp"
 #include "tim.h"
 #include "usart.h"
 
@@ -142,6 +142,11 @@ void stm32halAbstractionLayer::init() {
     _initPWM();
     _initUART();
     _initTimerInterrupt();
+}
+
+// RESET
+void stm32halAbstractionLayer::systemReset() {
+    HAL_NVIC_SystemReset();
 }
 
 // ADC

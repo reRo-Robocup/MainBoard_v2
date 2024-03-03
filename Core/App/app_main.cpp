@@ -46,11 +46,15 @@ void app_update() {
 }
 
 void app_main() {
+    uint32_t calibration_start_time = 0;
     printf("app_start\n\r");
 
     app_init();
     ui.buzzer(1000, 1000);
+    calibration_start_time = mcu.millis();
     while (!imu.isCalibrationed) {
+        if (calibration_start_time > 1000) {
+        }
     }
     printf("IMU is Calibrated\n\r");
 

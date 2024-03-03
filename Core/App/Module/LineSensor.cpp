@@ -90,8 +90,10 @@ void LineSensor::update() {
         // printf("Vx: %f\tVy:%f\tatan2: %lf\n", x, y, _angle);
         // _angle *= (M_PI / 180);
         // printf("%f\n", _angle);
-        while(_angle > 180) _angle -= 360;
-        while(_angle < -180)_angle += 360;
+        while (_angle > 180)
+            _angle -= 360;
+        while (_angle < -180)
+            _angle += 360;
     } else {
         _angle = 1023;
     }
@@ -103,11 +105,10 @@ void LineSensor::update() {
 
 int16_t LineSensor::getMoveAngle(int16_t yaw, int16_t toMove) {
     int16_t _angle = toMove;
-    if(!this->isonLine) {
+    if (!this->isonLine) {
         // 反応してない時
         return _angle;
-    }
-    else {
+    } else {
         // 反応してる
         float _sens_Xvector, _sens_Yvector;
         _sens_Xvector = cos(this->angle * deg_to_rad);
@@ -166,7 +167,7 @@ uint8_t LineSensor::getDisFromCenter() {
         }
 
         // 総当たりでセンサ同士の距離を調べる
-        float maxdis, slope;
+        float maxdis;
         for (int i = 0; i < num; i++) {
             for (int j = num; j >= 0; j--) {
                 if (i != j) {
@@ -176,12 +177,10 @@ uint8_t LineSensor::getDisFromCenter() {
                     _dis = sqrt(pow(_dx, 2) + pow(_dy, 2));
                     if (maxdis < _dis) {
                         maxdis = _dis;
-                        slope = rad_to_deg(atan2(_dy, _dx));
                     }
                 }
             }
         }
-        slope += 90;
         // map2_180(slope);
     }
 }
