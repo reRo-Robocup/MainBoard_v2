@@ -22,6 +22,11 @@ void BatteryVoltageChecker::init() {
     setCriticalCallback(nullptr);
 
     _mode = 0;
+
+    for (int i = 0; i < 50; i++) {
+        _filter.push(_mcu->adcGetValue(MAL::Peripheral_ADC::BatteryVoltage));
+    }
+    _voltage = _filter.get() * _raw2voltage * _voltage2batt;
 }
 
 void BatteryVoltageChecker::update() {
