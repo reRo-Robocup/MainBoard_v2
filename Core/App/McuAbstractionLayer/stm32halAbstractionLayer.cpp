@@ -1,16 +1,16 @@
 /*
- *  stm32f446AbstractionLayer.cpp
+ *  stm32halAbstractionLayer.cpp
  *
  *  Created on: Dec 7, 2023
  *
  *  Author: onlydcx, G4T1PR0
  */
 
-#include "stm32f446AbstractionLayer.hpp"
 #include <cstring>
 #include "adc.h"
 #include "gpio.h"
 #include "spi.h"
+#include "stm32halAbstractionLayer.hpp"
 #include "tim.h"
 #include "usart.h"
 
@@ -40,7 +40,7 @@ struct PeripheralAllocation {
 
 static PeripheralAllocation PAL;
 
-stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
+stm32halAbstractionLayer::stm32halAbstractionLayer() {
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1] = &hadc1;
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2] = &hadc2;
     PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3] = &hadc3;
@@ -137,7 +137,7 @@ stm32f446AbstractionLayer::stm32f446AbstractionLayer() {
     PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms] = &htim2;
 }
 
-void stm32f446AbstractionLayer::init() {
+void stm32halAbstractionLayer::init() {
     _initADC();
     _initPWM();
     _initUART();
@@ -145,10 +145,10 @@ void stm32f446AbstractionLayer::init() {
 }
 
 // ADC
-uint16_t stm32f446AbstractionLayer::_data[3][3] = {0};
-bool stm32f446AbstractionLayer::_adcCplt[3] = {0};
+uint16_t stm32halAbstractionLayer::_data[3][3] = {0};
+bool stm32halAbstractionLayer::_adcCplt[3] = {0};
 
-void stm32f446AbstractionLayer::_initADC(void) {
+void stm32halAbstractionLayer::_initADC(void) {
     if (HAL_ADC_Start_DMA(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1], (uint32_t*)this->_data[0], PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]->Init.NbrOfConversion) !=
         HAL_OK) {
         Error_Handler();
@@ -168,19 +168,19 @@ void stm32f446AbstractionLayer::_initADC(void) {
     __HAL_DMA_DISABLE_IT(PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]->DMA_Handle, DMA_IT_HT);
 }
 
-uint16_t stm32f446AbstractionLayer::adcGetValue(Peripheral_ADC p) {
+uint16_t stm32halAbstractionLayer::adcGetValue(Peripheral_ADC p) {
     return _data[PAL.ADC_Connected[p]][PAL.ADC_RANK[p]];
 }
 
-bool stm32f446AbstractionLayer::adcConvCpltGetFlag(Peripheral_ADC p) {
+bool stm32halAbstractionLayer::adcConvCpltGetFlag(Peripheral_ADC p) {
     return _adcCplt[PAL.ADC_Connected[p]];
 }
 
-void stm32f446AbstractionLayer::adcConvCpltClearFlag(Peripheral_ADC p) {
+void stm32halAbstractionLayer::adcConvCpltClearFlag(Peripheral_ADC p) {
     _adcCplt[PAL.ADC_Connected[p]] = false;
 }
 
-void stm32f446AbstractionLayer::adcWaitConvCplt(Peripheral_ADC p) {
+void stm32halAbstractionLayer::adcWaitConvCplt(Peripheral_ADC p) {
     _adcCplt[PAL.ADC_Connected[p]] = false;
     while (_adcCplt[PAL.ADC_Connected[p]] == false) {
     }
@@ -188,17 +188,17 @@ void stm32f446AbstractionLayer::adcWaitConvCplt(Peripheral_ADC p) {
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
     if (AdcHandle == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_1]) {
-        stm32f446AbstractionLayer::_adcCplt[0] = true;
+        stm32halAbstractionLayer::_adcCplt[0] = true;
     } else if (AdcHandle == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_2]) {
-        stm32f446AbstractionLayer::_adcCplt[1] = true;
+        stm32halAbstractionLayer::_adcCplt[1] = true;
     } else if (AdcHandle == PAL.ADC_Ins[PeripheralAllocation::STM_ADC::ADC_3]) {
-        stm32f446AbstractionLayer::_adcCplt[2] = true;
+        stm32halAbstractionLayer::_adcCplt[2] = true;
     }
 }
 
 // PWM
 
-void stm32f446AbstractionLayer::_initPWM() {
+void stm32halAbstractionLayer::_initPWM() {
     HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor1], PAL.PWM_CH[MAL::Peripheral_PWM::Motor1]);
     HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor2], PAL.PWM_CH[MAL::Peripheral_PWM::Motor2]);
     HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Motor3], PAL.PWM_CH[MAL::Peripheral_PWM::Motor3]);
@@ -206,13 +206,13 @@ void stm32f446AbstractionLayer::_initPWM() {
     HAL_TIM_PWM_Start(PAL.PWM_TIM[MAL::Peripheral_PWM::Buzzer], PAL.PWM_CH[MAL::Peripheral_PWM::Buzzer]);
 }
 
-void stm32f446AbstractionLayer::pwmSetDuty(Peripheral_PWM p, float duty) {
+void stm32halAbstractionLayer::pwmSetDuty(Peripheral_PWM p, float duty) {
     if (p != Peripheral_PWM::End_P) {
         __HAL_TIM_SET_COMPARE(PAL.PWM_TIM[p], PAL.PWM_CH[p], duty * __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p]));
     }
 }
 
-void stm32f446AbstractionLayer::pwmSetFrequency(Peripheral_PWM p, uint32_t frequency) {
+void stm32halAbstractionLayer::pwmSetFrequency(Peripheral_PWM p, uint32_t frequency) {
     if (p != Peripheral_PWM::End_P) {
         uint32_t apb1_timer_clocks;
         uint32_t apb2_timer_clocks;
@@ -264,7 +264,7 @@ void stm32f446AbstractionLayer::pwmSetFrequency(Peripheral_PWM p, uint32_t frequ
 
 // GPIO
 
-void stm32f446AbstractionLayer::gpioSetValue(Peripheral_GPIO p, bool value) {
+void stm32halAbstractionLayer::gpioSetValue(Peripheral_GPIO p, bool value) {
     if (p != Peripheral_GPIO::End_G) {
         if (value) {
             HAL_GPIO_WritePin(PAL.GPIO_PORT[p], PAL.GPIO_PIN[p], GPIO_PIN_SET);
@@ -274,7 +274,7 @@ void stm32f446AbstractionLayer::gpioSetValue(Peripheral_GPIO p, bool value) {
     }
 }
 
-bool stm32f446AbstractionLayer::gpioGetValue(Peripheral_GPIO p) {
+bool stm32halAbstractionLayer::gpioGetValue(Peripheral_GPIO p) {
     if (p != Peripheral_GPIO::End_G) {
         return HAL_GPIO_ReadPin(PAL.GPIO_PORT[p], PAL.GPIO_PIN[p]) == GPIO_PIN_SET;
     }
@@ -283,9 +283,9 @@ bool stm32f446AbstractionLayer::gpioGetValue(Peripheral_GPIO p) {
 
 // UART
 
-RingBuffer<uint8_t, UART_BUFFER_SIZE> stm32f446AbstractionLayer::_uartRxBuffer[Peripheral_UART::End_U];
+RingBuffer<uint8_t, UART_BUFFER_SIZE> stm32halAbstractionLayer::_uartRxBuffer[Peripheral_UART::End_U];
 
-void stm32f446AbstractionLayer::_initUART() {
+void stm32halAbstractionLayer::_initUART() {
     while (HAL_UART_Receive_DMA(PAL.UART[MAL::Peripheral_UART::Cam], _uartRxBuffer[MAL::Peripheral_UART::Cam].Buffer, UART_BUFFER_SIZE) != HAL_OK) {
     }
 
@@ -293,21 +293,21 @@ void stm32f446AbstractionLayer::_initUART() {
     }
 }
 
-uint32_t stm32f446AbstractionLayer::_uartCheckRxBufferDmaWriteAddress(Peripheral_UART p) {
+uint32_t stm32halAbstractionLayer::_uartCheckRxBufferDmaWriteAddress(Peripheral_UART p) {
     if (p != Peripheral_UART::End_U) {
         return (UART_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(PAL.UART[p]->hdmarx)) % UART_BUFFER_SIZE;
     }
     return 0;
 }
 
-void stm32f446AbstractionLayer::uartPutChar(Peripheral_UART p, uint8_t data) {
+void stm32halAbstractionLayer::uartPutChar(Peripheral_UART p, uint8_t data) {
     if (p != Peripheral_UART::End_U) {
         while (HAL_UART_Transmit_DMA(PAL.UART[p], &data, 1) != HAL_OK) {
         }
     }
 }
 
-uint8_t stm32f446AbstractionLayer::uartGetChar(Peripheral_UART p) {
+uint8_t stm32halAbstractionLayer::uartGetChar(Peripheral_UART p) {
     uint8_t data = 0;
     if (p != Peripheral_UART::End_U) {
         _uartRxBuffer[p].setWritePos(_uartCheckRxBufferDmaWriteAddress(p));
@@ -316,21 +316,21 @@ uint8_t stm32f446AbstractionLayer::uartGetChar(Peripheral_UART p) {
     return data;
 }
 
-void stm32f446AbstractionLayer::uartWriteViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size) {
+void stm32halAbstractionLayer::uartWriteViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size) {
     if (p != Peripheral_UART::End_U) {
         while (HAL_UART_Transmit_DMA(PAL.UART[p], data, size) != HAL_OK) {
         }
     }
 }
 
-void stm32f446AbstractionLayer::uartReadViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size) {
+void stm32halAbstractionLayer::uartReadViaBuffer(Peripheral_UART p, uint8_t* data, uint32_t size) {
     if (p != Peripheral_UART::End_U) {
         _uartRxBuffer[p].setWritePos(_uartCheckRxBufferDmaWriteAddress(p));
         _uartRxBuffer[p].pop(data, size);
     }
 }
 
-uint32_t stm32f446AbstractionLayer::uartGetRxDataSize(Peripheral_UART p) {
+uint32_t stm32halAbstractionLayer::uartGetRxDataSize(Peripheral_UART p) {
     uint32_t size = 0;
     if (p != Peripheral_UART::End_U) {
         _uartRxBuffer[p].setWritePos(_uartCheckRxBufferDmaWriteAddress(p));
@@ -341,36 +341,36 @@ uint32_t stm32f446AbstractionLayer::uartGetRxDataSize(Peripheral_UART p) {
 
 // SPI
 
-void stm32f446AbstractionLayer::spiWriteViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) {
+void stm32halAbstractionLayer::spiWriteViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) {
     HAL_SPI_Transmit(PAL.SPI[p], data, size, 100);
 }
 
-void stm32f446AbstractionLayer::spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) {
+void stm32halAbstractionLayer::spiReadViaBuffer(Peripheral_SPI p, uint8_t* data, uint32_t size) {
     HAL_SPI_Receive(PAL.SPI[p], data, size, 100);
 }
 
 // Delay
 
-void stm32f446AbstractionLayer::delay_ms(uint32_t ms) {
+void stm32halAbstractionLayer::delay_ms(uint32_t ms) {
     HAL_Delay(ms);
 }
 
-uint32_t stm32f446AbstractionLayer::millis(void) {
+uint32_t stm32halAbstractionLayer::millis(void) {
     return HAL_GetTick();
 }
 
 // Interrupt
 
-void (*stm32f446AbstractionLayer::_timerInterruptCallback[Peripheral_Interrupt::End_T])(void);
+void (*stm32halAbstractionLayer::_timerInterruptCallback[Peripheral_Interrupt::End_T])(void);
 
-void stm32f446AbstractionLayer::_initTimerInterrupt() {
+void stm32halAbstractionLayer::_initTimerInterrupt() {
     if (HAL_TIM_Base_Start_IT(PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]) == HAL_ERROR) {
         while (1) {
         }
     }
 }
 
-void stm32f446AbstractionLayer::interruptSetCallback(Peripheral_Interrupt p, void (*callback)(void)) {
+void stm32halAbstractionLayer::interruptSetCallback(Peripheral_Interrupt p, void (*callback)(void)) {
     if (p != Peripheral_Interrupt::End_T) {
         _timerInterruptCallback[p] = callback;
     }
@@ -378,8 +378,8 @@ void stm32f446AbstractionLayer::interruptSetCallback(Peripheral_Interrupt p, voi
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
     if (htim == PAL.TimerInterrupt_TIM[MAL::Peripheral_Interrupt::T1ms]) {
-        if (stm32f446AbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms] != NULL) {
-            stm32f446AbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms]();
+        if (stm32halAbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms] != NULL) {
+            stm32halAbstractionLayer::_timerInterruptCallback[MAL::Peripheral_Interrupt::T1ms]();
         }
     }
 }

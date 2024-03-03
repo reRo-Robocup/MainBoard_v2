@@ -7,7 +7,7 @@
  */
 
 #include "UI.hpp"
-#include <McuAbstractionLayer/stm32f446AbstractionLayer.hpp>
+#include <McuAbstractionLayer/stm32halAbstractionLayer.hpp>
 
 const MAL::Peripheral_GPIO RotaryPin[4] = {
     MAL::Peripheral_GPIO::Rotary_IN0,

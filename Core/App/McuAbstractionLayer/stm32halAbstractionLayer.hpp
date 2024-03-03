@@ -1,5 +1,5 @@
 /*
- *  stm32f446AbstractionLayer.hpp
+ *  stm32halAbstractionLayer.hpp
  *
  *  Created on: Dec 7, 2023
  *
@@ -14,9 +14,9 @@
 
 #define UART_BUFFER_SIZE 64
 
-class stm32f446AbstractionLayer : public baseMcuAbstractionLayer {
+class stm32halAbstractionLayer : public baseMcuAbstractionLayer {
    public:
-    stm32f446AbstractionLayer();
+    stm32halAbstractionLayer();
 
     virtual void init(void);
 
