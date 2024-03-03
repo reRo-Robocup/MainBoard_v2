@@ -19,7 +19,7 @@ camera::camera(MAL* mcu) {
 
 void camera::init() {
     AttackColor = YELLOW;
-    printf("Camera init\n");
+    // printf("Camera init\n");
 }
 
 void camera::update() {

@@ -47,16 +47,19 @@ void app_update() {
 
 void app_main() {
     uint32_t calibration_start_time = 0;
-    printf("app_start\n\r");
+    printf("app_start\r\n");
 
     app_init();
     ui.buzzer(1000, 1000);
     calibration_start_time = mcu.millis();
     while (!imu.isCalibrationed) {
-        if (calibration_start_time > 1000) {
+        if (mcu.millis() - calibration_start_time > 2000) {
+            printf("retry IMU Initialize\r\n");
+            imu.init();
+            calibration_start_time = mcu.millis();
         }
     }
-    printf("IMU is Calibrated\n\r");
+    printf("IMU is Calibrated\r\n");
 
     ui.buzzer(2000, 50);
     mcu.delay_ms(100);
@@ -67,6 +70,6 @@ void app_main() {
 
     while (1) {
         atc.setTurnAngle(180);
-        printf("%u\n", cam.data.ball_angle);
+        // printf("%u\n", cam.data.ball_angle);
     }
 }
