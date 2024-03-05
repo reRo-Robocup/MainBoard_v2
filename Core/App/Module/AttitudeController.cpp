@@ -109,8 +109,8 @@ void AttitudeController::update() {
                 MPowerVector[i] = cos(tmp_angle);
                 // printf("%f ", MPowerVector[i]);
 
-                if (MPowerMax < MPowerVector[i])
-                    MPowerMax = MPowerVector[i];
+                if (MPowerMax < abs(MPowerVector[i]))
+                    MPowerMax = abs(MPowerVector[i]);
             }
 
             if ((MPowerMax != 1) || (MPowerMax != -1)) {
@@ -128,21 +128,22 @@ void AttitudeController::update() {
                 output = -0.94;
             }
 
-            if (abs(output) > 0.4) {
-                _setPWM(TractionMotors::Motor1, output);
-                _setPWM(TractionMotors::Motor2, output);
-                _setPWM(TractionMotors::Motor3, output);
-                _setPWM(TractionMotors::Motor4, output);
-            } else {
-                for (int i = 0; i < 4; i++) {
-                    MPowerVector[i] += output;
-                }
-
-                _setPWM(TractionMotors::Motor1, MPowerVector[0]);
-                _setPWM(TractionMotors::Motor2, MPowerVector[1]);
-                _setPWM(TractionMotors::Motor3, MPowerVector[2]);
-                _setPWM(TractionMotors::Motor4, MPowerVector[3]);
+            for (int i = 0; i < 4; i++) {
+                MPowerVector[i] += output;
+                if (MPowerMax < abs(MPowerVector[i]))
+                    MPowerMax = abs(MPowerVector[i]);
             }
+
+            if ((MPowerMax != 1)) {
+                for (int i = 0; i < 4; i++) {
+                    MPowerVector[i] *= (0.94 / MPowerMax);
+                }
+            }
+
+            _setPWM(TractionMotors::Motor1, MPowerVector[0]);
+            _setPWM(TractionMotors::Motor2, MPowerVector[1]);
+            _setPWM(TractionMotors::Motor3, MPowerVector[2]);
+            _setPWM(TractionMotors::Motor4, MPowerVector[3]);
 
         } break;
 
