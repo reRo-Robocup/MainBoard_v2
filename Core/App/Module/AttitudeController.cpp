@@ -129,7 +129,7 @@ void AttitudeController::update() {
                 output = -0.94;
             }
 
-            if (abs(output) > 0.3) {
+            if (abs(output) > 0.05) {
                 _setPWM(TractionMotors::Motor1, output);
                 _setPWM(TractionMotors::Motor2, output);
                 _setPWM(TractionMotors::Motor3, output);

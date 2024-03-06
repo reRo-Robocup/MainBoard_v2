@@ -8,9 +8,6 @@
 
 #include "Camera.hpp"
 
-#define YELLOW 0
-#define BLUE 1
-
 #define CAM MAL::Peripheral_UART::Cam
 
 camera::camera(MAL* mcu) {

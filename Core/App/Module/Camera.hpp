@@ -11,6 +11,9 @@
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
+#define YELLOW 0
+#define BLUE 1
+
 class camera {
    public:
     camera(MAL* mcu);

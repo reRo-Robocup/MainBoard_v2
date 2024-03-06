@@ -16,6 +16,7 @@
 #include <Module/MPU6500.hpp>
 #include <Module/MotorControll.hpp>
 #include <Module/UI.hpp>
+#include <Lib/pid.hpp>
 
 stm32halAbstractionLayer mcu;
 BatteryVoltageChecker bvc(&mcu);
@@ -61,11 +62,11 @@ void app_init() {
     mcu.interruptSetCallback(MAL::Peripheral_Interrupt::T1ms, &app_update);
 
     bvc.setWarningVoltage(10);
-    bvc.setWarningTime(1);
+    bvc.setWarningTime(100);
     bvc.setWarningCallback(&BatteryVoltageWarning);
 
     bvc.setCriticalVoltage(8);
-    bvc.setCriticalTime(1);
+    bvc.setCriticalTime(100);
     bvc.setCriticalCallback(&BatteryVoltageCritical);
 }
 
@@ -78,10 +79,6 @@ void app_update() {
     ui.update();
 
     logic_main();
-}
-
-float map(float x, float in_min, float in_max, float out_min, float out_max) {
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
@@ -108,7 +105,40 @@ void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
     }
 }
 
+
+PID<float> pid_goal_x;
+PID<float> pid_goal_y;
+
+float mv_xVector, mv_yVector;
+float _speed_x, _speed_y;
+
+void ReturnMyGoal(bool isBlue) {
+    atc.setMode(3);
+
+    int16_t angle = (isBlue)? cam.data.blue_angle: cam.data.yellow_angle;
+    angle = 90 - cam.data.blue_angle;
+    mv_xVector = cos(angle * deg_to_rad);
+    _speed_x = pid_goal_x.update(0, mv_xVector);
+
+    uint8_t distance = (isBlue)? cam.data.blue_distance: cam.data.yellow_distance;
+    uint8_t goal_dis_threshold = 80;
+    _speed_y = pid_goal_y.update(goal_dis_threshold, distance) * -1;
+    if(abs(_speed_y) > 20) _speed_y = 20;
+    _speed_y /= 20;
+
+    atc.setGoStraightPower(abs(_speed_y));
+    int8_t dir = signbit(_speed_y)? -1: 1;
+    if(dir) atc.setGoStraightAngle(0);
+    else atc.setGoStraightAngle(180);
+}
+
 void logic_main(void) {
+    if(line.isonLine) {
+        atc.setGoStraightAngle(line.angle);
+    }
+    else {
+        ReturnMyGoal(!cam.AttackColor);
+    }
 }
 
 void app_main() {
@@ -130,6 +160,14 @@ void app_main() {
     ui.buzzer(2000, 50);
     mcu.delay_ms(100);
     ui.buzzer(1000, 50);
+
+    pid_goal_x.setPID(0.9,0,0.4);
+    pid_goal_x.setProcessTime(0.001);
+
+    pid_goal_y.setPID(0.9,0,0.4);
+    pid_goal_y.setProcessTime(0.001);
+
+    cam.AttackColor = YELLOW;
 
     while (1) {
         // printf("Ba %d Bl %d Yl %d\r\n", cam.data.isBallDetected, cam.data.isBlueDetected, cam.data.isYellowDetected);
