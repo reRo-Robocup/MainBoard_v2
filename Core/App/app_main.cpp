@@ -114,31 +114,35 @@ float _speed_x, _speed_y;
 float returnAngle;
 float power;
 
-void ReturnMyGoal(bool isBlue) {
+void ReturnMyGoal(bool color) {
     atc.setMode(3);
 
-    int16_t angle = (isBlue)? cam.data.blue_angle: cam.data.yellow_angle;
-    angle = 90 - cam.data.blue_angle;
-    mv_xVector = cos(angle * deg_to_rad);
-    _speed_x = pid_goal_x.update(0, mv_xVector);
+    int16_t MyGoal_Angle = (cam.AttackColor)? cam.data.blue_angle: cam.data.yellow_angle;
+    atc.setGoStraightAngle(MyGoal_Angle);
 
-    uint8_t distance = (isBlue)? cam.data.blue_distance: cam.data.yellow_distance;
+    // MyGoal_Angle = 90 - cam.data.blue_angle;
+    // mv_xVector = cos(MyGoal_Angle * deg_to_rad);
+    // _speed_x = pid_goal_x.update(0, mv_xVector);
+
+    uint8_t distance = (color)? cam.data.blue_distance: cam.data.yellow_distance;
     uint8_t goal_dis_threshold = 80;
     _speed_y = pid_goal_y.update(goal_dis_threshold, distance) * -1;
     if(abs(_speed_y) > 20) _speed_y = 20;
     _speed_y /= 20;
 
+    atc.setGoStraightPower(abs(_speed_y));
+
     // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1)) + 180;
-    returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1));
-    while(returnAngle > 180) returnAngle -= 360;
-    while(returnAngle < -180)returnAngle += 360;
+    // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1));
+    // while(returnAngle > 180) returnAngle -= 360;
+    // while(returnAngle < -180)returnAngle += 360;
 
-    // power = sqrt(pow(_speed_x,2) + pow(_speed_y, 2));
-    power = (_speed_x + _speed_y) / 2;
-    // それぞれabsを取る
+    // // power = sqrt(pow(_speed_x,2) + pow(_speed_y, 2));
+    // power = (_speed_x + _speed_y) / 2;
+    // // それぞれabsを取る
 
-    atc.setGoStraightPower(abs(power));
-    atc.setGoStraightAngle(returnAngle);
+    // atc.setGoStraightPower(abs(power));
+    // atc.setGoStraightAngle(returnAngle);
     // int8_t dir = signbit(_speed_y);
     // if(dir) atc.setGoStraightAngle(180);
     // else atc.setGoStraightAngle(0);
