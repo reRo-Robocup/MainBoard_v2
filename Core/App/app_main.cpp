@@ -109,64 +109,7 @@ void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
 }
 
 void logic_main(void) {
-    // atc.setMode(0);
-
-    // printf("%d\n", cam.data.ball_angle);
-    // int16_t ballAngle = cam.data.ball_angle;
-    // if(ballAngle > 180) ballAngle -= 360;
-    // // printf("%d\n", ballAngle);
-    atc.setGoStraightPower(0.8);
-    MoveOnlyX(cam.data.blue_angle, 180);
-
-    // atc.setGoStraightAngle(-90);
-
-    // float dt = 0;
-    // for(int i = 0; i < 100; i++) {
-    //     dt += 0.01;
-    //     atc.setGoStraightPower(dt);
-    //     atc.setGoStraightAngle(180);
-    // }
-
-    // int16_t MyGoal_Angle = cam.data.blue_angle;
-    // printf("%d\n", MyGoal_Angle);
-
-    // xベクトル
-    // float goal_Vx = cos(MyGoal_Angle * (M_PI / 180));
-    // printf("BlueAngle: %d Goal_Vx: %f \n", MyGoal_Angle, goal_Vx);
-
-    // // yベクトル
-    // uint8_t goal_distance = cam.data.blue_distance;
-
-    // if(0) {
-    //     // ボールが見つからない時, 自陣復帰
-    //     atc.setMode(0);
-    //     // if((cam.data.blue_distance > 10) && (abs(cam.data.ball_angle) < 5)) {
-    //     //     atc.setGoStraightAngle(cam.data.ball_angle);
-    //     // }
-
-    // }
-    // else {
-    //     atc.setMode(3);
-    //     atc.setGoStraightPower(0.6);
-    //     int16_t angle = cam.data.ball_angle;
-    //     int16_t toMove = 0;
-
-    //     if(angle > 180) angle -= 360;
-    //     if(angle < -180) angle += 360;
-    //     // printf("%d\n", angle);
-
-    //     if((angle < 15) && (angle > -15)) {
-    //         toMove = angle;
-    //     }
-    //     else {
-    //         bool dir = (angle > 0);
-    //         if(dir) toMove = angle + 30;
-    //         else toMove = angle - 30;
-    //         // atc.setGoStraightAngle(angle + (dir * 30));
-    //     }
-
-    //     atc.setGoStraightAngle(toMove);
-    // }
+    
 }
 
 void app_main() {
