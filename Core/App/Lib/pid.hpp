@@ -10,7 +10,7 @@ template <typename T>
 class PID {
    public:
     PID() {
-        _prev_time = 10;
+        _dt = 1;
         _kp = 0;
         _ki = 0;
         _kd = 0;
@@ -36,7 +36,11 @@ class PID {
         _kd = d;
     }
     void setProcessTime(T time) {
-        _prev_time = time;
+        if (time == 0) {
+            time = 1;
+        } else {
+            _dt = time;
+        }
     }
     T getP() {
         return _kp;
@@ -63,14 +67,14 @@ class PID {
     T update(T target, T feedback) {
         _error = target - feedback;
         _integral += _error;
-        _derivative = (_error - _prev_error) / (_prev_time) * 0.001;
+        _derivative = (_error - _prev_error) / (_dt);
         _prev_error = _error;
         _output = _kp * _error + _ki * _integral + _kd * _derivative;
         return _output;
     }
 
    private:
-    T _prev_time;
+    T _dt;
     T _kp, _ki, _kd;
     T _error, _prev_error, _integral, _prev_integral, _derivative, _output;
 };
