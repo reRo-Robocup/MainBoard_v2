@@ -20,7 +20,8 @@ const MAL::Peripheral_PWM motor[4] = {
 
 const uint16_t _motorAngles[4] = {45, 135, 225, 315};
 
-MotorControll::MotorControll(MAL* mcu) {
+MotorControll::MotorControll(MAL* mcu, MPU6500* imu) {
+    _imu = imu;
     _mcu = mcu;
 }
 
@@ -36,6 +37,7 @@ void MotorControll::init() {
     for (int i = 0; i < 4; i++) {
         this->_write_pwm(motor[i], 0);
     }
+    _turn_angle_pid.setPID(0.005, 0.0, 0);
     speed = 0.2;
 }
 
@@ -59,12 +61,12 @@ void MotorControll::run(int16_t angle) {
     for (int i = 0; i < 4; i++) {
         float tmp_angle = (angle - _motorAngles[i]) * (M_PI / 180);
         MPowerVector[i] = cos(tmp_angle);
-        printf("%f ", MPowerVector[i]);
+        // printf("%f ", MPowerVector[i]);
 
         if (MPowerMax < MPowerVector[i])
             MPowerMax = MPowerVector[i];
     }
-    printf("\n");
+    // printf("\n");
 
     if ((MPowerMax != 1) || (MPowerMax != -1)) {
         for (int i = 0; i < 4; i++) {
@@ -72,8 +74,12 @@ void MotorControll::run(int16_t angle) {
         }
     }
 
+    // if(abs(MPowerMax) > this->speed) {
+    //     for(int )
+    // }
+
     for (int i = 0; i < 4; i++) {
-        this->_write_pwm(motor[i], MPowerVector[i]);
+        this->_write_pwm(motor[i], MPowerVector[i] * speed);
     }
 }
 

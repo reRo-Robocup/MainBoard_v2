@@ -10,11 +10,13 @@
 #define _APP_MODULE_MOTORCONTROLL_HPP_
 
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
+#include <Lib/pid.hpp>
+#include <Module/MPU6500.hpp>
 
 class MotorControll {
    public:
 
-    MotorControll(MAL* mcu);
+    MotorControll(MAL* mcu, MPU6500* imu);
 
     void init();
     void run(int16_t angle);
@@ -26,6 +28,9 @@ class MotorControll {
 
    private:
     MAL* _mcu;
+    MPU6500* _imu;
+    PID<float> _turn_angle_pid;
+    
     int16_t map2_180(int16_t angle);
     float _getBatteryVoltage();
     void _write_pwm(uint8_t pin, float duty);
