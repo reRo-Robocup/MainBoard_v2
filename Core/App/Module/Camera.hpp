@@ -28,7 +28,26 @@ class camera {
         uint8_t enable;
     };
 
-    camera_object data;
+    struct camera_parsed_object : public camera_object {
+        camera_parsed_object& operator=(const camera_object& other) {
+            this->ball_angle = other.ball_angle;
+            this->yellow_angle = other.yellow_angle;
+            this->blue_angle = other.blue_angle;
+            this->ball_distance = other.ball_distance;
+            this->yellow_distance = other.yellow_distance;
+            this->blue_distance = other.blue_distance;
+            this->enable = other.enable;
+            this->isBallDetected = this->enable & 0x01;
+            this->isYellowDetected = this->enable >> 1 & 0x01;
+            this->isBlueDetected = this->enable >> 2 & 0x01;
+            return *this;
+        }
+        bool isBallDetected;
+        bool isYellowDetected;
+        bool isBlueDetected;
+    };
+
+    camera_parsed_object data;
 
    private:
     MAL* _mcu;

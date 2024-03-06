@@ -109,7 +109,6 @@ void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
 }
 
 void logic_main(void) {
-    
 }
 
 void app_main() {
@@ -133,5 +132,6 @@ void app_main() {
     ui.buzzer(1000, 50);
 
     while (1) {
+        // printf("Ba %d Bl %d Yl %d\r\n", cam.data.isBallDetected, cam.data.isBlueDetected, cam.data.isYellowDetected);
     }
 }
