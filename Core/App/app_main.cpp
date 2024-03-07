@@ -105,31 +105,31 @@ void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
     }
 }
 
-
-PID<float> pid_goal_x;
-PID<float> pid_goal_y;
+// PID<float> pid_goal_x;
+// PID<float> pid_goal_y;
+PID <float> pid_ReturnMyGoal;
 
 float mv_xVector, mv_yVector;
 float _speed_x, _speed_y;
 float returnAngle;
 float power;
 
-void ReturnMyGoal(bool color) {
+void ReturnMyGoal() {
     atc.setMode(3);
 
     int16_t MyGoal_Angle = (cam.AttackColor)? cam.data.blue_angle: cam.data.yellow_angle;
-    atc.setGoStraightAngle(MyGoal_Angle);
+    uint8_t distance = (cam.AttackColor)? cam.data.blue_distance: cam.data.yellow_distance;
 
     // MyGoal_Angle = 90 - cam.data.blue_angle;
     // mv_xVector = cos(MyGoal_Angle * deg_to_rad);
     // _speed_x = pid_goal_x.update(0, mv_xVector);
 
-    uint8_t distance = (color)? cam.data.blue_distance: cam.data.yellow_distance;
     uint8_t goal_dis_threshold = 80;
-    _speed_y = pid_goal_y.update(goal_dis_threshold, distance) * -1;
+    _speed_y = pid_ReturnMyGoal.update(goal_dis_threshold, distance) * -1;
     if(abs(_speed_y) > 20) _speed_y = 20;
     _speed_y /= 20;
 
+    atc.setGoStraightAngle(MyGoal_Angle);
     atc.setGoStraightPower(abs(_speed_y));
 
     // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1)) + 180;
@@ -177,11 +177,14 @@ void app_main() {
     mcu.delay_ms(100);
     ui.buzzer(1000, 50);
 
-    pid_goal_x.setPID(0.9,0,0.4);
-    pid_goal_x.setProcessTime(0.001);
+    // pid_goal_x.setPID(0.9,0,0.4);
+    // pid_goal_x.setProcessTime(0.001);
 
-    pid_goal_y.setPID(0.9,0,0.4);
-    pid_goal_y.setProcessTime(0.001);
+    // pid_goal_y.setPID(0.9,0,0.4);
+    // pid_goal_y.setProcessTime(0.001);
+
+    pid_ReturnMyGoal.setPID(1.0, 0, 0.4);
+    pid_ReturnMyGoal.setProcessTime(0.001);
 
     cam.AttackColor = YELLOW;
 
