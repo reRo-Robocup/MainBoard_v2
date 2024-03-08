@@ -79,6 +79,10 @@ void app_update() {
     ui.update();
 
     logic_main();
+
+    if(ui.getSW()) {
+        mcu.systemReset();
+    }
 }
 
 void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
@@ -153,7 +157,7 @@ void logic_main(void) {
         atc.setGoStraightAngle(line.angle);
     }
     else {
-        ReturnMyGoal(!cam.AttackColor);
+        ReturnMyGoal();
     }
 }
 
