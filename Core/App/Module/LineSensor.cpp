@@ -86,9 +86,13 @@ void LineSensor::update() {
     if (isonLine && (x != 0) && (y != 0)) {
         _angle = atan2(y, x);
         _angle *= (180 / M_PI);
+        _angle = 90 - _angle;
+        while(_angle < -180) _angle += 360;
+        while(_angle >= 180) _angle -= 360;
     } else {
         _angle = 1023;
     }
+
 
     this->isonLine = (_cnt > 0);
     this->angle = (int16_t)_angle;
