@@ -32,7 +32,7 @@ class LineSensor {
     UI* _ui;
 
     uint32_t _threshold[32] = {0};
-    
+
     double _sin_table[32];
     double _cos_table[32];
     

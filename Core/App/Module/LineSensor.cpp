@@ -25,7 +25,7 @@ const MAL::Peripheral_GPIO MuxPin[8] = {
 };
 
 void LineSensor::init() {
-    // this->_module_r = 11;
+    this->_module_r = 11;
     for (int i = 0; i < 8; i++) {
         _mcu->gpioSetValue(MuxPin[i], 0);
     }
@@ -142,6 +142,7 @@ void LineSensor::setThreshold() {
     _ui->buzzer(1000, 100);
 }
 
+
 uint8_t LineSensor::getDisFromCenter() {
     // アルゴリズム
     // 反応してるセンサの個数を取得
@@ -149,34 +150,61 @@ uint8_t LineSensor::getDisFromCenter() {
     // 全ての座標同士の距離を求め、最大値とその時の2つの座標を取る
     // 傾きから法線を求め、(0,0)からの距離を求める
 
-    if (this->_isONline_qty > 1) {
-        // 反応したセンサの座標だけが入る配列
+    if(_isONline_qty == 0) {
+        return 0;
+    }
+    else {
         const uint8_t num = _isONline_qty;
-        float _isONline_sensorXY[num][2];
         uint8_t _cnt = 0;
+
+        float _isONline_sensorVector_X[num];
+        float _isONline_sensorVector_Y[num];
+
         for (int i = 0; i < 32; i++) {
             if (this->sensor_isonline[i]) {
-                _isONline_sensorXY[i][0] = _cos_table[i];
-                _isONline_sensorXY[i][1] = _sin_table[i];
+                _isONline_sensorVector_X[_cnt] = _cos_table[i];
+                _isONline_sensorVector_Y[_cnt] = _sin_table[i];
                 _cnt++;
             }
         }
 
-        // 総当たりでセンサ同士の距離を調べる
-        float maxdis;
-        for (int i = 0; i < num; i++) {
-            for (int j = num; j >= 0; j--) {
-                if (i != j) {
-                    float _dx, _dy, _dis;
-                    // _dx = abs(_sens_XYvector[i][0] - _sens_XYvector[j][0]);
-                    // _dy = abs(_sens_XYvector[i][1] - _sens_XYvector[j][1]);
-                    _dis = sqrt(pow(_dx, 2) + pow(_dy, 2));
-                    if (maxdis < _dis) {
-                        maxdis = _dis;
-                    }
-                }
+        float _max_distance = 0;
+        uint8_t _max_dis_pair[2];
+
+        for(int i = 0; i < num; i++) {
+            for(int j = (num - 1); j >= 0; j--) {
+                // float _distance = sqrt(pow(_isONline_sensorVector_X[num]) + pow(_isONline_sensorVector_X[num]));
             }
         }
-        // map2_180(slope);
     }
+
+    // if (this->_isONline_qty > 1) {
+    //     // 反応したセンサの座標だけが入る配列
+    //     const uint8_t num = _isONline_qty;
+    //     float _isONline_sensorXY[num][2];
+    //     uint8_t _cnt = 0;
+    //     for (int i = 0; i < 32; i++) {
+    //         if (this->sensor_isonline[i]) {
+    //             _isONline_sensorXY[i][0] = _cos_table[i];
+    //             _isONline_sensorXY[i][1] = _sin_table[i];
+    //             _cnt++;
+    //         }
+    //     }
+
+    //     // 総当たりでセンサ同士の距離を調べる
+    //     float maxdis;
+    //     for (int i = 0; i < num; i++) {
+    //         for (int j = num; j >= 0; j--) {
+    //             if (i != j) {
+    //                 float _dx, _dy, _dis;
+    //                 // _dx = abs(_sens_XYvector[i][0] - _sens_XYvector[j][0]);
+    //                 // _dy = abs(_sens_XYvector[i][1] - _sens_XYvector[j][1]);
+    //                 _dis = sqrt(pow(_dx, 2) + pow(_dy, 2));
+    //                 if (maxdis < _dis) {
+    //                     maxdis = _dis;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     // map2_180(slope);
 }
