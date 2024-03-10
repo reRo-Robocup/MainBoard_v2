@@ -30,10 +30,8 @@ void LineSensor::init() {
         _mcu->gpioSetValue(MuxPin[i], 0);
     }
     for (int i = 0; i < 32; i++) {
-        this->_SinCosTable[i][0] = sin((360 / 32 * i) * (180 / M_PI));
-        this->_SinCosTable[i][1] = cos((360 / 32 * i) * (180 / M_PI));
-        this->_sens_XYvector[i][0] = _module_r * cos(_SinCosTable[i][0]);
-        this->_sens_XYvector[i][1] = _module_r * sin(_SinCosTable[i][1]);
+        this->_sin_table[i] = sin((360 / 32 * i) * (M_PI / 180));
+        this->_cos_table[i] = cos((360 / 32 * i) * (M_PI / 180));
         this->_threshold[i] = 700;
         // printf("TrigTable %u: Sin:%f Cos:%f\n", i, _SinCosTable[i][1], _SinCosTable[i][0]);
     }
@@ -72,28 +70,22 @@ void LineSensor::update() {
 
     for (int i = 0; i < 32; i++) {
         if (sensorValue[i] > _threshold[i]) {
-            this->_isonline[i] = 1;
+            this->sensor_isonline[i] = 1;
             _cnt++;
-            x += _SinCosTable[1][i];
-            y += _SinCosTable[0][i];
+            x += _cos_table[i];
+            y += _sin_table[i];
         } else {
-            this->_isonline[i] = 0;
+            this->sensor_isonline[i] = 0;
         }
+        // printf("%u ", this->isSensorONline[i]);
     }
+    // printf("\n");
 
     float _angle = 0;
 
     if (isonLine && (x != 0) && (y != 0)) {
         _angle = atan2(y, x);
         _angle *= (180 / M_PI);
-        // printf("Vx: %f\tVy:%f\tatan2: %lf\n", x, y, _angle);
-        // printf("Vx: %f\tVy:%f\tatan2: %lf\n", x, y, _angle);
-        // _angle *= (M_PI / 180);
-        // printf("%f\n", _angle);
-        while (_angle > 180)
-            _angle -= 360;
-        while (_angle < -180)
-            _angle += 360;
     } else {
         _angle = 1023;
     }
@@ -159,9 +151,9 @@ uint8_t LineSensor::getDisFromCenter() {
         float _isONline_sensorXY[num][2];
         uint8_t _cnt = 0;
         for (int i = 0; i < 32; i++) {
-            if (this->isSensorONline) {
-                _isONline_sensorXY[i][0] = _sens_XYvector[i][0];
-                _isONline_sensorXY[i][1] = _sens_XYvector[i][1];
+            if (this->sensor_isonline[i]) {
+                _isONline_sensorXY[i][0] = _cos_table[i];
+                _isONline_sensorXY[i][1] = _sin_table[i];
                 _cnt++;
             }
         }
@@ -172,8 +164,8 @@ uint8_t LineSensor::getDisFromCenter() {
             for (int j = num; j >= 0; j--) {
                 if (i != j) {
                     float _dx, _dy, _dis;
-                    _dx = abs(_sens_XYvector[i][0] - _sens_XYvector[j][0]);
-                    _dy = abs(_sens_XYvector[i][1] - _sens_XYvector[j][1]);
+                    // _dx = abs(_sens_XYvector[i][0] - _sens_XYvector[j][0]);
+                    // _dy = abs(_sens_XYvector[i][1] - _sens_XYvector[j][1]);
                     _dis = sqrt(pow(_dx, 2) + pow(_dy, 2));
                     if (maxdis < _dis) {
                         maxdis = _dis;

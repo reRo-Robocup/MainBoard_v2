@@ -20,8 +20,9 @@ class LineSensor {
     void read();
     void setThreshold();
     uint8_t getDisFromCenter();
+
     uint16_t sensorValue[32] = {0};
-    bool isSensorONline[32] = {0};
+    bool sensor_isonline[32] = {0};
     bool isonLine;
     int16_t angle;
     int16_t getMoveAngle(int16_t yaw, int16_t toMove);
@@ -30,12 +31,10 @@ class LineSensor {
     MAL* _mcu;
     UI* _ui;
 
-    uint16_t _value[32];
-    bool _isonline[32];
     uint32_t _threshold[32] = {0};
-
-    double _sens_XYvector[32][2];
-    double _SinCosTable[32][2] = {0.0};
+    
+    double _sin_table[32];
+    double _cos_table[32];
     
     uint8_t _isONline_qty;
     uint8_t _module_r;
