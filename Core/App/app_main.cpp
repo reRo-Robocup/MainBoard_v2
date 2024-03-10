@@ -109,32 +109,44 @@ void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
     }
 }
 
-// PID<float> pid_goal_x;
-// PID<float> pid_goal_y;
 PID <float> pid_ReturnMyGoal;
 
-float mv_xVector, mv_yVector;
-float _speed_x, _speed_y;
 float returnAngle;
 float power;
+
+int16_t MyGoal_Angle;
+int16_t distance;
 
 void ReturnMyGoal() {
     atc.setMode(3);
 
-    int16_t MyGoal_Angle = (cam.AttackColor)? cam.data.blue_angle: cam.data.yellow_angle;
-    uint8_t distance = (cam.AttackColor)? cam.data.blue_distance: cam.data.yellow_distance;
+    // MyGoal_Angle = (cam.AttackColor)? cam.data.blue_angle: cam.data.yellow_angle;
+    // distance = (cam.AttackColor)? cam.data.blue_distance: cam.data.yellow_distance;
+    MyGoal_Angle = 180 - cam.data.blue_angle;
+    distance = cam.data.blue_distance;
 
     // MyGoal_Angle = 90 - cam.data.blue_angle;
     // mv_xVector = cos(MyGoal_Angle * deg_to_rad);
     // _speed_x = pid_goal_x.update(0, mv_xVector);
 
-    uint8_t goal_dis_threshold = 80;
-    _speed_y = pid_ReturnMyGoal.update(goal_dis_threshold, distance) * -1;
-    if(abs(_speed_y) > 20) _speed_y = 20;
-    _speed_y /= 20;
+    uint8_t goal_dis_threshold = 85;
+    power = pid_ReturnMyGoal.update(goal_dis_threshold, distance);
+    if(abs(power) > 20) power = 20;
+    power /= 20;
 
-    atc.setGoStraightAngle(MyGoal_Angle);
-    atc.setGoStraightPower(abs(_speed_y));
+    int8_t dir = signbit(power);
+
+    if(dir) {
+        atc.setGoStraightAngle(MyGoal_Angle);
+        atc.setGoStraightPower(abs(power));
+    }
+
+    else {
+        atc.setGoStraightAngle(MyGoal_Angle + 180);
+        atc.setGoStraightPower(abs(power));
+    }
+
+
 
     // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1)) + 180;
     // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1));
@@ -155,34 +167,42 @@ void ReturnMyGoal() {
 int16_t line_angle;
 bool line_isonline;
 
-void logic_main(void) {
-    line_angle = line.angle;
-    line_isonline = line.isonLine;
+int16_t line_dis;
 
-    if(line_isonline) {
-        atc.setMode(3);
-        atc.setGoStraightAngle(line_angle);
-    }
-    else {
-        atc.setMode(0);
-    }
+void logic_main(void) {
+    // line_angle = line.angle;
+    // line_isonline = line.isonLine;
+
+    // if(line_isonline) {
+    //     atc.setMode(3);
+    //     atc.setGoStraightPower(0.8);
+    //     atc.setGoStraightAngle(line_angle);
+    // }
+    // else {
+    //     atc.setMode(0);
+    //     atc.setGoStraightPower(0);
+    // }
 
 
     // if(line.isonLine) {
-    //     atc.setGoStraightAngle(line.angle);
+    //     atc.setMode(3);
+    //     atc.setGoStraightPower(0.8);
+    //     atc.setGoStraightAngle(line_angle);
     // }
     // else {
-    //     ReturnMyGoal();
+        ReturnMyGoal();
     // }
 }
 
 void app_main() {
-    uint32_t calibration_start_time = 0;
+    
     printf("app_start\r\n");
-
     app_init();
+
+    uint32_t calibration_start_time = 0;
     ui.buzzer(1000, 1000);
     calibration_start_time = mcu.millis();
+
     while (!imu.isCalibrationed) {
         if (mcu.millis() - calibration_start_time > 2000) {
             printf("retry IMU Initialize\r\n");
@@ -190,17 +210,14 @@ void app_main() {
             calibration_start_time = mcu.millis();
         }
     }
+
     printf("IMU is Calibrated\r\n");
 
     ui.buzzer(2000, 50);
     mcu.delay_ms(100);
     ui.buzzer(1000, 50);
 
-    // pid_goal_x.setPID(0.9,0,0.4);
-    // pid_goal_x.setProcessTime(0.001);
-
-    // pid_goal_y.setPID(0.9,0,0.4);
-    // pid_goal_y.setProcessTime(0.001);
+    atc.setMode(3);
 
     pid_ReturnMyGoal.setPID(1.0, 0, 0.4);
     pid_ReturnMyGoal.setProcessTime(0.001);
