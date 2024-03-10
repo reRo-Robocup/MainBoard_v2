@@ -152,13 +152,28 @@ void ReturnMyGoal() {
     // else atc.setGoStraightAngle(0);
 }
 
+int16_t line_angle;
+bool line_isonline;
+
 void logic_main(void) {
-    if(line.isonLine) {
-        atc.setGoStraightAngle(line.angle);
+    line_angle = line.angle;
+    line_isonline = line.isonLine;
+
+    if(line_isonline) {
+        atc.setMode(3);
+        atc.setGoStraightAngle(line_angle);
     }
     else {
-        ReturnMyGoal();
+        atc.setMode(0);
     }
+
+
+    // if(line.isonLine) {
+    //     atc.setGoStraightAngle(line.angle);
+    // }
+    // else {
+    //     ReturnMyGoal();
+    // }
 }
 
 void app_main() {
