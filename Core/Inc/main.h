@@ -115,12 +115,16 @@ void Error_Handler(void);
 #define PWM_M3_GPIO_Port GPIOA
 #define PWM_M4_Pin GPIO_PIN_11
 #define PWM_M4_GPIO_Port GPIOA
+#define ESC_PWM1_Pin GPIO_PIN_15
+#define ESC_PWM1_GPIO_Port GPIOA
 #define Rotary_IN1_Pin GPIO_PIN_10
 #define Rotary_IN1_GPIO_Port GPIOC
 #define Rotary_IN2_Pin GPIO_PIN_11
 #define Rotary_IN2_GPIO_Port GPIOC
 #define OLED_SDA2_Pin GPIO_PIN_12
 #define OLED_SDA2_GPIO_Port GPIOC
+#define GPIO_KickerHside_Pin GPIO_PIN_2
+#define GPIO_KickerHside_GPIO_Port GPIOD
 #define MuxA3_Pin GPIO_PIN_4
 #define MuxA3_GPIO_Port GPIOB
 #define MuxB0_Pin GPIO_PIN_5
@@ -131,6 +135,8 @@ void Error_Handler(void);
 #define MuxB2_GPIO_Port GPIOB
 #define MuxB3_Pin GPIO_PIN_8
 #define MuxB3_GPIO_Port GPIOB
+#define ESC_PWM2_Pin GPIO_PIN_9
+#define ESC_PWM2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

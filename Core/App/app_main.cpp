@@ -122,7 +122,7 @@ void ReturnMyGoal() {
 
     // MyGoal_Angle = (cam.AttackColor)? cam.data.blue_angle: cam.data.yellow_angle;
     // distance = (cam.AttackColor)? cam.data.blue_distance: cam.data.yellow_distance;
-    MyGoal_Angle = 180 - cam.data.blue_angle;
+    MyGoal_Angle = cam.data.blue_angle;
     distance = cam.data.blue_distance;
 
     // MyGoal_Angle = 90 - cam.data.blue_angle;
