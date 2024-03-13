@@ -32,7 +32,7 @@ class camera {
     };
 
     struct camera_parsed_object : public camera_object {
-        camera_parsed_object& operator=(const camera_object& other) {
+        camera_parsed_object& operator = (const camera_object& other) {
             this->ball_angle = other.ball_angle;
             this->yellow_angle = other.yellow_angle;
             this->blue_angle = other.blue_angle;
@@ -43,11 +43,17 @@ class camera {
             this->isBallDetected = this->enable & 0x01;
             this->isYellowDetected = this->enable >> 1 & 0x01;
             this->isBlueDetected = this->enable >> 2 & 0x01;
+            this->isBallFront = this->enable >> 3 & 0x01;
+            this->isYellowFront = this->enable >> 4 & 0x01;
+            this->isBlueFront = this->enable >> 5 & 0x01;
             return *this;
         }
         bool isBallDetected;
         bool isYellowDetected;
         bool isBlueDetected;
+        bool isBallFront;
+        bool isBlueFront;
+        bool isYellowFront;
     };
 
     camera_parsed_object data;
