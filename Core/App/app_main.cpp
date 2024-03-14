@@ -182,10 +182,11 @@ void ReturnMyGoal() {
 
 int16_t line_angle;
 bool line_isonline;
-
 int16_t line_dis;
+bool isFront;
 
 void logic_main(void) {
+    isFront = cam.data.isYellowFront;
     // line_angle = line.angle;
     // line_isonline = line.isonLine;
 
@@ -205,7 +206,7 @@ void logic_main(void) {
     //     atc.setGoStraightAngle(line_angle);
     // }
     // else {
-    ReturnMyGoal();
+    // ReturnMyGoal();
     // }
 }
 
