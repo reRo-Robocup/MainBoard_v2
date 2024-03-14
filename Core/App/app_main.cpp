@@ -85,7 +85,20 @@ void app_update() {
     logic_main();
 
     if (ui.getSW()) {
-        mcu.systemReset();
+        kicker.setMode(0);
+        switch (ui.getRotarySW()) {
+        case 0:
+            mcu.systemReset();
+            break;
+        case 1:
+            kicker.setMode(2);
+            break;
+        case 2:
+            kicker.setMode(3);
+            break;
+        default:
+            break;
+        }
     }
 }
 
@@ -219,6 +232,7 @@ void app_main() {
     ui.buzzer(1000, 50);
 
     atc.setMode(3);
+    kicker.setMode(1);
 
     pid_ReturnMyGoal.setPID(1.0, 0, 0.4);
     pid_ReturnMyGoal.setProcessTime(0.001);
