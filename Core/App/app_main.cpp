@@ -227,45 +227,20 @@ void app_main() {
 
     int mode = 0;
     unsigned long long time = 0;
-    while (1) {
-        mcu.delay_ms(500);
-        kicker.setMode(1);
-        mcu.delay_ms(500);
-        kicker.setMode(2);
-        mcu.delay_ms(500);
-        kicker.setMode(1);
-        mcu.delay_ms(500);
-        kicker.setMode(3);
-    }
+    // while (1) {
+    //     mcu.delay_ms(500);
+    //     kicker.setMode(1);
+    //     mcu.delay_ms(500);
+    //     kicker.setMode(2);
+    //     mcu.delay_ms(500);
+    //     kicker.setMode(1);
+    //     mcu.delay_ms(500);
+    //     kicker.setMode(3);
+    // }
 
     while (1) {
-        // switch (mode) {
-        //     case 0:
-        //         kicker.setMode(1);
-        //         mode = 1;
-        //         time = mcu.millis();
-        //         break;
-
-        //     case 1:
-        //         if (mcu.millis() - time > 1000) {
-        //             mode = 2;
-        //             time = mcu.millis();
-        //         }
-
-        //     case 2:
-        //         kicker.setMode(2);
-        //         mode = 3;
-        //         break;
-
-        //     case 3:
-        //         if (mcu.millis() - time > 1000) {
-        //             mode = 0;
-        //         }
-        //         break;
-
-        //     default:
-        //         break;
-        // }
+        printf("%d\r\n", ui.getRotarySW());
+        // ui.getRotarySW();
         // printf("Ba %d Bl %d Yl %d\r\n", cam.data.isBallDetected, cam.data.isBlueDetected, cam.data.isYellowDetected);
     }
 }
