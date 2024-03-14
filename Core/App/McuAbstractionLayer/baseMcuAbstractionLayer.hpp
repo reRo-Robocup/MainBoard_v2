@@ -52,6 +52,9 @@ class baseMcuAbstractionLayer {
         Rotary_IN2,
         Rotary_IN3,
         IMU_CS,
+        KickerH,
+        KickerLA,
+        KickerLB,
         End_G,
     };
 

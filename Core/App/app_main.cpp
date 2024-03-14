@@ -8,18 +8,20 @@
 
 #include <GlobalDefines.h>
 #include <app_main.h>
+#include <Lib/pid.hpp>
 #include <McuAbstractionLayer/stm32halAbstractionLayer.hpp>
 #include <Module/AttitudeController.hpp>
 #include <Module/BatteryVoltageChecker.hpp>
 #include <Module/Camera.hpp>
+#include <Module/KickerController.hpp>
 #include <Module/LineSensor.hpp>
 #include <Module/MPU6500.hpp>
 #include <Module/MotorControll.hpp>
 #include <Module/UI.hpp>
-#include <Lib/pid.hpp>
 
 stm32halAbstractionLayer mcu;
 BatteryVoltageChecker bvc(&mcu);
+KickerController kicker(&mcu);
 camera cam(&mcu);
 MPU6500 imu(&mcu);
 AttitudeController atc(&mcu, &imu);
@@ -54,6 +56,7 @@ void BatteryVoltageCritical(bool flag) {
 void app_init() {
     mcu.init();
     bvc.init();
+    kicker.init();
     cam.init();
     line.init();
     imu.init();
@@ -73,6 +76,7 @@ void app_init() {
 void app_update() {
     bvc.update();
     cam.update();
+    kicker.update();
     line.update();
     imu.update();
     atc.update();
@@ -80,7 +84,7 @@ void app_update() {
 
     logic_main();
 
-    if(ui.getSW()) {
+    if (ui.getSW()) {
         mcu.systemReset();
     }
 }
@@ -109,7 +113,7 @@ void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
     }
 }
 
-PID <float> pid_ReturnMyGoal;
+PID<float> pid_ReturnMyGoal;
 
 float returnAngle;
 float power;
@@ -131,12 +135,13 @@ void ReturnMyGoal() {
 
     uint8_t goal_dis_threshold = 85;
     power = pid_ReturnMyGoal.update(goal_dis_threshold, distance);
-    if(abs(power) > 20) power = 20;
+    if (abs(power) > 20)
+        power = 20;
     power /= 20;
 
     int8_t dir = signbit(power);
 
-    if(dir) {
+    if (dir) {
         atc.setGoStraightAngle(MyGoal_Angle);
         atc.setGoStraightPower(abs(power));
     }
@@ -145,8 +150,6 @@ void ReturnMyGoal() {
         atc.setGoStraightAngle(MyGoal_Angle + 180);
         atc.setGoStraightPower(abs(power));
     }
-
-
 
     // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1)) + 180;
     // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1));
@@ -183,19 +186,17 @@ void logic_main(void) {
     //     atc.setGoStraightPower(0);
     // }
 
-
     // if(line.isonLine) {
     //     atc.setMode(3);
     //     atc.setGoStraightPower(0.8);
     //     atc.setGoStraightAngle(line_angle);
     // }
     // else {
-        ReturnMyGoal();
+    ReturnMyGoal();
     // }
 }
 
 void app_main() {
-    
     printf("app_start\r\n");
     app_init();
 
