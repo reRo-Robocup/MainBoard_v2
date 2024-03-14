@@ -112,8 +112,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     while (1) {
-        // printf("Hello!!\n");
-        app_main();
+      app_main();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
