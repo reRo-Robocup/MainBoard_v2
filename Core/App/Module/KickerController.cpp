@@ -65,3 +65,7 @@ void KickerController::update() {
 void KickerController::setMode(int mode) {
     _mode = mode;
 }
+
+void KickerController::setKickTime(unsigned int time) {
+    _kick_time = time;
+}

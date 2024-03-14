@@ -14,7 +14,7 @@ class KickerController {
     void init();
     void update();
     void setMode(int mode);
-    void _setKickTime(unsigned int time);
+    void setKickTime(unsigned int time);
 
    private:
     baseMcuAbstractionLayer* _mcu;
