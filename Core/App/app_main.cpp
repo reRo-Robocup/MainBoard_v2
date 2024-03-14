@@ -8,6 +8,8 @@
 
 #include <GlobalDefines.h>
 #include <app_main.h>
+#include <Algo/attacker.hpp>
+#include <Algo/keeper.hpp>
 #include <Lib/pid.hpp>
 #include <McuAbstractionLayer/stm32halAbstractionLayer.hpp>
 #include <Module/AttitudeController.hpp>
@@ -27,6 +29,8 @@ MPU6500 imu(&mcu);
 AttitudeController atc(&mcu, &imu);
 UI ui(&mcu);
 LineSensor line(&mcu, &ui);
+Attacker attacker;
+Keeper keeper;
 
 void app_init();
 void app_main();
@@ -71,6 +75,9 @@ void app_init() {
     bvc.setCriticalVoltage(8);
     bvc.setCriticalTime(100);
     bvc.setCriticalCallback(&BatteryVoltageCritical);
+
+    attacker.init();
+    keeper.init();
 }
 
 void app_update() {
@@ -87,17 +94,17 @@ void app_update() {
     if (ui.getSW()) {
         kicker.setMode(0);
         switch (ui.getRotarySW()) {
-        case 0:
-            mcu.systemReset();
-            break;
-        case 1:
-            kicker.setMode(2);
-            break;
-        case 2:
-            kicker.setMode(3);
-            break;
-        default:
-            break;
+            case 0:
+                mcu.systemReset();
+                break;
+            case 1:
+                kicker.setMode(2);
+                break;
+            case 2:
+                kicker.setMode(3);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -240,22 +247,6 @@ void app_main() {
 
     cam.AttackColor = YELLOW;
 
-    int mode = 0;
-    unsigned long long time = 0;
-    // while (1) {
-    //     mcu.delay_ms(500);
-    //     kicker.setMode(1);
-    //     mcu.delay_ms(500);
-    //     kicker.setMode(2);
-    //     mcu.delay_ms(500);
-    //     kicker.setMode(1);
-    //     mcu.delay_ms(500);
-    //     kicker.setMode(3);
-    // }
-
     while (1) {
-        printf("%d\r\n", ui.getRotarySW());
-        // ui.getRotarySW();
-        // printf("Ba %d Bl %d Yl %d\r\n", cam.data.isBallDetected, cam.data.isBlueDetected, cam.data.isYellowDetected);
     }
 }
