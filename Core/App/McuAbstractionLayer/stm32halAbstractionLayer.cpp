@@ -126,6 +126,15 @@ stm32halAbstractionLayer::stm32halAbstractionLayer() {
     PAL.GPIO_PORT[MAL::Peripheral_GPIO::IMU_CS] = IMU_CS_GPIO_Port;
     PAL.GPIO_PIN[MAL::Peripheral_GPIO::IMU_CS] = IMU_CS_Pin;
 
+    PAL.GPIO_PORT[MAL::Peripheral_GPIO::Kicker_H] = Kicker_H_GPIO_Port;
+    PAL.GPIO_PIN[MAL::Peripheral_GPIO::Kicker_H] = Kicker_H_Pin;
+
+    PAL.GPIO_PORT[MAL::Peripheral_GPIO::Kicker_LA] = Kicker_LA_GPIO_Port;
+    PAL.GPIO_PIN[MAL::Peripheral_GPIO::Kicker_LA] = Kicker_LA_Pin;
+
+    PAL.GPIO_PORT[MAL::Peripheral_GPIO::Kicker_LB] = Kicker_LB_GPIO_Port;
+    PAL.GPIO_PIN[MAL::Peripheral_GPIO::Kicker_LB] = Kicker_LB_Pin;
+
     // UART
     PAL.UART[MAL::Peripheral_UART::Cam] = &huart6;
     PAL.UART[MAL::Peripheral_UART::Debug] = &huart2;

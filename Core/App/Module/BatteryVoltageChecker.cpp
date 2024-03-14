@@ -48,6 +48,10 @@ void BatteryVoltageChecker::update() {
 
         case 1:
             if (_voltage < _warning_voltage) {
+                if (_voltage < _critical_voltage) {
+                    _mode = 10;
+                    _critical_start_time = _mcu->millis();
+                }
                 if (_mcu->millis() - _warning_start_time > _warning_time) {
                     _mode = 2;
                     if (_warning_callback != nullptr) {
@@ -61,6 +65,10 @@ void BatteryVoltageChecker::update() {
 
         case 2:
             if (_voltage < _warning_voltage) {
+                if (_voltage < _critical_voltage) {
+                    _mode = 10;
+                    _critical_start_time = _mcu->millis();
+                }
                 _mode = 2;
             } else {
                 _warning_callback(false);

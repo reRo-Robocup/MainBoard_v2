@@ -18,34 +18,34 @@ void KickerController::init() {
 
 void KickerController::update() {
     switch (_mode) {
-        case 0:  // 放電
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerH, false);
+        case 0:
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_H, false);
 
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLA, true);
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLB, true);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LA, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LB, false);
             break;
 
         case 1:  // チャージ
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLA, false);
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLB, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LA, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LB, false);
 
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerH, true);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_H, true);
             break;
 
         case 2:  // Aキック
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerH, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_H, false);
 
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLA, true);
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLB, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LA, true);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LB, false);
             _kick_start_time = _mcu->millis();
             _mode = 4;
             break;
 
         case 3:  // Bキック
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerH, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_H, false);
 
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLA, true);
-            _mcu->gpioSetValue(MAL::Peripheral_GPIO::KickerLB, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LA, false);
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::Kicker_LB, true);
             _kick_start_time = _mcu->millis();
             _mode = 4;
             break;
