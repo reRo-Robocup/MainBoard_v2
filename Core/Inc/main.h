@@ -93,8 +93,10 @@ void Error_Handler(void);
 #define MuxA1_GPIO_Port GPIOB
 #define MuxA2_Pin GPIO_PIN_2
 #define MuxA2_GPIO_Port GPIOB
-#define OLED_SCL2_Pin GPIO_PIN_10
-#define OLED_SCL2_GPIO_Port GPIOB
+#define Kicker_LA_Pin GPIO_PIN_10
+#define Kicker_LA_GPIO_Port GPIOB
+#define Kicker_H_Pin GPIO_PIN_12
+#define Kicker_H_GPIO_Port GPIOB
 #define IMU_SCLK_Pin GPIO_PIN_13
 #define IMU_SCLK_GPIO_Port GPIOB
 #define DebugSW_Pin GPIO_PIN_15
@@ -121,10 +123,8 @@ void Error_Handler(void);
 #define Rotary_IN1_GPIO_Port GPIOC
 #define Rotary_IN2_Pin GPIO_PIN_11
 #define Rotary_IN2_GPIO_Port GPIOC
-#define OLED_SDA2_Pin GPIO_PIN_12
-#define OLED_SDA2_GPIO_Port GPIOC
-#define GPIO_KickerHside_Pin GPIO_PIN_2
-#define GPIO_KickerHside_GPIO_Port GPIOD
+#define Kicker_LB_Pin GPIO_PIN_12
+#define Kicker_LB_GPIO_Port GPIOC
 #define MuxA3_Pin GPIO_PIN_4
 #define MuxA3_GPIO_Port GPIOB
 #define MuxB0_Pin GPIO_PIN_5

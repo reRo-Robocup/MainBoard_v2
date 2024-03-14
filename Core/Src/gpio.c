@@ -49,20 +49,17 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, IMU_CS_Pin|DebugLED0_Pin|DebugLED1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, IMU_CS_Pin|DebugLED0_Pin|DebugLED1_Pin|Kicker_LB_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(DebugLED2_GPIO_Port, DebugLED2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, MuxA0_Pin|MuxA1_Pin|MuxA2_Pin|MuxA3_Pin
-                          |MuxB0_Pin|MuxB1_Pin|MuxB2_Pin|MuxB3_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIO_KickerHside_GPIO_Port, GPIO_KickerHside_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, MuxA0_Pin|MuxA1_Pin|MuxA2_Pin|Kicker_LA_Pin
+                          |MuxA3_Pin|MuxB0_Pin|MuxB1_Pin|MuxB2_Pin
+                          |MuxB3_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin
                            PCPin */
@@ -72,8 +69,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PCPin PCPin PCPin */
-  GPIO_InitStruct.Pin = IMU_CS_Pin|DebugLED0_Pin|DebugLED1_Pin;
+  /*Configure GPIO pins : PCPin PCPin PCPin PCPin */
+  GPIO_InitStruct.Pin = IMU_CS_Pin|DebugLED0_Pin|DebugLED1_Pin|Kicker_LB_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -87,26 +84,27 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(DebugLED2_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin
-                           PBPin PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = MuxA0_Pin|MuxA1_Pin|MuxA2_Pin|MuxA3_Pin
-                          |MuxB0_Pin|MuxB1_Pin|MuxB2_Pin|MuxB3_Pin;
+                           PBPin PBPin PBPin PBPin
+                           PBPin */
+  GPIO_InitStruct.Pin = MuxA0_Pin|MuxA1_Pin|MuxA2_Pin|Kicker_LA_Pin
+                          |MuxA3_Pin|MuxB0_Pin|MuxB1_Pin|MuxB2_Pin
+                          |MuxB3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = Kicker_H_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Kicker_H_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = DebugSW_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(DebugSW_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = GPIO_KickerHside_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIO_KickerHside_GPIO_Port, &GPIO_InitStruct);
 
 }
 
