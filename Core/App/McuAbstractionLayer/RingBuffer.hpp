@@ -1,13 +1,16 @@
+/*
+ *  RingBuffer.hpp
+ *
+ *  Created on: 2024/2/17
+ * 
+ *  Author: G4T1PR0
+ */
+
 #ifndef __RING_BUFFER_LIB__
 #define __RING_BUFFER_LIB__
 
-/*
- * RingBuffer.hpp
- * Created on: 2024 2/17
- * Author: G4T1PR0
- */
-
 template <typename T, int capacity>
+
 class RingBuffer {
    public:
     RingBuffer() {
