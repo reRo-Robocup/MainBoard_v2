@@ -1,12 +1,15 @@
 /*
- * pid.hpp
- * Created on: 2023 4/14
- * Author: G4T1PR0
+ *  pid.hpp
+ *
+ *  Created on: 2023/4/14
+ * 
+ *  Author: G4T1PR0
  */
 
 #pragma once
 
 template <typename T>
+
 class PID {
    public:
     PID() {

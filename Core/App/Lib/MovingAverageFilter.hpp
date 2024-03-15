@@ -1,7 +1,9 @@
 /*
- * MovingAverageFilter.hpp
- * Created on: 2024 3/3
- * Author: G4T1PR0
+ *  MovingAverageFilter.hpp
+ *
+ *  Created on: 2024/3/3
+ *
+ *  Author: G4T1PR0
  */
 
 #ifndef __MOVING_AVERAGE_FILTER_LIB__
