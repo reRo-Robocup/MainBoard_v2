@@ -6,7 +6,6 @@
  *  Author: onlydcx, G4T1PR0
  */
 
-#include <GlobalDefines.h>
 #include <app_main.h>
 #include <Algo/attacker.hpp>
 #include <Algo/keeper.hpp>
@@ -109,30 +108,6 @@ void app_update() {
     }
 }
 
-void MoveOnlyX(int16_t ObjAngle, int16_t TargetAngle) {
-    int16_t angle = ObjAngle;
-    int16_t diff = TargetAngle - angle;
-
-    int8_t dir;
-
-    if (diff != 0) {
-        dir = (diff / abs(diff));
-    }
-
-    // printf("%d\n", diff);
-
-    if (abs(diff) < 5) {
-        printf("STop\n");
-        atc.setMode(0);
-    }
-
-    else {
-        atc.setMode(3);
-        printf("Idou\n");
-        atc.setGoStraightAngle(-90 * dir);
-    }
-}
-
 PID<float> pid_ReturnMyGoal;
 
 float returnAngle;
@@ -187,34 +162,14 @@ void ReturnMyGoal() {
     // else atc.setGoStraightAngle(0);
 }
 
-int16_t line_angle;
-bool line_isonline;
-int16_t line_dis;
-bool isFront;
-
 void logic_main(void) {
-    isFront = cam.data.isYellowFront;
-    // line_angle = line.angle;
-    // line_isonline = line.isonLine;
-
-    // if(line_isonline) {
-    //     atc.setMode(3);
-    //     atc.setGoStraightPower(0.8);
-    //     atc.setGoStraightAngle(line_angle);
-    // }
-    // else {
-    //     atc.setMode(0);
-    //     atc.setGoStraightPower(0);
-    // }
-
-    // if(line.isonLine) {
-    //     atc.setMode(3);
-    //     atc.setGoStraightPower(0.8);
-    //     atc.setGoStraightAngle(line_angle);
-    // }
-    // else {
-    // ReturnMyGoal();
-    // }
+    uint8_t states = ui.getRotarySW();
+    if(states >= 4 && states <= 6) {
+        attacker.update();
+    }
+    else {
+        keeper.update();
+    }
 }
 
 void app_main() {
@@ -242,8 +197,11 @@ void app_main() {
     atc.setMode(3);
     kicker.setMode(1);
 
-    pid_ReturnMyGoal.setPID(1.0, 0, 0.4);
-    pid_ReturnMyGoal.setProcessTime(0.001);
+    PID_ReturnMyGoal.setPID(1.0, 0, 0.4);
+    PID_ReturnMyGoal.setProcessTime(0.001);
+
+    attacker.init();
+    keeper.init();
 
     cam.AttackColor = YELLOW;
 
