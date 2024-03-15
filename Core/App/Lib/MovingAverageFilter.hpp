@@ -10,6 +10,7 @@
 #define __MOVING_AVERAGE_FILTER_LIB__
 
 template <typename T, int size>
+
 class MovingAverageFilter {
    public:
     MovingAverageFilter() {
