@@ -22,13 +22,26 @@ void camera::update() {
     this->_read_via_buffer();
 
     if(this->AttackColor == YELLOW) {
-        // 黄色攻め
-        this->isFront_AttackGoal = this->data.isYellowFront;
-        this->isFront_KeepGoal = this->data.isBlueFront;
-    } else {
-        // 青色攻め
-        this->isFront_AttackGoal = this->data.isBallFront;
-        this->isFront_KeepGoal = this->data.isYellowFront;
+        this->AttackGoal.ang = this->data.yellow_angle;
+        this->AttackGoal.dis = this->data.yellow_distance;
+        this->AttackGoal.enable = this->data.isYellowDetected;
+        this->AttackGoal.isFront = this->data.isYellowFront;
+
+        this->KeepGoal.ang = this->data.blue_angle;
+        this->KeepGoal.dis = this->data.ball_distance;
+        this->KeepGoal.enable = this->data.isBlueDetected;
+        this->KeepGoal.isFront = this->data.isBlueFront;
+    }
+    else {
+        this->AttackGoal.ang = this->data.blue_angle;
+        this->AttackGoal.dis = this->data.ball_distance;
+        this->AttackGoal.enable = this->data.isBlueDetected;
+        this->AttackGoal.isFront = this->data.isBlueFront;
+
+        this->KeepGoal.ang = this->data.yellow_angle;
+        this->KeepGoal.dis = this->data.yellow_distance;
+        this->KeepGoal.enable = this->data.isYellowDetected;
+        this->KeepGoal.isFront = this->data.isYellowFront;
     }
 }
 
