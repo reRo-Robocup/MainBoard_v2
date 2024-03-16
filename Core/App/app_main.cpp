@@ -28,8 +28,9 @@ MPU6500 imu(&mcu);
 AttitudeController atc(&mcu, &imu);
 UI ui(&mcu);
 LineSensor line(&mcu, &ui);
-Attacker attacker;
-Keeper keeper;
+
+Attacker attacker(&mcu, &atc, &cam, &kicker, &line, &imu, &ui);
+Keeper keeper(&mcu, &atc, &cam, &kicker, &line, &imu, &ui);
 
 void app_init();
 void app_main();
@@ -108,7 +109,7 @@ void app_update() {
     }
 }
 
-PID<float> pid_ReturnMyGoal;
+PID<float> PID_ReturnMyGoal;
 
 float returnAngle;
 float power;
@@ -129,7 +130,7 @@ void ReturnMyGoal() {
     // _speed_x = pid_goal_x.update(0, mv_xVector);
 
     uint8_t goal_dis_threshold = 85;
-    power = pid_ReturnMyGoal.update(goal_dis_threshold, distance);
+    power = PID_ReturnMyGoal.update(goal_dis_threshold, distance);
     if (abs(power) > 20)
         power = 20;
     power /= 20;
