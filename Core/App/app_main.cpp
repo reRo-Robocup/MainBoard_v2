@@ -109,60 +109,6 @@ void app_update() {
     }
 }
 
-PID<float> PID_ReturnMyGoal;
-
-float returnAngle;
-float power;
-
-int16_t MyGoal_Angle;
-int16_t distance;
-
-void ReturnMyGoal() {
-    atc.setMode(3);
-
-    // MyGoal_Angle = (cam.AttackColor)? cam.data.blue_angle: cam.data.yellow_angle;
-    // distance = (cam.AttackColor)? cam.data.blue_distance: cam.data.yellow_distance;
-    MyGoal_Angle = cam.data.blue_angle;
-    distance = cam.data.blue_distance;
-
-    // MyGoal_Angle = 90 - cam.data.blue_angle;
-    // mv_xVector = cos(MyGoal_Angle * deg_to_rad);
-    // _speed_x = pid_goal_x.update(0, mv_xVector);
-
-    uint8_t goal_dis_threshold = 85;
-    power = PID_ReturnMyGoal.update(goal_dis_threshold, distance);
-    if (abs(power) > 20)
-        power = 20;
-    power /= 20;
-
-    int8_t dir = signbit(power);
-
-    if (dir) {
-        atc.setGoStraightAngle(MyGoal_Angle);
-        atc.setGoStraightPower(abs(power));
-    }
-
-    else {
-        atc.setGoStraightAngle(MyGoal_Angle + 180);
-        atc.setGoStraightPower(abs(power));
-    }
-
-    // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1)) + 180;
-    // returnAngle = (360 - (atan2(_speed_y,_speed_x) * rad_to_deg * -1));
-    // while(returnAngle > 180) returnAngle -= 360;
-    // while(returnAngle < -180)returnAngle += 360;
-
-    // // power = sqrt(pow(_speed_x,2) + pow(_speed_y, 2));
-    // power = (_speed_x + _speed_y) / 2;
-    // // それぞれabsを取る
-
-    // atc.setGoStraightPower(abs(power));
-    // atc.setGoStraightAngle(returnAngle);
-    // int8_t dir = signbit(_speed_y);
-    // if(dir) atc.setGoStraightAngle(180);
-    // else atc.setGoStraightAngle(0);
-}
-
 void logic_main(void) {
     uint8_t states = ui.getRotarySW();
     if(states >= 4 && states <= 6) {
@@ -197,9 +143,6 @@ void app_main() {
 
     atc.setMode(3);
     kicker.setMode(1);
-
-    PID_ReturnMyGoal.setPID(1.0, 0, 0.4);
-    PID_ReturnMyGoal.setProcessTime(0.001);
 
     attacker.init();
     keeper.init();
