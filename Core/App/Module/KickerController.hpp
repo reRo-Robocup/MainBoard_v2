@@ -6,6 +6,9 @@
  *  Author: onlydcx, G4T1PR0
  */
 
+#ifndef _APP_MODULE_KICKERCONTROLLER_HPP_
+#define _APP_MODULE_KICKERCONTROLLER_HPP_
+
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class KickerController {
@@ -22,3 +25,5 @@ class KickerController {
     unsigned long long _kick_start_time = 0;
     unsigned int _kick_time = 100;
 };
+
+#endif /* _APP_MODULE_KICKERCONTROLLER_HPP_ */
