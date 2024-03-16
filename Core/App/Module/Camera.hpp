@@ -46,6 +46,7 @@ class camera {
             this->isBallFront = this->enable >> 3 & 0x01;
             this->isYellowFront = this->enable >> 4 & 0x01;
             this->isBlueFront = this->enable >> 5 & 0x01;
+            this->isInMyArea = this->enable >> 6 & 0x01;
             return *this;
         }
         bool isBallDetected;
@@ -54,6 +55,7 @@ class camera {
         bool isBallFront;
         bool isBlueFront;
         bool isYellowFront;
+        bool isInMyArea;
     };
 
     camera_parsed_object data;
