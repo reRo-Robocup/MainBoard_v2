@@ -15,12 +15,21 @@ camera::camera(MAL* mcu) {
 }
 
 void camera::init() {
-    AttackColor = YELLOW;
-    // printf("Camera init\n");
+    this->AttackColor = YELLOW;
 }
 
 void camera::update() {
     this->_read_via_buffer();
+
+    if(this->AttackColor == YELLOW) {
+        // 黄色攻め
+        this->isFront_AttackGoal = this->data.isYellowFront;
+        this->isFront_KeepGoal = this->data.isBlueFront;
+    } else {
+        // 青色攻め
+        this->isFront_AttackGoal = this->data.isBallFront;
+        this->isFront_KeepGoal = this->data.isYellowFront;
+    }
 }
 
 void camera::_read_via_buffer() {
@@ -70,10 +79,6 @@ void camera::_read_via_buffer() {
                     _rx_mode = 0;
                     _rx_data_index = 0;
                     this->data = camera_rx_data_parser.parsed_data;
-
-                    // if(this->data.ball_angle > 180) {
-                    //     this->data.ball_angle = this->data.ball_angle - 360;
-                    // }
                 }
                 break;
 

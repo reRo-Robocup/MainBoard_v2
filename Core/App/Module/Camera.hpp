@@ -20,6 +20,8 @@ class camera {
     void init();
     void update();
     bool AttackColor;
+    bool isFront_KeepGoal;
+    bool isFront_AttackGoal;
 
     struct camera_object {
         uint16_t ball_angle;
