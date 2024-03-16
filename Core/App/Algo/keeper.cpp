@@ -18,8 +18,21 @@ Keeper::Keeper(MAL* mcu, AttitudeController* atc, camera* cam, KickerController*
     this->_ui = ui;
 }
 
+PID <float> PID_RturnGoal;
+
 void Keeper::init() {
+    PID_RturnGoal.setProcessTime(0.001);
+    PID_RturnGoal.setPID(1,0,0);
+}
+
+void Keeper::ReturnGoal() {
+
 }
 
 void Keeper::update() {
+    if(_cam->isFront_KeepGoal) {
+        // ゴール前
+    } else {
+        
+    }
 }

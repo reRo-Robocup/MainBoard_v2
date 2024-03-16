@@ -11,6 +11,8 @@
 
 #include <McuAbstractionLayer/stm32halAbstractionLayer.hpp>
 
+#include <Lib/pid.hpp>
+
 #include <Module/AttitudeController.hpp>
 #include <Module/BatteryVoltageChecker.hpp>
 #include <Module/Camera.hpp>
@@ -24,6 +26,7 @@ class Keeper {
       Keeper(MAL* mcu, AttitudeController* atc, camera* cam, KickerController* kicker, LineSensor* line, MPU6500* imu, UI* ui);
       void init();
       void update();
+      void ReturnGoal();
 
    private:
       MAL* _mcu;
