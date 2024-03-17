@@ -90,10 +90,21 @@ void app_update() {
     ui.update();
 
     logic_main();
+}
 
-    if (ui.getSW()) {
+void logic_main(void) {
+    uint8_t states = ui.getRotarySW();
+
+    if(states >= 3 && states <= 5) {
+        attacker.update();
+    }
+    else if (states >= 6 && states <= 9) {
+        keeper.update();
+    }
+    else {
+        // 車検時モード
         kicker.setMode(0);
-        switch (ui.getRotarySW()) {
+        switch (states) {
             case 0:
                 mcu.systemReset();
                 break;
@@ -106,16 +117,6 @@ void app_update() {
             default:
                 break;
         }
-    }
-}
-
-void logic_main(void) {
-    uint8_t states = ui.getRotarySW();
-    if(states >= 4 && states <= 6) {
-        attacker.update();
-    }
-    else {
-        keeper.update();
     }
 }
 
@@ -150,5 +151,6 @@ void app_main() {
     cam.AttackColor = YELLOW;
 
     while (1) {
+        /* main loop */
     }
 }
