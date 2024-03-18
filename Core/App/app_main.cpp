@@ -15,16 +15,19 @@
 #include <Module/BatteryVoltageChecker.hpp>
 #include <Module/Camera.hpp>
 #include <Module/KickerController.hpp>
+#include <Module/MotorControll.hpp>
 #include <Module/LineSensor.hpp>
 #include <Module/MPU6500.hpp>
-#include <Module/MotorControll.hpp>
+// #include <Module/MotorControll.hpp>
 #include <Module/UI.hpp>
+#include <Module/AttitudeController.hpp>
 
 stm32halAbstractionLayer mcu;
 BatteryVoltageChecker bvc(&mcu);
 KickerController kicker(&mcu);
 camera cam(&mcu);
 MPU6500 imu(&mcu);
+// MotorControll motor(&mcu, &imu);
 AttitudeController atc(&mcu, &imu);
 UI ui(&mcu);
 LineSensor line(&mcu, &ui);
@@ -64,6 +67,7 @@ void app_init() {
     cam.init();
     line.init();
     imu.init();
+    // motor.init();
     atc.init();
     ui.init();
     mcu.interruptSetCallback(MAL::Peripheral_Interrupt::T1ms, &app_update);
@@ -92,18 +96,31 @@ void app_update() {
     logic_main();
 }
 
+int16_t angle;
+bool isonline;
+
+int16_t y;
+
+int16_t ball;
+
+bool isBallEnable;
+uint8_t distance;
 
 void logic_main(void) {
-    // keeper.update();
-    // attacker.update();
 
-    if(line.isonLine) {
-        atc.setMode(3);
-        atc.setGoStraightAngle(line.angle);
-    }
-    else {
-        atc.setMode(0);
-    }
+    attacker.update();
+    ball = cam.data.ball_angle;
+
+    isBallEnable = cam.data.isBallDetected;
+    distance = cam.data.ball_distance;
+
+    // atc.setMode(2);
+    // atc.setTurnAngle(180);
+    y = imu.Yaw;
+
+    // atc.setMode(3);
+    // atc.setGoStraightPower(0.4);
+    // atc.setGoStraightAngle(90);
 
     if(ui.getSW()) {
         kicker.setMode(0);
@@ -132,8 +149,7 @@ void app_main() {
     calibration_start_time = mcu.millis();
 
     while (!imu.isCalibrationed) {
-        // printf("IMU not isCalibrationed\n");
-        if ((mcu.millis() - calibration_start_time) > 2000) {
+        if ((mcu.millis() - calibration_start_time) > 4000) {
             printf("retry IMU Initialize\r\n");
             imu.init();
             calibration_start_time = mcu.millis();
@@ -145,12 +161,6 @@ void app_main() {
     ui.buzzer(2000, 50);
     mcu.delay_ms(100);
     ui.buzzer(1000, 50);
-
-    atc.setMode(0);
-    kicker.setMode(1);
-
-    attacker.init();
-    keeper.init();
 
     cam.AttackColor = YELLOW;
 
