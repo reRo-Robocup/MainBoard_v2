@@ -21,6 +21,8 @@ void camera::init() {
 void camera::update() {
     this->_read_via_buffer();
 
+    // this->data.ball_angle -= 180;
+
     if(this->AttackColor == YELLOW) {
         this->AttackGoal.ang = this->data.yellow_angle;
         this->AttackGoal.dis = this->data.yellow_distance;
@@ -98,6 +100,7 @@ void camera::_read_via_buffer() {
                     _rx_mode = 0;
                     _rx_data_index = 0;
                     this->data = camera_rx_data_parser.parsed_data;
+                    this->data.ball_angle -= 180;
                 }
                 break;
 
