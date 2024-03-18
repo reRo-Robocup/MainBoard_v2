@@ -19,14 +19,13 @@ MPU6500::MPU6500(MAL* mcu) {
 }
 
 void MPU6500::init() {
-    printf("IMU init Start\n");
+    // printf("IMU init Start\n");
     _mode = 0;
     uint8_t who_am_i;
     _dt = CONTROLL_CYCLE;
     who_am_i = _read_byte(0x75);
     // printf("IMU states is 0x%x\n", who_am_i);
     if (who_am_i == 0x70) {
-        printf("IMU is Sleep Mode\n");
         _write_byte(0x6B, 0x00);  // sleep mode解除
         _mcu->delay_ms(100);
         _write_byte(0x1A, 0x00);
@@ -42,7 +41,7 @@ void MPU6500::init() {
     _Gz_drift_constant = 0;
     Yaw = 180;
     _madgwick.begin(1000.0);
-    printf("IMU init END \n\n");
+    // printf("IMU init END \n\n");
 }
 
 void MPU6500::update() {
