@@ -25,14 +25,14 @@ void AttitudeController::init() {
 
     motor_data[TractionMotors::Motor3].pin = MAL::Peripheral_PWM::Motor3;
     motor_data[TractionMotors::Motor3].motorAngle = 225;
-    motor_data[TractionMotors::Motor3].isConnectionReversed = true;
+    motor_data[TractionMotors::Motor3].isConnectionReversed = false;
 
     motor_data[TractionMotors::Motor4].pin = MAL::Peripheral_PWM::Motor4;
     motor_data[TractionMotors::Motor4].motorAngle = 315;
     motor_data[TractionMotors::Motor4].isConnectionReversed = false;
 
     // _turn_angle_pid.setPID(0.02, 0.0, 0);
-    _turn_angle_pid.setPID(0.005, 0.0, 0);
+    _turn_angle_pid.setPID(0.015, 0.0, 0.2);
     _mode = 0;
     this->_turn_angle = 180;
     this->setGoStraightPower(0.5);
@@ -81,7 +81,7 @@ void AttitudeController::update() {
 
         case 2:  // 角度制御のみ
         {
-            float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw);
+            float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw) * -1;
             if (output > 0.94) {
                 output = 0.94;
             }
@@ -120,7 +120,7 @@ void AttitudeController::update() {
                 }
             }
 
-            float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw);
+            float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw) * -1;
 
             if (output > 0.94) {
                 output = 0.94;
@@ -129,7 +129,8 @@ void AttitudeController::update() {
                 output = -0.94;
             }
 
-            if (abs(output) > 0.05) {
+            // if (abs(output) > 0.05) {
+            if (abs(180 - _imu->Yaw) > 5) {
                 _setPWM(TractionMotors::Motor1, output);
                 _setPWM(TractionMotors::Motor2, output);
                 _setPWM(TractionMotors::Motor3, output);
@@ -154,6 +155,10 @@ void AttitudeController::update() {
             }
 
         } break;
+
+        case 4:
+            // Freeブレーキ
+            _mcu->gpioSetValue(MAL::Peripheral_GPIO::isMotorEnabled, 0);
 
         default:
             _setPWM(TractionMotors::Motor1, 0);
