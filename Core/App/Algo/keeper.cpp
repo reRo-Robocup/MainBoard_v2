@@ -8,14 +8,14 @@
 
 #include <Algo/keeper.hpp>
 
-Keeper::Keeper(MAL* mcu, AttitudeController* atc, camera* cam, KickerController* kicker, LineSensor* line, MPU6500* imu, UI* ui) {
-    this->_mcu = mcu;
-    this->_atc = atc;
-    this->_cam = cam;
-    this->_kicker = kicker;
-    this->_line = line;
-    this->_imu = imu;
-    this->_ui = ui;
+Keeper::Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerController* _kicker, LineSensor* _line, MPU6500* _imu, UI* _ui) {
+    this->mcu = _mcu;
+    this->atc = _atc;
+    this->cam = _cam;
+    this->kicker = _kicker;
+    this->line = _line;
+    this->imu = _imu;
+    this->ui = _ui;
 }
 
 PID <float> PID_RturnGoal;
@@ -30,9 +30,19 @@ void Keeper::ReturnGoal() {
 }
 
 void Keeper::update() {
-    if(_cam->isFront_KeepGoal) {
+    if(cam->KeepGoal.isFront) {
         // ゴール前
+        ui->buzzer(1000,1);
+        atc->setMode(0);
     } else {
-        
+        int8_t dir = signbit(cam->KeepGoal.ang);
+        atc->setMode(3);
+        atc->setGoStraightPower(0.5);
+        if(dir) {
+            atc->setGoStraightAngle(90);
+        }
+        else {
+            atc->setGoStraightAngle(-90);
+        }
     }
 }

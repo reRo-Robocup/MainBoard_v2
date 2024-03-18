@@ -43,6 +43,12 @@ void camera::update() {
         this->KeepGoal.enable = this->data.isYellowDetected;
         this->KeepGoal.isFront = this->data.isYellowFront;
     }
+
+    if(this->KeepGoal.ang >= 180) this->KeepGoal.ang -= 360;
+    if(this->KeepGoal.ang <=-180) this->KeepGoal.ang += 360;
+
+    if(this->AttackGoal.ang >= 180) this->AttackGoal.ang -= 360;
+    if(this->AttackGoal.ang <=-180) this->AttackGoal.ang += 360;
 }
 
 void camera::_read_via_buffer() {

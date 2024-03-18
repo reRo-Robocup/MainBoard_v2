@@ -92,19 +92,22 @@ void app_update() {
     logic_main();
 }
 
-void logic_main(void) {
-    uint8_t states = ui.getRotarySW();
 
-    if(states >= 3 && states <= 5) {
-        attacker.update();
-    }
-    else if (states >= 6 && states <= 9) {
-        keeper.update();
+void logic_main(void) {
+    // keeper.update();
+    // attacker.update();
+
+    if(line.isonLine) {
+        atc.setMode(3);
+        atc.setGoStraightAngle(line.angle);
     }
     else {
-        // 車検時モード
+        atc.setMode(0);
+    }
+
+    if(ui.getSW()) {
         kicker.setMode(0);
-        switch (states) {
+        switch (ui.getRotarySW()){
             case 0:
                 mcu.systemReset();
                 break;
@@ -129,7 +132,8 @@ void app_main() {
     calibration_start_time = mcu.millis();
 
     while (!imu.isCalibrationed) {
-        if (mcu.millis() - calibration_start_time > 2000) {
+        // printf("IMU not isCalibrationed\n");
+        if ((mcu.millis() - calibration_start_time) > 2000) {
             printf("retry IMU Initialize\r\n");
             imu.init();
             calibration_start_time = mcu.millis();
@@ -142,7 +146,7 @@ void app_main() {
     mcu.delay_ms(100);
     ui.buzzer(1000, 50);
 
-    atc.setMode(3);
+    atc.setMode(0);
     kicker.setMode(1);
 
     attacker.init();

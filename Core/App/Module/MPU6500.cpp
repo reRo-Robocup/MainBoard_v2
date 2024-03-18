@@ -14,14 +14,19 @@
 
 MPU6500::MPU6500(MAL* mcu) {
     _mcu = mcu;
+    // isCalibrationed = 0;
+    // isInitialized = 0;
 }
 
 void MPU6500::init() {
+    printf("IMU init Start\n");
     _mode = 0;
     uint8_t who_am_i;
     _dt = CONTROLL_CYCLE;
     who_am_i = _read_byte(0x75);
+    // printf("IMU states is 0x%x\n", who_am_i);
     if (who_am_i == 0x70) {
+        printf("IMU is Sleep Mode\n");
         _write_byte(0x6B, 0x00);  // sleep mode解除
         _mcu->delay_ms(100);
         _write_byte(0x1A, 0x00);
@@ -29,6 +34,7 @@ void MPU6500::init() {
         //_write_byte(0x1B, 0x00); // FS_SEL = 0
         isInitialized = 1;
     }
+    
     isCalibrationed = 0;
 
     _Gx_drift_constant = 0;
@@ -36,11 +42,12 @@ void MPU6500::init() {
     _Gz_drift_constant = 0;
     Yaw = 180;
     _madgwick.begin(1000.0);
+    printf("IMU init END \n\n");
 }
 
 void MPU6500::update() {
     switch (_mode) {
-        case 0:  //
+        case 0:
             if (isInitialized) {
                 _mode = 1;
             }
@@ -49,12 +56,14 @@ void MPU6500::update() {
         case 1:
             _calibration_sum_cnt = 0;
             _read_gyro_data();
+            printf("raw_Gz = %d\n", raw_Gz);
             if (raw_Gz != 0) {
                 _mode = 2;
             }
             break;
 
         case 2:
+            // printf("IMU calibration");
             if (_calibration_sum_cnt >= 1000) {
                 _Gx_drift_constant = _calibration_sum_Gx / _calibration_sum_cnt;
                 _Gy_drift_constant = _calibration_sum_Gy / _calibration_sum_cnt;

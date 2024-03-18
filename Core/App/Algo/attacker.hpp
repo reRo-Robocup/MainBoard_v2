@@ -21,18 +21,18 @@
 
 class Attacker {
    public:
-      Attacker(MAL* mcu, AttitudeController* atc, camera* cam, KickerController* kicker, LineSensor* line, MPU6500* imu, UI* ui);;
+      Attacker(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerController* _kicker, LineSensor* _line, MPU6500* _imu, UI* _ui);
       void init();
       void update();
 
    private:
-      MAL* _mcu;
-      AttitudeController* _atc;
-      camera* _cam;
-      KickerController* _kicker;
-      LineSensor* _line;
-      MPU6500* _imu;
-      UI* _ui;
+      MAL* mcu;
+      AttitudeController* atc;
+      camera* cam;
+      KickerController* kicker;
+      LineSensor* line;
+      MPU6500* imu;
+      UI* ui;
 
 };
 
