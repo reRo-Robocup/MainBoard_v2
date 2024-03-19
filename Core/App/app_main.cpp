@@ -93,57 +93,9 @@ void app_update() {
     logic_main();
 }
 
-float dis;
-uint8_t qty;
-
-PID <float> PID_LineTrace;
-float p;
-int16_t line_ang;
-int16_t toMove;
-int8_t dir;
-
-int16_t y;
-
 void logic_main(void) {
 
-    y = imu.Yaw;
-
-    atc.setMode(3);
-    atc.setGoStraightAngle(0);
-    atc.setGoStraightPower(0.3);
-
-
-    // line_ang = line.angle;
-    // dis = line.getSensDistance();
-
-    // if(line.isonLine && (dis < 80)) {
-
-    //     // p = PID_LineTrace.update(120, dis) / 120;
-
-    //     dir = abs(line.angle) < 110;
-
-    //     // if(abs(p) > 0.5) p = 0.5;
-
-    //     atc.setMode(3);
-    //     atc.setGoStraightPower(0.3);
-
-
-    //     if(dir) {
-    //         toMove = 180;
-    //     }
-    //     else {
-    //         toMove = 0;
-    //     }
-
-    //     atc.setGoStraightAngle(toMove);
-    //     // ui.buzzer(1000,1);
-    // }
-
-    // else {
-    //     p = 0;
-    //     atc.setMode(0);
-    // }
-
+    keeper.update();
 
     if(ui.getSW()) {
         kicker.setMode(0);
@@ -186,9 +138,6 @@ void app_main() {
     ui.buzzer(1000, 50);
 
     cam.AttackColor = YELLOW;
-
-    PID_LineTrace.setProcessTime(0.001);
-    PID_LineTrace.setPID(0.1,0,0);
 
     while (1) {
         /* main loop */

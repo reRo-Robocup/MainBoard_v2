@@ -19,45 +19,57 @@ Keeper::Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerControll
 }
 
 PID <float> PID_RturnGoal;
-PID <float> PID_Trace;
+PID <float> PID_LineTrace;
 
 void Keeper::init() {
     PID_RturnGoal.setProcessTime(0.001);
     PID_RturnGoal.setPID(1,0,0);
 
-    PID_Trace.setProcessTime(0.001);
-    PID_Trace.setPID(1,0,0);
+    PID_LineTrace.setProcessTime(0.001);
+    PID_LineTrace.setPID(2,0,0);
+}
+
+void Keeper::setLinecenter() {
+    if(line->isonLine) {
+
+        uint8_t dis = line->getSensDistance();
+
+        float p = PID_LineTrace.update(120, dis) / 100;
+
+        int8_t dir = abs(line->angle) < 90;
+
+        if(abs(p) > 0.8) {
+            p = 0.8;
+        }
+
+        int16_t toMove = line->angle + 180;
+
+        atc->setMode(1);
+        atc->setGoStraightPower(p);
+
+        atc->setGoStraightAngle(toMove);
+        ui->buzzer(1000,1);
+    }
 }
 
 void Keeper::ReturnGoal() {
 
 }
 
-
 void Keeper::update() {
 
-    const uint8_t goal_dis_min = 0;
-    const uint8_t goal_dis_max = 0;
+    const uint8_t line_dis_threshold = 100;
 
-    if(line->isonLine) {
-        // トレースできる状態
-        // double ball_x = cos(cam->data.ball_angle * deg_to_rad);
-        
-    }
-
-    if(cam->KeepGoal.isFront) {
-        // ゴール前
-        // ui->buzzer(1000,1);
-        atc->setMode(0);
-    } else {
-        int8_t dir = signbit(cam->KeepGoal.ang);
-        atc->setMode(3);
-        atc->setGoStraightPower(0.5);
-        if(dir) {
-            atc->setGoStraightAngle(90);
+    if(line->isonLine && cam->KeepGoal.isFront) {
+        if(line->getSensDistance() < line_dis_threshold) {
+            this->setLinecenter();
         }
         else {
-            atc->setGoStraightAngle(-90);
+            // int16_t BallAngle_uc = 270 - cam->data.ball_angle;
+            // float _x = cos(BallAngle_uc * deg_to_rad);
+            atc->setMode(1);
+            atc->setGoStraightPower(0.3);
+            atc->setGoStraightAngle(cam->data.ball_angle);
         }
     }
 }

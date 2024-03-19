@@ -27,6 +27,7 @@ class Keeper {
       void init();
       void update();
       void ReturnGoal();
+      void setLinecenter();
 
    private:
       MAL* mcu;
