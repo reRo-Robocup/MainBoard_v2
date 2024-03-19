@@ -106,17 +106,30 @@ int16_t ball;
 bool isBallEnable;
 uint8_t distance;
 
+uint16_t mg_angle;
+
+float dis;
+uint8_t qty;
+
+PID <float> PID_Trace;
+
 void logic_main(void) {
 
-    attacker.update();
-    ball = cam.data.ball_angle;
+    // keeper.update();
+    // mg_angle = cam.KeepGoal.ang;
 
-    isBallEnable = cam.data.isBallDetected;
-    distance = cam.data.ball_distance;
+    dis = line.getSensDistance();
+    qty = line.isOn_qty;
+
+    // attacker.update();
+    // ball = cam.data.ball_angle;
+
+    // isBallEnable = cam.data.isBallDetected;
+    // distance = cam.data.ball_distance;
 
     // atc.setMode(2);
     // atc.setTurnAngle(180);
-    y = imu.Yaw;
+    // y = imu.Yaw;
 
     // atc.setMode(3);
     // atc.setGoStraightPower(0.4);
@@ -163,6 +176,9 @@ void app_main() {
     ui.buzzer(1000, 50);
 
     cam.AttackColor = YELLOW;
+
+    PID_Trace.setProcessTime(0.001);
+    PID_Trace.setPID(1,0,0);
 
     while (1) {
         /* main loop */
