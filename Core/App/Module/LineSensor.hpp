@@ -19,13 +19,14 @@ class LineSensor {
     void update();
     void read();
     void setThreshold();
-    uint8_t getDisFromCenter();
 
     uint16_t sensorValue[32] = {0};
     bool sensor_isonline[32] = {0};
     bool isonLine;
     int16_t angle;
     int16_t getMoveAngle(int16_t yaw, int16_t toMove);
+    float getSensDistance();
+    uint8_t isOn_qty;
 
    private:
     MAL* _mcu;
@@ -35,8 +36,11 @@ class LineSensor {
 
     double _sin_table[32];
     double _cos_table[32];
+    void _set();
+
+    float _sens_x[32];
+    float _sens_y[32];
     
-    uint8_t _isONline_qty;
     uint8_t _module_r;
 
     const bool SigPattern[16][4] = {
