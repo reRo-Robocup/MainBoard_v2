@@ -19,20 +19,35 @@ Keeper::Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerControll
 }
 
 PID <float> PID_RturnGoal;
+PID <float> PID_Trace;
 
 void Keeper::init() {
     PID_RturnGoal.setProcessTime(0.001);
     PID_RturnGoal.setPID(1,0,0);
+
+    PID_Trace.setProcessTime(0.001);
+    PID_Trace.setPID(1,0,0);
 }
 
 void Keeper::ReturnGoal() {
 
 }
 
+
 void Keeper::update() {
+
+    const uint8_t goal_dis_min = 0;
+    const uint8_t goal_dis_max = 0;
+
+    if(line->isonLine) {
+        // トレースできる状態
+        // double ball_x = cos(cam->data.ball_angle * deg_to_rad);
+        
+    }
+
     if(cam->KeepGoal.isFront) {
         // ゴール前
-        ui->buzzer(1000,1);
+        // ui->buzzer(1000,1);
         atc->setMode(0);
     } else {
         int8_t dir = signbit(cam->KeepGoal.ang);
