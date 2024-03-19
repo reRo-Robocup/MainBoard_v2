@@ -18,7 +18,6 @@
 #include <Module/MotorControll.hpp>
 #include <Module/LineSensor.hpp>
 #include <Module/MPU6500.hpp>
-// #include <Module/MotorControll.hpp>
 #include <Module/UI.hpp>
 #include <Module/AttitudeController.hpp>
 
@@ -27,7 +26,6 @@ BatteryVoltageChecker bvc(&mcu);
 KickerController kicker(&mcu);
 camera cam(&mcu);
 MPU6500 imu(&mcu);
-// MotorControll motor(&mcu, &imu);
 AttitudeController atc(&mcu, &imu);
 UI ui(&mcu);
 LineSensor line(&mcu, &ui);
@@ -67,7 +65,6 @@ void app_init() {
     cam.init();
     line.init();
     imu.init();
-    // motor.init();
     atc.init();
     ui.init();
     mcu.interruptSetCallback(MAL::Peripheral_Interrupt::T1ms, &app_update);
@@ -96,44 +93,57 @@ void app_update() {
     logic_main();
 }
 
-int16_t angle;
-bool isonline;
-
-int16_t y;
-
-int16_t ball;
-
-bool isBallEnable;
-uint8_t distance;
-
-uint16_t mg_angle;
-
 float dis;
 uint8_t qty;
 
-PID <float> PID_Trace;
+PID <float> PID_LineTrace;
+float p;
+int16_t line_ang;
+int16_t toMove;
+int8_t dir;
+
+int16_t y;
 
 void logic_main(void) {
 
-    // keeper.update();
-    // mg_angle = cam.KeepGoal.ang;
+    y = imu.Yaw;
 
-    dis = line.getSensDistance();
-    qty = line.isOn_qty;
+    atc.setMode(3);
+    atc.setGoStraightAngle(0);
+    atc.setGoStraightPower(0.3);
 
-    // attacker.update();
-    // ball = cam.data.ball_angle;
 
-    // isBallEnable = cam.data.isBallDetected;
-    // distance = cam.data.ball_distance;
+    // line_ang = line.angle;
+    // dis = line.getSensDistance();
 
-    // atc.setMode(2);
-    // atc.setTurnAngle(180);
-    // y = imu.Yaw;
+    // if(line.isonLine && (dis < 80)) {
 
-    // atc.setMode(3);
-    // atc.setGoStraightPower(0.4);
-    // atc.setGoStraightAngle(90);
+    //     // p = PID_LineTrace.update(120, dis) / 120;
+
+    //     dir = abs(line.angle) < 110;
+
+    //     // if(abs(p) > 0.5) p = 0.5;
+
+    //     atc.setMode(3);
+    //     atc.setGoStraightPower(0.3);
+
+
+    //     if(dir) {
+    //         toMove = 180;
+    //     }
+    //     else {
+    //         toMove = 0;
+    //     }
+
+    //     atc.setGoStraightAngle(toMove);
+    //     // ui.buzzer(1000,1);
+    // }
+
+    // else {
+    //     p = 0;
+    //     atc.setMode(0);
+    // }
+
 
     if(ui.getSW()) {
         kicker.setMode(0);
@@ -177,8 +187,8 @@ void app_main() {
 
     cam.AttackColor = YELLOW;
 
-    PID_Trace.setProcessTime(0.001);
-    PID_Trace.setPID(1,0,0);
+    PID_LineTrace.setProcessTime(0.001);
+    PID_LineTrace.setPID(0.1,0,0);
 
     while (1) {
         /* main loop */
