@@ -19,10 +19,19 @@ Attacker::Attacker(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerCont
 }
 
 void Attacker::init() {
+
 }
+
+int16_t Ball_Angle;
+int16_t BallDis;
+int16_t toMove;
 
 void Attacker::update() {
     atc->setGoStraightPower(0.9);
+    
+    Ball_Angle = cam->data.ball_angle - 170;
+    BallDis = cam->data.ball_distance;
+
     if(line->isonLine) {
         // ライン上
         atc->setMode(3);
@@ -36,26 +45,30 @@ void Attacker::update() {
         }
         else {
             atc->setMode(3);
-            int16_t BallAngle = cam->data.ball_angle;
-            uint8_t distance = cam->data.ball_distance;
 
-            if(abs(BallAngle) <= 10) {
-                atc->setGoStraightAngle(0);
+            if(abs(Ball_Angle) <= 10) {
+                // atc->setGoStraightAngle(0);
+                toMove = 0;
             }
             else {
-                if(distance > 50) {
-                    atc->setGoStraightAngle(BallAngle);
+                if(BallDis > 100) {
+                    // atc->setGoStraightAngle(Ball_Angle);
+                    toMove = Ball_Angle;
                 }
                 else {
-                    int8_t dir = signbit(BallAngle);
+                    int8_t dir = signbit(Ball_Angle);
                     if(dir) {
-                        atc->setGoStraightAngle(BallAngle + 30);
+                        toMove = Ball_Angle + 30;
+                        // atc->setGoStraightAngle(Ball_Angle + 30);
                     }
                     else {
-                        atc->setGoStraightAngle(BallAngle - 30);
+                        toMove = Ball_Angle - 30;
+                        // atc->setGoStraightAngle(Ball_Angle - 30);
                     }
                 }
             }
+
+            atc->setGoStraightAngle(toMove);
         }
     }
 }

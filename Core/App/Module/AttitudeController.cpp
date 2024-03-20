@@ -35,7 +35,7 @@ void AttitudeController::init() {
     _turn_angle_pid.setPID(0.015, 0.0, 0.2);
     _mode = 0;
     this->_turn_angle = 180;
-    this->setGoStraightPower(0.5);
+    this->setGoStraightPower(0.3);
 }
 
 void AttitudeController::update() {
@@ -104,16 +104,13 @@ void AttitudeController::update() {
                 _go_straight_angle += 360;
             float MPowerVector[4] = {0};  // 4つのモーターの出力比
             float MPowerMax = 0;          // 最大値
-
             for (int i = 0; i < 4; i++) {
                 float tmp_angle = (_go_straight_angle - motor_data[i].motorAngle) * (M_PI / 180);
                 MPowerVector[i] = cos(tmp_angle);
                 // printf("%f ", MPowerVector[i]);
-
                 if (MPowerMax < abs(MPowerVector[i]))
                     MPowerMax = abs(MPowerVector[i]);
             }
-
             if ((MPowerMax != 1) || (MPowerMax != -1)) {
                 for (int i = 0; i < 4; i++) {
                     MPowerVector[i] *= (_go_straight_power / MPowerMax);
@@ -130,30 +127,28 @@ void AttitudeController::update() {
             }
 
             if (abs(output) > 0.05) {
-            // if (abs(180 - _imu->Yaw) > 5) {
+            // if(false) {
                 _setPWM(TractionMotors::Motor1, output);
                 _setPWM(TractionMotors::Motor2, output);
                 _setPWM(TractionMotors::Motor3, output);
                 _setPWM(TractionMotors::Motor4, output);
-            } else {
+            } 
+            else {
                 for (int i = 0; i < 4; i++) {
                     MPowerVector[i] += output;
                     if (MPowerMax < abs(MPowerVector[i]))
                         MPowerMax = abs(MPowerVector[i]);
                 }
-
                 if ((MPowerMax != 1)) {
                     for (int i = 0; i < 4; i++) {
                         MPowerVector[i] *= (0.94 / MPowerMax);
                     }
                 }
-
                 _setPWM(TractionMotors::Motor1, MPowerVector[0]);
                 _setPWM(TractionMotors::Motor2, MPowerVector[1]);
                 _setPWM(TractionMotors::Motor3, MPowerVector[2]);
                 _setPWM(TractionMotors::Motor4, MPowerVector[3]);
             }
-
         } break;
 
         case 4:

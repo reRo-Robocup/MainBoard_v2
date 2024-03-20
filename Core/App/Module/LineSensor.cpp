@@ -33,7 +33,7 @@ void LineSensor::init() {
     for (int i = 0; i < 32; i++) {
         this->_sin_table[i] = sin((360 / 32 * i) * (M_PI / 180));
         this->_cos_table[i] = cos((360 / 32 * i) * (M_PI / 180));
-        this->_threshold[i] = 1000;
+        this->_threshold[i] = 700;
 
         this->_sens_x[i] = _module_r * _cos_table[i];
         this->_sens_y[i] = _module_r * _sin_table[i];

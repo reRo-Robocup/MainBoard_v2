@@ -23,7 +23,7 @@ class PID {
         _prev_integral = 0;
         _derivative = 0;
         _output = 0;
-        this->setProcessTime(0.001);
+        // this->setProcessTime(0.001);
     };
     void setPID(T p, T i, T d) {
         _kp = p;

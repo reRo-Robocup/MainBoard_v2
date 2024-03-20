@@ -100,7 +100,7 @@ void camera::_read_via_buffer() {
                     _rx_mode = 0;
                     _rx_data_index = 0;
                     this->data = camera_rx_data_parser.parsed_data;
-                    this->data.ball_angle -= 180;
+                    // this->data.ball_angle -= 180;
                 }
                 break;
 
