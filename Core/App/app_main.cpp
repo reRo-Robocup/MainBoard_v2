@@ -82,6 +82,7 @@ void app_init() {
 
 void app_update() {
     bvc.update();
+    kicker.update();
     cam.update();
     line.update();
     imu.update();
@@ -93,7 +94,7 @@ void app_update() {
 
 void logic_main(void) {
     // attacker.update();
-    kicker.update();
+    keeper.update();
 
     if (ui.getSW()) {
         kicker.setMode(0);
@@ -138,7 +139,7 @@ void app_main() {
     cam.AttackColor = YELLOW;
 
     while (1) {
-        keeper.update();
+        // keeper.update();
         /* main loop */
     }
 }

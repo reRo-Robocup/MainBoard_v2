@@ -26,6 +26,8 @@ class AttitudeController {
     void setGoStraightPower(float power);
     void setTurnAngle(int angle);
 
+    void setGoStraightXY(float x, float y);
+
     enum TractionMotors {
         Motor1,
         Motor2,
@@ -49,6 +51,9 @@ class AttitudeController {
 
     int _go_straight_angle;
     float _go_straight_power = 0.8;
+
+    float _go_straight_x = 0;
+    float _go_straight_y = 0;
 
     int _turn_angle;
 

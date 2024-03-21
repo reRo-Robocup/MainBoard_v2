@@ -26,10 +26,10 @@ PID<float> PID_BallMoveingX;
 
 void Keeper::init() {
     PID_ReturnGoal_X.setProcessTime(0.001);
-    PID_ReturnGoal_X.setPID(0.1, 0, 0);
+    PID_ReturnGoal_X.setPID(0.8, 0, 0);
 
     PID_ReturnGoal_Y.setProcessTime(0.001);
-    PID_ReturnGoal_Y.setPID(0.1, 0, 0);
+    PID_ReturnGoal_Y.setPID(0.04, 0, 0);
 
     PID_LineBack.setProcessTime(0.001);
     PID_LineBack.setPID(2, 0, 0);
@@ -63,27 +63,40 @@ void Keeper::setLinecenter() {
 float rt_power;
 
 void Keeper::ReturnGoal() {
-    float observed_x = cos((270 - cam->KeepGoal.ang) * deg_to_rad);
+    float observed_x = cos((90 - cam->KeepGoal.ang) * deg_to_rad);
 
-    float out_x = PID_ReturnGoal_X.update(0, observed_x);
+    float out_x = PID_ReturnGoal_X.update(0, observed_x) * -1;
     float out_y = PID_ReturnGoal_Y.update(90, cam->KeepGoal.dis);
 
-    float returnAngle = (360 - (atan2(out_y, out_x) * rad_to_deg * -1));
-    while (returnAngle > 180)
-        returnAngle -= 360;
-    while (returnAngle < -180)
-        returnAngle += 360;
+    if (out_x > 0.94) {
+        out_x = 0.94;
+    } else if (out_x < -0.94) {
+        out_x = -0.94;
+    }
 
-    float power = abs(out_x * 0.2 + out_y * 0.2);
+    if (out_y > 0.94) {
+        out_y = 0.94;
+    } else if (out_y < -0.94) {
+        out_y = -0.94;
+    }
 
-    // それぞれabsを取る
+    atc->setMode(4);
+    atc->setGoStraightXY(out_x, out_y);
 
-    atc->setMode(3);
-    atc->setGoStraightPower(power);
-    atc->setGoStraightAngle(returnAngle);
+    // float power = abs(out_x * 0.01 + out_y * 0.3);
+
+    // atc->setMode(3);
+    // atc->setGoStraightPower(power);
+    // atc->setGoStraightAngle(returnAngle);
+
+    // printf("observed_x: %f, observed_y: %d out_x: %f, out_y: %f\r\n", observed_x, cam->KeepGoal.dis, out_x, out_y);
+
+    // atc->setMode(3);
+    // atc->setGoStraightPower(0.4);
+    // atc->setGoStraightAngle(90);
 
     // printf("returnAngle: %f, power: %f\r\n", returnAngle, power);
-    printf("%d, %d\r\n", cam->KeepGoal.ang, cam->KeepGoal.dis);
+    // printf("%d, %d\r\n", cam->KeepGoal.ang, cam->KeepGoal.dis);
 
     // uint8_t goal_distance_threshold = 90;
     // if (cam->KeepGoal.dis > goal_distance_threshold) {

@@ -127,13 +127,12 @@ void AttitudeController::update() {
             }
 
             if (abs(output) > 0.05) {
-            // if(false) {
+                // if(false) {
                 _setPWM(TractionMotors::Motor1, output);
                 _setPWM(TractionMotors::Motor2, output);
                 _setPWM(TractionMotors::Motor3, output);
                 _setPWM(TractionMotors::Motor4, output);
-            } 
-            else {
+            } else {
                 for (int i = 0; i < 4; i++) {
                     MPowerVector[i] += output;
                     if (MPowerMax < abs(MPowerVector[i]))
@@ -151,7 +150,56 @@ void AttitudeController::update() {
             }
         } break;
 
-        case 4:
+        case 4:  // XY移動
+        {
+            float MPowerVector[4] = {0};  // 4つのモーターの出力比
+            float MPowerMax = 0;          // 最大値
+
+            for (int i = 0; i < 4; i++) {
+                float tmp_angle = (90 - motor_data[i].motorAngle) * (M_PI / 180);
+                MPowerVector[i] = cos(tmp_angle) * _go_straight_x;
+                // printf("%f ", MPowerVector[i]);
+                if (MPowerMax < abs(MPowerVector[i]))
+                    MPowerMax = abs(MPowerVector[i]);
+            }
+
+            for (int i = 0; i < 4; i++) {
+                float tmp_angle = (180 - motor_data[i].motorAngle) * (M_PI / 180);
+                MPowerVector[i] += cos(tmp_angle) * _go_straight_y;
+                // printf("%f ", MPowerVector[i]);
+                if (MPowerMax < abs(MPowerVector[i]))
+                    MPowerMax = abs(MPowerVector[i]);
+            }
+
+            float output = _turn_angle_pid.update(_turn_angle, _imu->Yaw) * -1;
+
+            if (output > 0.94) {
+                output = 0.94;
+            }
+            if (output < -0.94) {
+                output = -0.94;
+            }
+
+            if (abs(output) > 0.05) {
+                // if(false) {
+                _setPWM(TractionMotors::Motor1, output);
+                _setPWM(TractionMotors::Motor2, output);
+                _setPWM(TractionMotors::Motor3, output);
+                _setPWM(TractionMotors::Motor4, output);
+            } else {
+                for (int i = 0; i < 4; i++) {
+                    MPowerVector[i] += output;
+                    if (MPowerMax < abs(MPowerVector[i]))
+                        MPowerMax = abs(MPowerVector[i]);
+                }
+                _setPWM(TractionMotors::Motor1, MPowerVector[0]);
+                _setPWM(TractionMotors::Motor2, MPowerVector[1]);
+                _setPWM(TractionMotors::Motor3, MPowerVector[2]);
+                _setPWM(TractionMotors::Motor4, MPowerVector[3]);
+            }
+        } break;
+
+        case 5:
             // Freeブレーキ
             _mcu->gpioSetValue(MAL::Peripheral_GPIO::isMotorEnabled, 0);
 
@@ -178,6 +226,11 @@ void AttitudeController::setGoStraightPower(float power) {
 
 void AttitudeController::setTurnAngle(int angle) {
     _turn_angle = angle;
+}
+
+void AttitudeController::setGoStraightXY(float x, float y) {
+    _go_straight_x = x;
+    _go_straight_y = y;
 }
 
 void AttitudeController::_setPWM(TractionMotors motor, float duty) {
