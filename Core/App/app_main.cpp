@@ -32,6 +32,8 @@ LineSensor line(&mcu, &ui);
 Attacker attacker(&mcu, &atc, &cam, &kicker, &line, &imu, &ui);
 Keeper keeper(&mcu, &atc, &cam, &kicker, &line, &imu, &ui);
 
+bool isInit = false;
+
 void app_init();
 void app_main();
 void app_update();
@@ -89,7 +91,9 @@ void app_update() {
     atc.update();
     ui.update();
 
-    logic_main();
+    if (isInit) {
+        logic_main();
+    }
 }
 
 void logic_main(void) {
@@ -137,6 +141,8 @@ void app_main() {
     ui.buzzer(1000, 50);
 
     cam.AttackColor = YELLOW;
+
+    isInit = true;
 
     while (1) {
         // keeper.update();

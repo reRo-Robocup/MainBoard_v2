@@ -18,12 +18,6 @@ Keeper::Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerControll
     this->ui = _ui;
 }
 
-PID<float> PID_ReturnGoal_X;
-PID<float> PID_ReturnGoal_Y;
-
-PID<float> PID_LineBack;
-PID<float> PID_BallMoveingX;
-
 void Keeper::init() {
     PID_ReturnGoal_X.setProcessTime(0.001);
     PID_ReturnGoal_X.setPID(0.8, 0, 0);
@@ -34,17 +28,39 @@ void Keeper::init() {
     PID_LineBack.setProcessTime(0.001);
     PID_LineBack.setPID(2, 0, 0);
 
-    PID_BallMoveingX.setProcessTime(0.001);
-    PID_BallMoveingX.setPID(2.5, 0, 0.2);
+    PID_GuardGoal.setProcessTime(0.001);
+    PID_GuardGoal.setPID(2.5, 0, 0);
 }
 
-void Keeper::setLinecenter() {
+void Keeper::update() {
+    switch (_mode) {
+        case 0:
+
+            break;
+        case 1:
+            _returnGoal();
+            if (cam->KeepGoal.dis < _goal_target + 10) {
+                _mode = 2;
+            }
+            break;
+        case 2:
+            _guardGoal();
+            if (cam->KeepGoal.dis > _goal_target + 15) {
+                _mode = 1;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void Keeper::_setLinecenter() {
     if (line->isonLine) {
         uint8_t dis = line->getSensDistance();
 
         float p = PID_LineBack.update(120, dis) / 100;
 
-        int8_t dir = abs(line->angle) < 90;
+        // int8_t dir = abs(line->angle) < 90;
 
         if (abs(p) > 0.7) {
             p = 0.7;
@@ -60,13 +76,65 @@ void Keeper::setLinecenter() {
     }
 }
 
-float rt_power;
-
-void Keeper::ReturnGoal() {
+void Keeper::_returnGoal() {
     float observed_x = cos((90 - cam->KeepGoal.ang) * deg_to_rad);
 
     float out_x = PID_ReturnGoal_X.update(0, observed_x) * -1;
-    float out_y = PID_ReturnGoal_Y.update(90, cam->KeepGoal.dis);
+    float out_y = PID_ReturnGoal_Y.update(_goal_target, cam->KeepGoal.dis);
+
+    if (out_x > 0.94) {
+        out_x = 0.94;
+    } else if (out_x < -0.94) {
+        out_x = -0.94;
+    }
+
+    if (out_y > 0.94) {
+        out_y = 0.94;
+    } else if (out_y < -0.94) {
+        out_y = -0.94;
+    }
+
+    atc->setMode(4);
+    atc->setGoStraightXY(out_x, out_y);
+}
+
+void Keeper::_guardGoal() {
+    float observed_x = cos((90 - cam->data.ball_angle) * deg_to_rad);
+
+    float _corrected_goal_distance_ang = 180 - abs(cam->KeepGoal.ang);
+    float _corrected_goal_distance = int(cos(_corrected_goal_distance_ang * deg_to_rad) * cam->KeepGoal.dis);
+
+    float out_x = PID_GuardGoal.update(0, observed_x) * -1;
+    float out_y = PID_ReturnGoal_Y.update(_goal_target, cam->KeepGoal.dis);
+
+    if (!cam->KeepGoal.isFront) {
+        if (cam->KeepGoal.ang > 0) {                                         // マシン位置判定 左端
+            if (cam->data.ball_angle < 359 && cam->data.ball_angle > 200) {  // ボールがマシンより左
+                out_x = 0;
+                out_y = 0;
+                ui->buzzer(2000, 10);
+            } else {
+                out_y = 0;
+            }
+
+        } else {                                                           // マシン位置判定 右端
+            if (cam->data.ball_angle > 0 && cam->data.ball_angle < 160) {  // ボールがマシンより右
+                out_x = 0;
+                out_y = 0;
+                ui->buzzer(2000, 10);
+            } else {
+                out_y = 0;
+            }
+        }
+    }
+
+    if (!cam->data.isBallDetected) {
+        out_x = 0;
+        out_y = 0;
+        ui->buzzer(1000, 10);
+    }
+
+    // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
 
     if (out_x > 0.94) {
         out_x = 0.94;
@@ -83,80 +151,5 @@ void Keeper::ReturnGoal() {
     atc->setMode(4);
     atc->setGoStraightXY(out_x, out_y);
 
-    // float power = abs(out_x * 0.01 + out_y * 0.3);
-
-    // atc->setMode(3);
-    // atc->setGoStraightPower(power);
-    // atc->setGoStraightAngle(returnAngle);
-
-    // printf("observed_x: %f, observed_y: %d out_x: %f, out_y: %f\r\n", observed_x, cam->KeepGoal.dis, out_x, out_y);
-
-    // atc->setMode(3);
-    // atc->setGoStraightPower(0.4);
-    // atc->setGoStraightAngle(90);
-
-    // printf("returnAngle: %f, power: %f\r\n", returnAngle, power);
-    // printf("%d, %d\r\n", cam->KeepGoal.ang, cam->KeepGoal.dis);
-
-    // uint8_t goal_distance_threshold = 90;
-    // if (cam->KeepGoal.dis > goal_distance_threshold) {
-    //     rt_power = PID_ReturnGoal.update(goal_distance_threshold, cam->KeepGoal.dis);
-    //     rt_power /= 150;
-    //     if (abs(rt_power > 0.8))
-    //         rt_power = 0.8;
-
-    //     // todo
-    //     // 復帰時にオウンゴール対策
-
-    //     atc->setMode(3);
-    //     atc->setGoStraightAngle(cam->KeepGoal.ang + 180);
-    //     atc->setGoStraightPower(abs(rt_power));
-    // }
-}
-
-float _ball_x;
-int16_t BallAngle;
-int16_t BallAngle_uc;
-float power;
-bool dir;
-
-void Keeper::update() {
-    ReturnGoal();
-
-    // const uint8_t line_dis_threshold = 100;
-
-    // BallAngle = cam->data.ball_angle;
-
-    // if(line->isonLine && cam->KeepGoal.isFront) {
-    //     if(line->getSensDistance() < line_dis_threshold) {
-    //         this->setLinecenter();
-    //     }
-    //     else {
-
-    //         BallAngle_uc = 270 - BallAngle;
-
-    //         _ball_x = cos(BallAngle_uc * deg_to_rad);
-
-    //         power = PID_BallMoveingX.update(0, _ball_x);
-
-    //         atc->setMode(3);
-    //         atc->setGoStraightPower(abs(power));
-    //         // atc->setGoStraightAngle(cam->data.ball_angle);
-    //         // int8_t dir = signbit(BallAngle);
-    //         dir = (BallAngle - 180) > 0;
-    //         if(dir) atc->setGoStraightAngle(90);
-    //         else atc->setGoStraightAngle(-90);
-    //     }
-    // }
-    // else if (line->isonLine && !cam->KeepGoal.isFront) {
-    //     bool dir = signbit(cam->KeepGoal.ang);
-    //     atc->setMode(3);
-    //     atc->setGoStraightPower(0.6);
-    //     if(dir) atc->setGoStraightAngle(45);
-    //     else atc->setGoStraightAngle(-45);
-    // }
-    // else {
-    //     // atc->setMode(0);
-    //     this->ReturnGoal();
-    // }
+    // printf("observed_x: %f, out_x: %f\r\n", observed_x, out_x);
 }

@@ -69,12 +69,13 @@ void LineSensor::read() {
 
 void LineSensor::_set() {
     const bool _states[32] = {
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-    };
-    for(int i = 0; i < 32; i++) {
-        if(_states[i]) sensorValue[i] = 1023;
-        else sensorValue[i] = 0;
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    for (int i = 0; i < 32; i++) {
+        if (_states[i])
+            sensorValue[i] = 1023;
+        else
+            sensorValue[i] = 0;
     }
 }
 
@@ -99,8 +100,10 @@ void LineSensor::update() {
     if (isonLine && (x != 0) && (y != 0)) {
         _angle = atan2(y, x) * rad_to_deg;
         _angle = 270 - _angle;
-        if(_angle < -180) _angle += 360;
-        if(_angle >= 180) _angle -= 360;
+        if (_angle < -180)
+            _angle += 360;
+        if (_angle >= 180)
+            _angle -= 360;
     } else {
         _angle = 1023;
     }
@@ -136,10 +139,9 @@ void LineSensor::setThreshold() {
 
 float LineSensor::getSensDistance() {
     float val = 0;
-    if((this->isOn_qty < 2) && (!this->isonLine)) {
+    if ((this->isOn_qty < 2) && (!this->isonLine)) {
         return val;
-    }
-    else {
+    } else {
         const uint8_t num = this->isOn_qty;
 
         float x_array[num] = {0};
@@ -148,29 +150,30 @@ float LineSensor::getSensDistance() {
 
         uint8_t _cnt = 0;
 
-        for(int i = 0; i < 32; i++) {
-            if(this->sensor_isonline[i]) {
+        for (int i = 0; i < 32; i++) {
+            if (this->sensor_isonline[i]) {
                 id_array[_cnt] = i;
                 _cnt++;
             }
         }
 
-        for(int i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             x_array[i] = this->_sens_x[id_array[i]];
             y_array[i] = this->_sens_y[id_array[i]];
         }
 
         float maxDistance = 0;
 
-        for(int i = 0; i < num; i++) {
-            for(int j = (num - 1); j >= 0; j--) {
-                if(i != j) {
+        for (int i = 0; i < num; i++) {
+            for (int j = (num - 1); j >= 0; j--) {
+                if (i != j) {
                     // float diff_x = abs(x_array[i]) - abs(x_array[j]);
                     // float diff_y = abs(y_array[i]) - abs(y_array[j]);
                     float diff_x = x_array[i] - x_array[j];
                     float diff_y = y_array[i] - y_array[j];
                     float dis = sqrt(pow(diff_x, 2) + pow(diff_y, 2));
-                    if(maxDistance < dis) maxDistance = dis;
+                    if (maxDistance < dis)
+                        maxDistance = dis;
                 }
             }
         }

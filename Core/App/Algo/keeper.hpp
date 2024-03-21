@@ -23,20 +23,32 @@
 
 class Keeper {
    public:
-      Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerController* _kicker, LineSensor* _line, MPU6500* _imu, UI* _ui);
-      void init();
-      void update();
-      void ReturnGoal();
-      void setLinecenter();
+    Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerController* _kicker, LineSensor* _line, MPU6500* _imu, UI* _ui);
+    void init();
+    void update();
 
    private:
-      MAL* mcu;
-      AttitudeController* atc;
-      camera* cam;
-      KickerController* kicker;
-      LineSensor* line;
-      MPU6500* imu;
-      UI* ui;
+    MAL* mcu;
+    AttitudeController* atc;
+    camera* cam;
+    KickerController* kicker;
+    LineSensor* line;
+    MPU6500* imu;
+    UI* ui;
+
+    PID<float> PID_ReturnGoal_X;
+    PID<float> PID_ReturnGoal_Y;
+
+    PID<float> PID_LineBack;
+    PID<float> PID_GuardGoal;
+
+    void _returnGoal();
+    void _setLinecenter();
+    void _guardGoal();
+
+    const float _goal_target = 85;
+
+    int _mode = 1;
 };
 
 #endif /* APP_ALGO_KEEPER_HPP_ */
