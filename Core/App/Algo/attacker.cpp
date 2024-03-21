@@ -41,12 +41,15 @@ float _ball_yvect;
 
 float target_y;
 
+int16_t BallAngle_uc;
+
 void Attacker::update() {
     atc->setGoStraightPower(0.7);
     Ball_Angle = cam->data.ball_angle - 180;
     BallDis = cam->data.ball_distance;
 
     if(line->isonLine) {
+        /* TODO: xy分解 */
         atc->setMode(3);
         atc->setGoStraightAngle(line->angle);
     }
@@ -56,14 +59,19 @@ void Attacker::update() {
         }
         else {
             if (BallDis > 50) {
-                atc->setMode(3);
                 toMove = Ball_Angle;
+                if(line->isonLine) {
+                    
+                }
+                atc->setMode(3);
+                atc->setGoStraightAngle(toMove);
             }
             else {
 
-                // x PID
-                int16_t tmp_ang = 270 - Ball_Angle;
-                _ball_xvect = cos(tmp_ang * deg_to_rad);
+                BallAngle_uc = 270 - Ball_Angle;
+
+                // X軸 PID
+                _ball_xvect = cos(BallAngle_uc * deg_to_rad);
                 moving_x = PID_AttX.update(0, _ball_xvect) * -1;
 
                 if(moving_x > 0.94) {
@@ -73,9 +81,9 @@ void Attacker::update() {
                     moving_x = -0.94;
                 }
 
-                // y PID
+                // Y軸 PID
 
-                _ball_yvect = sin(tmp_ang * deg_to_rad);
+                _ball_yvect = sin(BallAngle_uc * deg_to_rad);
 
                 uint8_t u_ball_angle = abs(Ball_Angle);
                 int8_t dir = signbit(Ball_Angle)? -1: 1;
@@ -83,14 +91,15 @@ void Attacker::update() {
                 if(u_ball_angle <= 10) {
                     toMove = 0;
                 }
-                else if(u_ball_angle <= 45) {
-                    toMove = 90 * dir;
-                }
                 else {
-                    toMove = (u_ball_angle + 50)  * dir;
+                    toMove = Ball_Angle + (30 * dir);
                 }
-
-                // toMove = Ball_Angle;
+                // else if(u_ball_angle <= 45) {
+                //     toMove = 90 * dir;
+                // }
+                // else {
+                //     toMove = (u_ball_angle + 50)  * dir;
+                // }
 
                 target_y = sin((270 - toMove) * deg_to_rad);
                 moving_y = PID_AttY.update(target_y, _ball_yvect) * -1;
@@ -102,9 +111,9 @@ void Attacker::update() {
                     moving_y = -0.94;
                 }
 
+                atc->setMode(4);
+                atc->setGoStraightXY(moving_x, moving_y);
             }
-            atc->setMode(4);
-            atc->setGoStraightXY(moving_x, moving_y);
         }
     }
 }
