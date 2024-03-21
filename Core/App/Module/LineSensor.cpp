@@ -164,13 +164,6 @@ float LineSensor::getSensDistance() {
 
         float maxDistance = 0;
 
-<<<<<<< HEAD
-        for (int i = 0; i < num; i++) {
-            for (int j = (num - 1); j >= 0; j--) {
-                if (i != j) {
-                    // float diff_x = abs(x_array[i]) - abs(x_array[j]);
-                    // float diff_y = abs(y_array[i]) - abs(y_array[j]);
-=======
         uint8_t sum_array[num];
         uint16_t tim_array[num];
 
@@ -184,7 +177,6 @@ float LineSensor::getSensDistance() {
         for(int i = 0; i < num; i++) {
             for(int j = (num - 1); j >= 0; j--) {
                 if((i != j) && (sum_array[i] != sum_array[j]) && (tim_array[i] != tim_array[j])) {
->>>>>>> d156aae ([update] getSensDistanceの処理を軽くする)
                     float diff_x = x_array[i] - x_array[j];
                     float diff_y = y_array[i] - y_array[j];
                     float dis = sqrt(pow(diff_x, 2) + pow(diff_y, 2));
