@@ -18,31 +18,35 @@ Keeper::Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerControll
     this->ui = _ui;
 }
 
-PID <float> PID_ReturnGoal;
-PID <float> PID_LineBack;
-PID <float> PID_BallMoveingX;
+PID<float> PID_ReturnGoal_X;
+PID<float> PID_ReturnGoal_Y;
+
+PID<float> PID_LineBack;
+PID<float> PID_BallMoveingX;
 
 void Keeper::init() {
-    PID_ReturnGoal.setProcessTime(0.001);
-    PID_ReturnGoal.setPID(2,0,0);
+    PID_ReturnGoal_X.setProcessTime(0.001);
+    PID_ReturnGoal_X.setPID(0.1, 0, 0);
+
+    PID_ReturnGoal_Y.setProcessTime(0.001);
+    PID_ReturnGoal_Y.setPID(0.1, 0, 0);
 
     PID_LineBack.setProcessTime(0.001);
-    PID_LineBack.setPID(2,0,0);
+    PID_LineBack.setPID(2, 0, 0);
 
     PID_BallMoveingX.setProcessTime(0.001);
-    PID_BallMoveingX.setPID(2.5,0,0.2);
+    PID_BallMoveingX.setPID(2.5, 0, 0.2);
 }
 
 void Keeper::setLinecenter() {
-    if(line->isonLine) {
-
+    if (line->isonLine) {
         uint8_t dis = line->getSensDistance();
 
         float p = PID_LineBack.update(120, dis) / 100;
 
         int8_t dir = abs(line->angle) < 90;
 
-        if(abs(p) > 0.7) {
+        if (abs(p) > 0.7) {
             p = 0.7;
         }
 
@@ -52,26 +56,49 @@ void Keeper::setLinecenter() {
         atc->setGoStraightPower(p);
 
         atc->setGoStraightAngle(toMove);
-        ui->buzzer(1000,1);
+        ui->buzzer(1000, 1);
     }
 }
 
 float rt_power;
 
 void Keeper::ReturnGoal() {
-    uint8_t goal_distance_threshold = 90;
-    if(cam->KeepGoal.dis > goal_distance_threshold) {
-        rt_power = PID_ReturnGoal.update(goal_distance_threshold, cam->KeepGoal.dis);
-        rt_power /= 150;
-        if(abs(rt_power > 0.8)) rt_power = 0.8;
+    float observed_x = cos((270 - cam->KeepGoal.ang) * deg_to_rad);
 
-        // todo
-        // 復帰時にオウンゴール対策
+    float out_x = PID_ReturnGoal_X.update(0, observed_x);
+    float out_y = PID_ReturnGoal_Y.update(90, cam->KeepGoal.dis);
 
-        atc->setMode(3);
-        atc->setGoStraightAngle(cam->KeepGoal.ang + 180);
-        atc->setGoStraightPower(abs(rt_power));
-    }
+    float returnAngle = (360 - (atan2(out_y, out_x) * rad_to_deg * -1));
+    while (returnAngle > 180)
+        returnAngle -= 360;
+    while (returnAngle < -180)
+        returnAngle += 360;
+
+    float power = abs(out_x * 0.2 + out_y * 0.2);
+
+    // それぞれabsを取る
+
+    atc->setMode(3);
+    atc->setGoStraightPower(power);
+    atc->setGoStraightAngle(returnAngle);
+
+    // printf("returnAngle: %f, power: %f\r\n", returnAngle, power);
+    printf("%d, %d\r\n", cam->KeepGoal.ang, cam->KeepGoal.dis);
+
+    // uint8_t goal_distance_threshold = 90;
+    // if (cam->KeepGoal.dis > goal_distance_threshold) {
+    //     rt_power = PID_ReturnGoal.update(goal_distance_threshold, cam->KeepGoal.dis);
+    //     rt_power /= 150;
+    //     if (abs(rt_power > 0.8))
+    //         rt_power = 0.8;
+
+    //     // todo
+    //     // 復帰時にオウンゴール対策
+
+    //     atc->setMode(3);
+    //     atc->setGoStraightAngle(cam->KeepGoal.ang + 180);
+    //     atc->setGoStraightPower(abs(rt_power));
+    // }
 }
 
 float _ball_x;
@@ -81,7 +108,6 @@ float power;
 bool dir;
 
 void Keeper::update() {
-
     ReturnGoal();
 
     // const uint8_t line_dis_threshold = 100;
@@ -92,10 +118,10 @@ void Keeper::update() {
     //     if(line->getSensDistance() < line_dis_threshold) {
     //         this->setLinecenter();
     //     }
-    //     else {  
-            
+    //     else {
+
     //         BallAngle_uc = 270 - BallAngle;
-            
+
     //         _ball_x = cos(BallAngle_uc * deg_to_rad);
 
     //         power = PID_BallMoveingX.update(0, _ball_x);

@@ -23,20 +23,19 @@ void camera::update() {
 
     // this->data.ball_angle -= 180;
 
-    if(this->AttackColor == YELLOW) {
+    if (this->AttackColor == YELLOW) {
         this->AttackGoal.ang = this->data.yellow_angle;
         this->AttackGoal.dis = this->data.yellow_distance;
         this->AttackGoal.enable = this->data.isYellowDetected;
         this->AttackGoal.isFront = this->data.isYellowFront;
 
         this->KeepGoal.ang = this->data.blue_angle;
-        this->KeepGoal.dis = this->data.ball_distance;
+        this->KeepGoal.dis = this->data.blue_distance;
         this->KeepGoal.enable = this->data.isBlueDetected;
         this->KeepGoal.isFront = this->data.isBlueFront;
-    }
-    else {
+    } else {
         this->AttackGoal.ang = this->data.blue_angle;
-        this->AttackGoal.dis = this->data.ball_distance;
+        this->AttackGoal.dis = this->data.blue_distance;
         this->AttackGoal.enable = this->data.isBlueDetected;
         this->AttackGoal.isFront = this->data.isBlueFront;
 
@@ -46,11 +45,15 @@ void camera::update() {
         this->KeepGoal.isFront = this->data.isYellowFront;
     }
 
-    if(this->KeepGoal.ang >= 180) this->KeepGoal.ang -= 360;
-    if(this->KeepGoal.ang <=-180) this->KeepGoal.ang += 360;
+    if (this->KeepGoal.ang >= 180)
+        this->KeepGoal.ang -= 360;
+    if (this->KeepGoal.ang <= -180)
+        this->KeepGoal.ang += 360;
 
-    if(this->AttackGoal.ang >= 180) this->AttackGoal.ang -= 360;
-    if(this->AttackGoal.ang <=-180) this->AttackGoal.ang += 360;
+    if (this->AttackGoal.ang >= 180)
+        this->AttackGoal.ang -= 360;
+    if (this->AttackGoal.ang <= -180)
+        this->AttackGoal.ang += 360;
 }
 
 void camera::_read_via_buffer() {

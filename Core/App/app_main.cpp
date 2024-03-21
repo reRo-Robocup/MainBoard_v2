@@ -15,11 +15,10 @@
 #include <Module/BatteryVoltageChecker.hpp>
 #include <Module/Camera.hpp>
 #include <Module/KickerController.hpp>
-#include <Module/MotorControll.hpp>
 #include <Module/LineSensor.hpp>
 #include <Module/MPU6500.hpp>
+#include <Module/MotorControll.hpp>
 #include <Module/UI.hpp>
-#include <Module/AttitudeController.hpp>
 
 stm32halAbstractionLayer mcu;
 BatteryVoltageChecker bvc(&mcu);
@@ -84,7 +83,6 @@ void app_init() {
 void app_update() {
     bvc.update();
     cam.update();
-    kicker.update();
     line.update();
     imu.update();
     atc.update();
@@ -94,13 +92,12 @@ void app_update() {
 }
 
 void logic_main(void) {
-
-    keeper.update();
     // attacker.update();
+    kicker.update();
 
-    if(ui.getSW()) {
+    if (ui.getSW()) {
         kicker.setMode(0);
-        switch (ui.getRotarySW()){
+        switch (ui.getRotarySW()) {
             case 0:
                 mcu.systemReset();
                 break;
@@ -141,6 +138,7 @@ void app_main() {
     cam.AttackColor = YELLOW;
 
     while (1) {
+        keeper.update();
         /* main loop */
     }
 }
