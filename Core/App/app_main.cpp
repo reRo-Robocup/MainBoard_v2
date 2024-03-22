@@ -33,6 +33,9 @@ Attacker attacker(&mcu, &atc, &cam, &kicker, &line, &imu, &ui);
 Keeper keeper(&mcu, &atc, &cam, &kicker, &line, &imu, &ui);
 
 bool isInit = false;
+int mode = 0;
+unsigned int ui_sw_cnt = 0;
+bool ui_sw_f = false;
 
 void app_init();
 void app_main();
@@ -97,24 +100,62 @@ void app_update() {
 }
 
 void logic_main(void) {
-    // attacker.update();
-    keeper.update();
+    switch (mode) {
+        case 0:
+            break;
+        case 1:
+            attacker.update();
+            break;
+        case 2:
+            keeper.update();
+            break;
+        default:
+            break;
+    }
 
     if (ui.getSW()) {
-        kicker.setMode(0);
-        switch (ui.getRotarySW()) {
-            case 0:
-                mcu.systemReset();
-                break;
-            case 1:
-                kicker.setMode(2);
-                break;
-            case 2:
-                kicker.setMode(3);
-                break;
-            default:
-                break;
+        // kicker.setMode(0);
+        ui_sw_cnt++;
+        ui_sw_f = true;
+    } else {
+        if (ui_sw_f) {
+            ui_sw_f = false;
+            switch (ui.getRotarySW()) {
+                case 0:
+                    mcu.systemReset();
+                    break;
+                case 1:
+                    kicker.setMode(2);
+                    break;
+                case 2:
+                    kicker.setMode(3);
+                    break;
+                case 3:
+                    if (ui_sw_cnt > 500) {
+                        mcu.systemReset();
+                    } else {
+                        mode = 0;
+                    }
+                    break;
+                case 4:
+                    if (ui_sw_cnt > 500) {
+                        mcu.systemReset();
+                    } else {
+                        mode = 1;
+                    }
+                    break;
+                case 5:
+                    if (ui_sw_cnt > 500) {
+                        mcu.systemReset();
+                    } else {
+                        mode = 2;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
+        ui_sw_cnt = 0;
     }
 }
 

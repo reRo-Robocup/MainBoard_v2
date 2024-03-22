@@ -33,7 +33,7 @@ void MPU6500::init() {
         //_write_byte(0x1B, 0x00); // FS_SEL = 0
         isInitialized = 1;
     }
-    
+
     isCalibrationed = 0;
 
     _Gx_drift_constant = 0;
@@ -55,7 +55,7 @@ void MPU6500::update() {
         case 1:
             _calibration_sum_cnt = 0;
             _read_gyro_data();
-            printf("raw_Gz = %d\n", raw_Gz);
+            // printf("raw_Gz = %d\n", raw_Gz);
             if (raw_Gz != 0) {
                 _mode = 2;
             }
