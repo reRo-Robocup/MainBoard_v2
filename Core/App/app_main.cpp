@@ -138,6 +138,7 @@ void logic_main(void) {
                     }
                     break;
                 case 4:
+                    /* Attacker */
                     if (ui_sw_cnt > 500) {
                         mcu.systemReset();
                     } else {
@@ -145,6 +146,7 @@ void logic_main(void) {
                     }
                     break;
                 case 5:
+                    /* Keeper */
                     if (ui_sw_cnt > 500) {
                         mcu.systemReset();
                     } else {

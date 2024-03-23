@@ -43,9 +43,16 @@ float _ball_yvect;
 
 float target_y;
 
+int16_t _atc_angle;
+
+uint8_t u_ball_angle;
+
+bool dir;
 
 void Attacker::update() {
-    atc->setGoStraightPower(0.7);
+    atc->setGoStraightPower(0.3);
+
+    u_ball_angle = abs(BallAngle);
 
     /* raw Ball Data */
     BallAngle_raw = cam->data.ball_angle;
@@ -65,6 +72,11 @@ void Attacker::update() {
     /* Ball distance */
     BallDis = cam->data.ball_distance;
 
+    dir = BallAngle > 0;
+
+    _ball_xvect = cos(BallAngle_uc * deg_to_rad);
+    _ball_yvect = sin(BallAngle_uc * deg_to_rad);
+
     if(line->isonLine) {
         /* TODO: xy分解 */
         atc->setMode(3);
@@ -77,34 +89,56 @@ void Attacker::update() {
         else {
             if (BallDis > 50) {
                 atc->setMode(3);
-                atc->setGoStraightAngle(toMove);
+                atc->setGoStraightAngle(BallAngle);
             }
             else {
-
                 // X軸 PID
-                _ball_xvect = cos(BallAngle_uc * deg_to_rad);
-                moving_x = PID_AttX.update(0, _ball_xvect) * -1;
+                // moving_x = PID_AttX.update(0, _ball_xvect) * -1;
 
-                if(moving_x > 0.94) {
-                    moving_x = 0.94;
-                }
-                else if (moving_x < -0.94) {
-                    moving_x = -0.94;
-                }
+                // if(moving_x > 0.94) {
+                //     moving_x = 0.94;
+                // }
+                // else if (moving_x < -0.94) {
+                //     moving_x = -0.94;
+                // }
 
                 // Y軸 PID
 
-                _ball_yvect = sin(BallAngle_uc * deg_to_rad);
-
-                uint8_t u_ball_angle = abs(BallAngle);
-                int8_t dir = signbit(BallAngle)? -1: 1;
-
-                if(u_ball_angle <= 10) {
+                if(BallAngle >= 0 && BallAngle <= 30) {
                     toMove = 0;
                 }
-                else {
-                    toMove = BallAngle + (30 * dir);
+                else if (BallAngle > 30 && BallAngle <= 90) {
+                    toMove = BallAngle * 1.6;
                 }
+                else if (BallAngle > 90 && BallAngle <= 180) {
+                    toMove = BallAngle + 45;
+                }
+
+                else if (BallAngle > 180 && BallAngle <= 270) {
+                    toMove = BallAngle - 45;
+                }
+
+                else if (BallAngle > 270 && BallAngle <= 330) {
+                    toMove = BallAngle - 30;
+                }
+                else {
+                    toMove = 0;
+                }
+
+
+                // if(u_ball_angle <= 10) {
+                //     toMove = 0;
+                // }
+                // else {
+                //     if(dir) {
+                //         toMove = BallAngle + 30;
+                //     }
+                //     else {
+                //         toMove = BallAngle - 30;
+                //     }
+                // }
+
+
                 // else if(u_ball_angle <= 45) {
                 //     toMove = 90 * dir;
                 // }
@@ -112,18 +146,23 @@ void Attacker::update() {
                 //     toMove = (u_ball_angle + 50)  * dir;
                 // }
 
-                target_y = sin((270 - toMove) * deg_to_rad);
-                moving_y = PID_AttY.update(target_y, _ball_yvect) * -1;
+                // target_y = sin((270 - toMove) * deg_to_rad);
+                // moving_y = PID_AttY.update(target_y, _ball_yvect) * -1;
 
-                if(moving_y > 0.94) {
-                    moving_y = 0.94;
-                }
-                else if (moving_y < -0.94) {
-                    moving_y = -0.94;
-                }
+                // if(moving_y > 0.94) {
+                //     moving_y = 0.94;
+                // }
+                // else if (moving_y < -0.94) {
+                //     moving_y = -0.94;
+                // }
 
-                atc->setMode(4);
-                atc->setGoStraightXY(moving_x, 0);
+                // _atc_angle += 180;
+
+                atc->setMode(3);
+                atc->setGoStraightAngle(toMove);
+
+                // atc->setMode(4);
+                // atc->setGoStraightXY(moving_x, 0);
             }
         }
     }
