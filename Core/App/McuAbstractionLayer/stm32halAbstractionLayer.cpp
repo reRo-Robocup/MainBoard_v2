@@ -228,7 +228,7 @@ void stm32halAbstractionLayer::pwmSetDuty(Peripheral_PWM p, float duty) {
 
 void stm32halAbstractionLayer::pwmSetFrequency(Peripheral_PWM p, uint32_t frequency) {
     if (p != Peripheral_PWM::End_P) {
-        if (!_current_pwm_hz[p] == frequency) {
+        if (_current_pwm_hz[p] != frequency) {
             _current_pwm_hz[p] = frequency;
             uint32_t apb1_timer_clocks;
             uint32_t apb2_timer_clocks;
