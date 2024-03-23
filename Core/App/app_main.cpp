@@ -104,10 +104,7 @@ void logic_main(void) {
         case 0:
             break;
         case 1:
-            atc.setGoStraightPower(0.6);
-            atc.setMode(3);
-            atc.setGoStraightAngle(0);
-            // attacker.update();
+            attacker.update();
             break;
         case 2:
             keeper.update();
@@ -194,6 +191,7 @@ void app_main() {
 
     while (1) {
         // keeper.update();
+        // printf("%d\r\n", cam.data.ball_angle);
         /* main loop */
     }
 }
