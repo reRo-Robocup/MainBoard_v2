@@ -190,7 +190,6 @@ void app_main() {
     isInit = true;
 
     while (1) {
-        // keeper.update();
         // printf("%d\r\n", cam.data.ball_angle);
         /* main loop */
     }

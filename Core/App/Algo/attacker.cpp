@@ -44,7 +44,7 @@ int16_t atc_Angle;
 bool dir;
 
 void Attacker::update() {
-    atc->setGoStraightPower(0.6);
+    atc->setGoStraightPower(0.7);
 
     u_ball_angle = abs(BallAngle);
 
@@ -94,8 +94,8 @@ void Attacker::update() {
                     toMove = BallAngle * 1.6;
                 }
                 else {
-                    if(dir) toMove = BallAngle + 45;
-                    else toMove = BallAngle - 45;
+                    if(dir) toMove = BallAngle + 50;
+                    else toMove = BallAngle - 50;
                 }
                 // else if ()
 
@@ -165,8 +165,8 @@ void Attacker::update() {
 
                 // _atc_angle += 180;
 
-                // atc_Angle = toMove + 180;
-                atc_Angle = toMove * -1;
+                // atc_Angle = toMove + 0;
+                atc_Angle = toMove + 180;
                 atc->setMode(3);
                 atc->setGoStraightAngle(atc_Angle);
 
