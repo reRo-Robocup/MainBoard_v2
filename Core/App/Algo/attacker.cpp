@@ -26,8 +26,6 @@ void Attacker::init() {
     PID_traceBallY.setPID(0.04, 0, 0);
 }
 
-int prev_dd = 0;
-
 void Attacker::update() {
     float _ball_angle = 90 + cam->data.ball_angle;
     if (_ball_angle > 360) {
@@ -110,29 +108,28 @@ void Attacker::update() {
         atc->setGoStraightAngle(line->angle);
         ui->buzzer(2000, 10);
     } else {
-        // if (!cam->data.isBallDetected) {
-        //     // if (0) {
-        //     out_x = 0;
-        //     out_y = 0;
-        //     ui->buzzer(1000, 10);
-        // }
+        if (!cam->data.isBallDetected) {
+            // if (0) {
+            out_x = 0;
+            out_y = 0;
+            ui->buzzer(1000, 10);
+        }
         ui->setLED(1, cam->data.isBallDetected);
 
-        if (out_x > 0.7) {
-            out_x = 0.7;
-        } else if (out_x < -0.7) {
-            out_x = -0.7;
+        if (out_x > 0.94) {
+            out_x = 0.94;
+        } else if (out_x < -0.94) {
+            out_x = -0.94;
         }
 
-        if (out_y > 0.7) {
-            out_y = 0.7;
-        } else if (out_y < -0.7) {
-            out_y = -0.7;
+        if (out_y > 0.94) {
+            out_y = 0.94;
+        } else if (out_y < -0.94) {
+            out_y = -0.94;
         }
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
         // printf("m: %d ba: %f bp: %d out_x: %f out_y: %f obs_x: %f obs_y: %f\r\n", _mode, _ball_angle, ball_pos, out_x, out_y, observed_x, observed_y);
-        prev_dd = _ball_angle;
         atc->setMode(4);
         atc->setGoStraightXY(out_x, out_y);
     }
