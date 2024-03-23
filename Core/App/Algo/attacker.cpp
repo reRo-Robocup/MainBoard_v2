@@ -38,10 +38,13 @@ uint8_t u_ball_angle;
 int16_t BallDis;
 int16_t toMove;
 
+int16_t rel_BallAngle;
+int16_t atc_Angle;
+
 bool dir;
 
 void Attacker::update() {
-    atc->setGoStraightPower(0.3);
+    atc->setGoStraightPower(0.6);
 
     u_ball_angle = abs(BallAngle);
 
@@ -49,7 +52,7 @@ void Attacker::update() {
     BallAngle_raw = cam->data.ball_angle;
 
     /* fix Ball Data */
-    BallAngle = BallAngle_raw - 180;
+    BallAngle = BallAngle_raw;
     if(BallAngle >= 180) {
         BallAngle -= 360;
     }
@@ -85,8 +88,16 @@ void Attacker::update() {
             else {
 
                 if(u_ball_angle <= 20) {
-                    toMove = 180;
+                    toMove = 0;
                 }
+                else if (u_ball_angle <= 45) {
+                    toMove = BallAngle * 1.6;
+                }
+                else {
+                    if(dir) toMove = BallAngle + 45;
+                    else toMove = BallAngle - 45;
+                }
+                // else if ()
 
                 // X軸 PID
                 // moving_x = PID_AttX.update(0, _ball_xvect) * -1;
@@ -154,8 +165,10 @@ void Attacker::update() {
 
                 // _atc_angle += 180;
 
+                // atc_Angle = toMove + 180;
+                atc_Angle = toMove * -1;
                 atc->setMode(3);
-                atc->setGoStraightAngle(toMove);
+                atc->setGoStraightAngle(atc_Angle);
 
                 // atc->setMode(4);
                 // atc->setGoStraightXY(moving_x, 0);
