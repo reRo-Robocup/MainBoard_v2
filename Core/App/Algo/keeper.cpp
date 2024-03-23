@@ -143,7 +143,7 @@ void Keeper::_guardGoal() {
         ui->setLED(1, cam->data.isBallDetected);
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
-        printf("ba: %f is_f: %d out_x: %f out_y: %f goal_d: %d ball_d: %d\r\n", _ball_angle, cam->KeepGoal.isFront, out_x, out_y, cam->KeepGoal.dis, cam->data.ball_distance);
+        // printf("ba: %f is_f: %d out_x: %f out_y: %f goal_d: %d ball_d: %d\r\n", _ball_angle, cam->KeepGoal.isFront, out_x, out_y, cam->KeepGoal.dis, cam->data.ball_distance);
 
         if (out_x > 0.94) {
             out_x = 0.94;
