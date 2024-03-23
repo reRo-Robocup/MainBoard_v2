@@ -20,7 +20,7 @@ Keeper::Keeper(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerControll
 
 void Keeper::init() {
     PID_ReturnGoal_X.setProcessTime(0.001);
-    PID_ReturnGoal_X.setPID(0.04, 0, 0);
+    PID_ReturnGoal_X.setPID(0.8, 0, 0);
 
     PID_ReturnGoal_Y.setProcessTime(0.001);
     PID_ReturnGoal_Y.setPID(0.04, 0, 0);
@@ -29,14 +29,13 @@ void Keeper::init() {
     PID_LineBack.setPID(2, 0, 0);
 
     PID_GuardGoal.setProcessTime(0.001);
-    PID_GuardGoal.setPID(0.04, 0, 0);
+    PID_GuardGoal.setPID(2.9, 0, 0);
 
     PID_traceBallY.setProcessTime(0.001);
     PID_traceBallY.setPID(0.04, 0, 0);
 }
 
 void Keeper::update() {
-    _mode = 1;
     switch (_mode) {
         case 0:
 
@@ -81,15 +80,12 @@ void Keeper::_setLinecenter() {
 }
 
 void Keeper::_returnGoal() {
-    float temp_2 = 180 - cam->KeepGoal.ang;
-    float observed_goal_x = cos((temp_2)*deg_to_rad) * cam->KeepGoal.dis;
-    float observed_goal_y = sin((temp_2)*deg_to_rad) * cam->KeepGoal.dis;
+    float observed_x = cos((90 - cam->KeepGoal.ang) * deg_to_rad);
 
-    float out_x = PID_ReturnGoal_X.update(0, observed_goal_x) * -1;
-    float out_y = PID_ReturnGoal_Y.update(_goal_target, observed_goal_y);
+    float out_x = PID_ReturnGoal_X.update(0, observed_x) * -1;
+    float out_y = PID_ReturnGoal_Y.update(_goal_target, cam->KeepGoal.dis);
 
     ui->buzzer(600, 10);
-    // printf("obs_x: %f obs_Y %f out_x %f out_y %f\r\n", observed_goal_x, observed_goal_y, out_x, out_y);
 
     if (out_x > 0.94) {
         out_x = 0.94;
@@ -108,19 +104,17 @@ void Keeper::_returnGoal() {
 }
 
 void Keeper::_guardGoal() {
-    float _ball_angle = 90 + cam->data.ball_angle;
+    float _camera_angle = 90 + cam->data.ball_angle;
 
-    float temp_1 = 180 - _ball_angle;
-    float observed_ball_x = cos((temp_1)*deg_to_rad) * cam->data.ball_distance;
-    float observed_ball_y = sin((temp_1)*deg_to_rad) * cam->data.ball_distance;
+    float observed_x = cos((_camera_angle)*deg_to_rad);
 
-    float out_x = PID_GuardGoal.update(0, observed_ball_x);
+    float _corrected_goal_distance_ang = 180 - abs(cam->KeepGoal.ang);
+    float _corrected_goal_distance = int(cos(_corrected_goal_distance_ang * deg_to_rad) * cam->KeepGoal.dis);
 
-    float temp_2 = 180 - cam->KeepGoal.ang;
-    float observed_goal_y = sin((temp_2)*deg_to_rad) * cam->KeepGoal.dis;
+    float out_x = PID_GuardGoal.update(0, observed_x);
 
-    float out_y_ball = PID_traceBallY.update(_ball_distance_target, observed_ball_y) * -1;
-    float out_y_goal = PID_ReturnGoal_Y.update(_goal_target, observed_goal_y);
+    float out_y_ball = PID_traceBallY.update(_ball_distance_target, cam->data.ball_distance) * -1;
+    float out_y_goal = PID_ReturnGoal_Y.update(_goal_target, cam->KeepGoal.dis);
 
     float out_y = out_y_goal;
 
@@ -143,7 +137,7 @@ void Keeper::_guardGoal() {
         ui->setLED(1, cam->data.isBallDetected);
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
-        // printf("ba: %f is_f: %d out_x: %f out_y: %f goal_d: %d ball_d: %d\r\n", _ball_angle, cam->KeepGoal.isFront, out_x, out_y, cam->KeepGoal.dis, cam->data.ball_distance);
+        // printf("ba: %f is_f: %d out_x: %f out_y: %f goal_d: %d ball_d: %d\r\n", _camera_angle, cam->KeepGoal.isFront, out_x, out_y, cam->KeepGoal.dis, cam->data.ball_distance);
 
         if (out_x > 0.94) {
             out_x = 0.94;

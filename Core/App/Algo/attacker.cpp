@@ -54,10 +54,14 @@ void Attacker::update() {
     float out_x = 0;
     float out_y = 0;
 
+    if (!cam->data.isBallDetected) {
+        _mode = 0;
+    }
+
     switch (_mode) {
         case 0:  // ボール前方
             out_x = PID_traceBallX.update(0, observed_x) * -1;
-            out_y = PID_traceBallY.update(15, observed_y) * -1;
+            out_y = PID_traceBallY.update(0, observed_y) * -1;
             ui->buzzer(500, 10);
 
             if (ball_pos == 1) {
@@ -69,7 +73,8 @@ void Attacker::update() {
 
         case 10:  // ボール左うしろ
             out_x = PID_traceBallX.update(-40, observed_x) * -1;
-            out_y = PID_traceBallY.update(40, observed_y) * -1;
+            out_y = PID_traceBallY.update(50, observed_y) * -1;
+            ui->buzzer(1000, 10);
 
             if (ball_pos == 0) {
                 _mode = 11;
@@ -78,15 +83,27 @@ void Attacker::update() {
 
         case 11:  // ボール前方
             out_x = PID_traceBallX.update(-40, observed_x) * -1;
-            out_y = PID_traceBallY.update(40, observed_y) * -1;
+            out_y = PID_traceBallY.update(50, observed_y) * -1;
+            ui->buzzer(1500, 10);
 
-            if (observed_y > 30) {
-                _mode = 0;
+            if (observed_y > 20) {
+                _mode = 12;
             }
 
-        case 20:  // ボール左うしろ
+        case 12:
+            out_x = PID_traceBallX.update(-40, observed_x) * -1;
+            out_y = PID_traceBallY.update(50, observed_y) * -1;
+            ui->buzzer(2000, 10);
+
+            if (observed_y > 20) {
+                _mode = 0;
+            }
+            break;
+
+        case 20:  // ボール右うしろ
             out_x = PID_traceBallX.update(40, observed_x) * -1;
-            out_y = PID_traceBallY.update(40, observed_y) * -1;
+            out_y = PID_traceBallY.update(50, observed_y) * -1;
+            ui->buzzer(500, 10);
 
             if (ball_pos == 0) {
                 _mode = 21;
@@ -95,24 +112,36 @@ void Attacker::update() {
 
         case 21:  // ボール前方
             out_x = PID_traceBallX.update(40, observed_x) * -1;
-            out_y = PID_traceBallY.update(40, observed_y) * -1;
+            out_y = PID_traceBallY.update(50, observed_y) * -1;
+            ui->buzzer(1000, 10);
 
-            if (observed_y > 30) {
+            if (observed_y > 20) {
+                _mode = 22;
+            }
+            break;
+
+        case 22:
+            out_x = PID_traceBallX.update(40, observed_x) * -1;
+            out_y = PID_traceBallY.update(50, observed_y) * -1;
+            ui->buzzer(1000, 10);
+
+            if (observed_y > 20) {
                 _mode = 0;
             }
+            break;
     }
 
     if (line->isonLine) {
         // if (0) {
         atc->setMode(3);
         atc->setGoStraightAngle(line->angle);
-        ui->buzzer(2000, 10);
+        // ui->buzzer(2000, 10);
     } else {
         if (!cam->data.isBallDetected) {
             // if (0) {
             out_x = 0;
             out_y = 0;
-            ui->buzzer(1000, 10);
+            // ui->buzzer(1000, 10);
         }
         ui->setLED(1, cam->data.isBallDetected);
 
@@ -129,7 +158,7 @@ void Attacker::update() {
         }
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
-        // printf("m: %d ba: %f bp: %d out_x: %f out_y: %f obs_x: %f obs_y: %f\r\n", _mode, _ball_angle, ball_pos, out_x, out_y, observed_x, observed_y);
+        printf("m: %d ba: %f bp: %d out_x: %f out_y: %f obs_x: %f obs_y: %f\r\n", _mode, _ball_angle, ball_pos, out_x, out_y, observed_x, observed_y);
         atc->setMode(4);
         atc->setGoStraightXY(out_x, out_y);
     }
