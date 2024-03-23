@@ -21,19 +21,25 @@
 
 class Attacker {
    public:
-      Attacker(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerController* _kicker, LineSensor* _line, MPU6500* _imu, UI* _ui);
-      void init();
-      void update();
+    Attacker(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerController* _kicker, LineSensor* _line, MPU6500* _imu, UI* _ui);
+    void init();
+    void update();
 
    private:
-      MAL* mcu;
-      AttitudeController* atc;
-      camera* cam;
-      KickerController* kicker;
-      LineSensor* line;
-      MPU6500* imu;
-      UI* ui;
+    MAL* mcu;
+    AttitudeController* atc;
+    camera* cam;
+    KickerController* kicker;
+    LineSensor* line;
+    MPU6500* imu;
+    UI* ui;
 
+    PID<float> PID_traceBallX;
+    PID<float> PID_traceBallY;
+
+    const float _ball_distance_target = 45;
+
+    int _mode = 0;
 };
 
 #endif /* APP_ALGO_ATTACKER_HPP_ */

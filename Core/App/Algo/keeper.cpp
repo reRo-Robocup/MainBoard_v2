@@ -104,12 +104,9 @@ void Keeper::_returnGoal() {
 }
 
 void Keeper::_guardGoal() {
-    float _camera_angle = 90 + cam->data.ball_angle;
+    float _ball_angle = 90 + cam->data.ball_angle;
 
-    float observed_x = cos((_camera_angle)*deg_to_rad);
-
-    float _corrected_goal_distance_ang = 180 - abs(cam->KeepGoal.ang);
-    float _corrected_goal_distance = int(cos(_corrected_goal_distance_ang * deg_to_rad) * cam->KeepGoal.dis);
+    float observed_x = cos((_ball_angle)*deg_to_rad);
 
     float out_x = PID_GuardGoal.update(0, observed_x);
 
@@ -137,7 +134,7 @@ void Keeper::_guardGoal() {
         ui->setLED(1, cam->data.isBallDetected);
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
-        // printf("ba: %f is_f: %d out_x: %f out_y: %f goal_d: %d ball_d: %d\r\n", _camera_angle, cam->KeepGoal.isFront, out_x, out_y, cam->KeepGoal.dis, cam->data.ball_distance);
+        // printf("ba: %f is_f: %d out_x: %f out_y: %f goal_d: %d ball_d: %d\r\n", _ball_angle, cam->KeepGoal.isFront, out_x, out_y, cam->KeepGoal.dis, cam->data.ball_distance);
 
         if (out_x > 0.94) {
             out_x = 0.94;

@@ -18,161 +18,122 @@ Attacker::Attacker(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerCont
     this->ui = _ui;
 }
 
-PID <float> PID_AttX;
-PID <float> PID_AttY;
-
 void Attacker::init() {
-    PID_AttX.setProcessTime(0.001);
-    PID_AttX.setPID(2,0,0.2);
+    PID_traceBallX.setProcessTime(0.001);
+    PID_traceBallX.setPID(0.04, 0, 0);
 
-    PID_AttY.setProcessTime(0.001);
-    PID_AttY.setPID(2,0,0);
+    PID_traceBallY.setProcessTime(0.001);
+    PID_traceBallY.setPID(0.04, 0, 0);
 }
 
-int16_t BallAngle;
-int16_t BallAngle_uc;
-int16_t BallAngle_raw;
-
-uint8_t u_ball_angle;
-
-int16_t BallDis;
-int16_t toMove;
-
-int16_t rel_BallAngle;
-int16_t atc_Angle;
-
-bool dir;
+int prev_dd = 0;
 
 void Attacker::update() {
-    atc->setGoStraightPower(0.7);
-
-    u_ball_angle = abs(BallAngle);
-
-    /* raw Ball Data */
-    BallAngle_raw = cam->data.ball_angle;
-
-    /* fix Ball Data */
-    BallAngle = BallAngle_raw;
-    if(BallAngle >= 180) {
-        BallAngle -= 360;
+    float _ball_angle = 90 + cam->data.ball_angle;
+    if (_ball_angle > 360) {
+        _ball_angle -= 360;
     }
 
-    /* unit Ball Data */
-    BallAngle_uc = 90 - BallAngle;
-    if(BallAngle_uc < 0) {
-        BallAngle_uc += 360;
+    int ball_pos = 0;
+    if (_ball_angle < 360 && _ball_angle > 270) {
+        ball_pos = 1;  // 左うしろ
+    } else if (_ball_angle > 180 && _ball_angle < 270) {
+        ball_pos = 2;  // 右うしろ
+    } else {
+        ball_pos = 0;  // 前方
     }
 
-    /* Ball distance */
-    BallDis = cam->data.ball_distance;
+    float _ball_distance = 0;
+    if (ball_pos == 1 || ball_pos == 2) {
+        _ball_distance = -cam->data.ball_distance;
+    } else {
+        _ball_distance = cam->data.ball_distance;
+    }
+    float temp_1 = 180 - _ball_angle;
+    float observed_x = cos((temp_1)*deg_to_rad) * cam->data.ball_distance;
+    float observed_y = sin((temp_1)*deg_to_rad) * cam->data.ball_distance;
 
-    dir = BallAngle > 0;
+    float out_x = 0;
+    float out_y = 0;
 
-    // _ball_xvect = cos(BallAngle_uc * deg_to_rad);
-    // _ball_yvect = sin(BallAngle_uc * deg_to_rad);
+    switch (_mode) {
+        case 0:  // ボール前方
+            out_x = PID_traceBallX.update(0, observed_x) * -1;
+            out_y = PID_traceBallY.update(15, observed_y) * -1;
+            ui->buzzer(500, 10);
 
-    if(line->isonLine) {
-        /* TODO: xy分解 */
+            if (ball_pos == 1) {
+                _mode = 10;
+            } else if (ball_pos == 2) {
+                _mode = 20;
+            }
+            break;
+
+        case 10:  // ボール左うしろ
+            out_x = PID_traceBallX.update(-40, observed_x) * -1;
+            out_y = PID_traceBallY.update(40, observed_y) * -1;
+
+            if (ball_pos == 0) {
+                _mode = 11;
+            }
+            break;
+
+        case 11:  // ボール前方
+            out_x = PID_traceBallX.update(-40, observed_x) * -1;
+            out_y = PID_traceBallY.update(40, observed_y) * -1;
+
+            if (observed_y > 30) {
+                _mode = 0;
+            }
+
+        case 20:  // ボール左うしろ
+            out_x = PID_traceBallX.update(40, observed_x) * -1;
+            out_y = PID_traceBallY.update(40, observed_y) * -1;
+
+            if (ball_pos == 0) {
+                _mode = 21;
+            }
+            break;
+
+        case 21:  // ボール前方
+            out_x = PID_traceBallX.update(40, observed_x) * -1;
+            out_y = PID_traceBallY.update(40, observed_y) * -1;
+
+            if (observed_y > 30) {
+                _mode = 0;
+            }
+    }
+
+    if (line->isonLine) {
+        // if (0) {
         atc->setMode(3);
         atc->setGoStraightAngle(line->angle);
-    }
-    else {
-        if(!cam->data.isBallDetected) {
-            atc->setMode(0);
+        ui->buzzer(2000, 10);
+    } else {
+        // if (!cam->data.isBallDetected) {
+        //     // if (0) {
+        //     out_x = 0;
+        //     out_y = 0;
+        //     ui->buzzer(1000, 10);
+        // }
+        ui->setLED(1, cam->data.isBallDetected);
+
+        if (out_x > 0.7) {
+            out_x = 0.7;
+        } else if (out_x < -0.7) {
+            out_x = -0.7;
         }
-        else {
-            if (BallDis > 50) {
-                atc->setMode(3);
-                atc->setGoStraightAngle(BallAngle);
-            }
-            else {
 
-                if(u_ball_angle <= 20) {
-                    toMove = 0;
-                }
-                else if (u_ball_angle <= 45) {
-                    toMove = BallAngle * 1.6;
-                }
-                else {
-                    if(dir) toMove = BallAngle + 50;
-                    else toMove = BallAngle - 50;
-                }
-                // else if ()
-
-                // X軸 PID
-                // moving_x = PID_AttX.update(0, _ball_xvect) * -1;
-
-                // if(moving_x > 0.94) {
-                //     moving_x = 0.94;
-                // }
-                // else if (moving_x < -0.94) {
-                //     moving_x = -0.94;
-                // }
-
-                // Y軸 PID
-
-                // if(BallAngle >= 0 && BallAngle <= 30) {
-                //     toMove = 0;
-                // }
-                // else if (BallAngle > 30 && BallAngle <= 90) {
-                //     toMove = BallAngle * 1.6;
-                // }
-                // else if (BallAngle > 90 && BallAngle <= 180) {
-                //     toMove = BallAngle + 45;
-                // }
-
-                // else if (BallAngle > 180 && BallAngle <= 270) {
-                //     toMove = BallAngle - 45;
-                // }
-
-                // else if (BallAngle > 270 && BallAngle <= 330) {
-                //     toMove = BallAngle - 30;
-                // }
-                // else {
-                //     toMove = 0;
-                // }
-
-
-                // if(u_ball_angle <= 10) {
-                //     toMove = 0;
-                // }
-                // else {
-                //     if(dir) {
-                //         toMove = BallAngle + 30;
-                //     }
-                //     else {
-                //         toMove = BallAngle - 30;
-                //     }
-                // }
-
-
-                // else if(u_ball_angle <= 45) {
-                //     toMove = 90 * dir;
-                // }
-                // else {
-                //     toMove = (u_ball_angle + 50)  * dir;
-                // }
-
-                // target_y = sin((270 - toMove) * deg_to_rad);
-                // moving_y = PID_AttY.update(target_y, _ball_yvect) * -1;
-
-                // if(moving_y > 0.94) {
-                //     moving_y = 0.94;
-                // }
-                // else if (moving_y < -0.94) {
-                //     moving_y = -0.94;
-                // }
-
-                // _atc_angle += 180;
-
-                // atc_Angle = toMove + 0;
-                atc_Angle = toMove + 180;
-                atc->setMode(3);
-                atc->setGoStraightAngle(atc_Angle);
-
-                // atc->setMode(4);
-                // atc->setGoStraightXY(moving_x, 0);
-            }
+        if (out_y > 0.7) {
+            out_y = 0.7;
+        } else if (out_y < -0.7) {
+            out_y = -0.7;
         }
+
+        // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
+        printf("m: %d ba: %f bp: %d out_x: %f out_y: %f obs_x: %f obs_y: %f\r\n", _mode, _ball_angle, ball_pos, out_x, out_y, observed_x, observed_y);
+        prev_dd = _ball_angle;
+        atc->setMode(4);
+        atc->setGoStraightXY(out_x, out_y);
     }
 }
