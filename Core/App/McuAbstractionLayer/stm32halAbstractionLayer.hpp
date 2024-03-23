@@ -65,6 +65,7 @@ class stm32halAbstractionLayer : public baseMcuAbstractionLayer {
 
     // Timer PWM
     void _initPWM();
+    unsigned int _current_pwm_hz[Peripheral_PWM::End_P] = {0};
 
     // UART
     void _initUART();

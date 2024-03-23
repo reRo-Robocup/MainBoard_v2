@@ -41,14 +41,21 @@ class Keeper {
 
     PID<float> PID_LineBack;
     PID<float> PID_GuardGoal;
+    PID<float> PID_traceBallY;
 
     void _returnGoal();
     void _setLinecenter();
     void _guardGoal();
 
     const float _goal_target = 85;
+    const float _ball_distance_target = 50;
 
     int _mode = 1;
+    int _guard_goal_mode = 0;
+
+    int _prev_ball_angle = 0;
+    int _prev_ball_distance = 0;
+    unsigned int _ball_move_check_time = 0;
 };
 
 #endif /* APP_ALGO_KEEPER_HPP_ */

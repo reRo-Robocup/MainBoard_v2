@@ -228,41 +228,44 @@ void stm32halAbstractionLayer::pwmSetDuty(Peripheral_PWM p, float duty) {
 
 void stm32halAbstractionLayer::pwmSetFrequency(Peripheral_PWM p, uint32_t frequency) {
     if (p != Peripheral_PWM::End_P) {
-        uint32_t apb1_timer_clocks;
-        uint32_t apb2_timer_clocks;
-        uint32_t timer_clock = 0;
+        if (!_current_pwm_hz[p] == frequency) {
+            _current_pwm_hz[p] = frequency;
+            uint32_t apb1_timer_clocks;
+            uint32_t apb2_timer_clocks;
+            uint32_t timer_clock = 0;
 
-        RCC_ClkInitTypeDef RCC_ClkInitStruct;
-        uint32_t pFLatency;
-        HAL_RCC_GetClockConfig(&RCC_ClkInitStruct, &pFLatency);
-        apb1_timer_clocks = HAL_RCC_GetPCLK1Freq();
-        apb2_timer_clocks = HAL_RCC_GetPCLK2Freq();
-        apb1_timer_clocks *= (RCC_ClkInitStruct.APB1CLKDivider == RCC_HCLK_DIV1) ? 1 : 2;
-        apb2_timer_clocks *= (RCC_ClkInitStruct.APB2CLKDivider == RCC_HCLK_DIV1) ? 1 : 2;
+            RCC_ClkInitTypeDef RCC_ClkInitStruct;
+            uint32_t pFLatency;
+            HAL_RCC_GetClockConfig(&RCC_ClkInitStruct, &pFLatency);
+            apb1_timer_clocks = HAL_RCC_GetPCLK1Freq();
+            apb2_timer_clocks = HAL_RCC_GetPCLK2Freq();
+            apb1_timer_clocks *= (RCC_ClkInitStruct.APB1CLKDivider == RCC_HCLK_DIV1) ? 1 : 2;
+            apb2_timer_clocks *= (RCC_ClkInitStruct.APB2CLKDivider == RCC_HCLK_DIV1) ? 1 : 2;
 
-        // printf("apb1_timer_clocks: %u\r\n", apb1_timer_clocks);
-        // printf("apb2_timer_clocks: %u\r\n", apb2_timer_clocks);
+            // printf("apb1_timer_clocks: %u\r\n", apb1_timer_clocks);
+            // printf("apb2_timer_clocks: %u\r\n", apb2_timer_clocks);
 
-        if ((uint32_t)PAL.PWM_TIM[p]->Instance >= APB2PERIPH_BASE) {
-            timer_clock = apb2_timer_clocks;
-        } else if ((uint32_t)PAL.PWM_TIM[p]->Instance >= APB1PERIPH_BASE) {
-            timer_clock = apb1_timer_clocks;
-        }
+            if ((uint32_t)PAL.PWM_TIM[p]->Instance >= APB2PERIPH_BASE) {
+                timer_clock = apb2_timer_clocks;
+            } else if ((uint32_t)PAL.PWM_TIM[p]->Instance >= APB1PERIPH_BASE) {
+                timer_clock = apb1_timer_clocks;
+            }
 
-        for (uint32_t prescaler = 0; prescaler < 65536; prescaler++) {
-            for (uint32_t period = 0; period < 65536; period++) {
-                if ((timer_clock / ((prescaler + 1) * (period + 1))) == frequency) {
-                    // printf("frequency: %u\r\n", (timer_clock / ((prescaler + 1) * (period + 1))));
-                    // printf("timer_clock: %u\r\n", timer_clock);
-                    // printf("prescaler: %u\r\n", prescaler + 1);
-                    // printf("period: %u\r\n", period + 1);
-                    __HAL_TIM_SET_PRESCALER(PAL.PWM_TIM[p], prescaler);
-                    __HAL_TIM_SET_AUTORELOAD(PAL.PWM_TIM[p], period);
-                    if (__HAL_TIM_GET_COUNTER(PAL.PWM_TIM[p]) >= __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p])) {
-                        PAL.PWM_TIM[p]->Instance->EGR |= TIM_EGR_UG;
+            for (uint32_t prescaler = 0; prescaler < 65536; prescaler++) {
+                for (uint32_t period = 0; period < 65536; period++) {
+                    if ((timer_clock / ((prescaler + 1) * (period + 1))) == frequency) {
+                        // printf("frequency: %u\r\n", (timer_clock / ((prescaler + 1) * (period + 1))));
+                        // printf("timer_clock: %u\r\n", timer_clock);
+                        // printf("prescaler: %u\r\n", prescaler + 1);
+                        // printf("period: %u\r\n", period + 1);
+                        __HAL_TIM_SET_PRESCALER(PAL.PWM_TIM[p], prescaler);
+                        __HAL_TIM_SET_AUTORELOAD(PAL.PWM_TIM[p], period);
+                        if (__HAL_TIM_GET_COUNTER(PAL.PWM_TIM[p]) >= __HAL_TIM_GET_AUTORELOAD(PAL.PWM_TIM[p])) {
+                            PAL.PWM_TIM[p]->Instance->EGR |= TIM_EGR_UG;
+                        }
+                        __HAL_TIM_SET_CLOCKDIVISION(PAL.PWM_TIM[p], TIM_CLOCKDIVISION_DIV1);
+                        return;
                     }
-                    __HAL_TIM_SET_CLOCKDIVISION(PAL.PWM_TIM[p], TIM_CLOCKDIVISION_DIV1);
-                    return;
                 }
             }
         }

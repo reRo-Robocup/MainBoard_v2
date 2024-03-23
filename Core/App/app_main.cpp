@@ -163,6 +163,8 @@ void app_main() {
     printf("app_start\r\n");
     app_init();
 
+    ui.setLED(2, 0);
+
     uint32_t calibration_start_time = 0;
     ui.buzzer(1000, 1000);
     calibration_start_time = mcu.millis();
