@@ -104,7 +104,10 @@ void logic_main(void) {
         case 0:
             break;
         case 1:
-            attacker.update();
+            atc.setGoStraightPower(0.6);
+            atc.setMode(3);
+            atc.setGoStraightAngle(0);
+            // attacker.update();
             break;
         case 2:
             keeper.update();

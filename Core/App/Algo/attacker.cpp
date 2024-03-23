@@ -32,20 +32,11 @@ void Attacker::init() {
 int16_t BallAngle;
 int16_t BallAngle_uc;
 int16_t BallAngle_raw;
-int16_t BallDis;
-int16_t toMove;
-
-float moving_x;
-float moving_y;
-
-float _ball_xvect;
-float _ball_yvect;
-
-float target_y;
-
-int16_t _atc_angle;
 
 uint8_t u_ball_angle;
+
+int16_t BallDis;
+int16_t toMove;
 
 bool dir;
 
@@ -58,7 +49,7 @@ void Attacker::update() {
     BallAngle_raw = cam->data.ball_angle;
 
     /* fix Ball Data */
-    BallAngle = BallAngle_raw;
+    BallAngle = BallAngle_raw - 180;
     if(BallAngle >= 180) {
         BallAngle -= 360;
     }
@@ -74,8 +65,8 @@ void Attacker::update() {
 
     dir = BallAngle > 0;
 
-    _ball_xvect = cos(BallAngle_uc * deg_to_rad);
-    _ball_yvect = sin(BallAngle_uc * deg_to_rad);
+    // _ball_xvect = cos(BallAngle_uc * deg_to_rad);
+    // _ball_yvect = sin(BallAngle_uc * deg_to_rad);
 
     if(line->isonLine) {
         /* TODO: xy分解 */
@@ -92,6 +83,11 @@ void Attacker::update() {
                 atc->setGoStraightAngle(BallAngle);
             }
             else {
+
+                if(u_ball_angle <= 20) {
+                    toMove = 180;
+                }
+
                 // X軸 PID
                 // moving_x = PID_AttX.update(0, _ball_xvect) * -1;
 
@@ -104,26 +100,26 @@ void Attacker::update() {
 
                 // Y軸 PID
 
-                if(BallAngle >= 0 && BallAngle <= 30) {
-                    toMove = 0;
-                }
-                else if (BallAngle > 30 && BallAngle <= 90) {
-                    toMove = BallAngle * 1.6;
-                }
-                else if (BallAngle > 90 && BallAngle <= 180) {
-                    toMove = BallAngle + 45;
-                }
+                // if(BallAngle >= 0 && BallAngle <= 30) {
+                //     toMove = 0;
+                // }
+                // else if (BallAngle > 30 && BallAngle <= 90) {
+                //     toMove = BallAngle * 1.6;
+                // }
+                // else if (BallAngle > 90 && BallAngle <= 180) {
+                //     toMove = BallAngle + 45;
+                // }
 
-                else if (BallAngle > 180 && BallAngle <= 270) {
-                    toMove = BallAngle - 45;
-                }
+                // else if (BallAngle > 180 && BallAngle <= 270) {
+                //     toMove = BallAngle - 45;
+                // }
 
-                else if (BallAngle > 270 && BallAngle <= 330) {
-                    toMove = BallAngle - 30;
-                }
-                else {
-                    toMove = 0;
-                }
+                // else if (BallAngle > 270 && BallAngle <= 330) {
+                //     toMove = BallAngle - 30;
+                // }
+                // else {
+                //     toMove = 0;
+                // }
 
 
                 // if(u_ball_angle <= 10) {
