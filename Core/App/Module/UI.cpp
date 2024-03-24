@@ -74,7 +74,7 @@ bool UI::getSW() {
 }
 
 void UI::setLED(uint8_t pin, bool states) {
-    _mcu->gpioSetValue(LED[pin], states);
+    // _mcu->gpioSetValue(LED[pin], states);
 }
 
 void UI::Lchika() {

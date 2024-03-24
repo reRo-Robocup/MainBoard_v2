@@ -164,7 +164,7 @@ void Attacker::update() {
             out_y = 0;
             ui->buzzer(1000, 10);
         }
-        ui->setLED(1, cam->data.isBallDetected);
+        // ui->setLED(1, cam->data.isBallDetected);
 
         if (out_x > 0.5) {
             out_x = 0.5;

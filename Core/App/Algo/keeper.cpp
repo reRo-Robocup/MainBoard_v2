@@ -134,7 +134,7 @@ void Keeper::_guardGoal() {
             out_y = 0;
             ui->buzzer(1000, 10);
         }
-        ui->setLED(1, cam->data.isBallDetected);
+        // ui->setLED(1, cam->data.isBallDetected);
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
         // printf("ba: %f is_f: %d out_x: %f out_y: %f goal_d: %d ball_d: %d\r\n", _camera_angle, cam->KeepGoal.isFront, out_x, out_y, cam->KeepGoal.dis, cam->data.ball_distance);

@@ -177,6 +177,8 @@ void app_main() {
     printf("app_start\r\n");
     app_init();
 
+    ui.setLED(0, 0);
+    ui.setLED(1, 0);
     ui.setLED(2, 0);
 
     uint32_t calibration_start_time = 0;
