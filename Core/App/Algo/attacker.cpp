@@ -54,9 +54,10 @@ void Attacker::update() {
     float out_x = 0;
     float out_y = 0;
 
-    if (!cam->data.isBallDetected) {
-        _mode = 0;
-    }
+    // if (!cam->data.isBallDetected) {
+    //     _mode = 0;
+    // }
+    // _mode = 0;
 
     switch (_mode) {
         case 0:  // ボール前方
@@ -129,19 +130,23 @@ void Attacker::update() {
                 _mode = 0;
             }
             break;
+
+        default:
+            _mode = 0;
+            break;
     }
 
     if (line->isonLine) {
         // if (0) {
         atc->setMode(3);
         atc->setGoStraightAngle(line->angle);
-        // ui->buzzer(2000, 10);
+        ui->buzzer(2000, 10);
     } else {
         if (!cam->data.isBallDetected) {
             // if (0) {
             out_x = 0;
             out_y = 0;
-            // ui->buzzer(1000, 10);
+            ui->buzzer(1000, 10);
         }
         ui->setLED(1, cam->data.isBallDetected);
 
@@ -158,7 +163,7 @@ void Attacker::update() {
         }
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
-        printf("m: %d ba: %f bp: %d out_x: %f out_y: %f obs_x: %f obs_y: %f\r\n", _mode, _ball_angle, ball_pos, out_x, out_y, observed_x, observed_y);
+        // printf("m: %d ba: %f bp: %d out_x: %f out_y: %f obs_x: %f obs_y: %f\r\n", _mode, _ball_angle, ball_pos, out_x, out_y, observed_x, observed_y);
         atc->setMode(4);
         atc->setGoStraightXY(out_x, out_y);
     }
