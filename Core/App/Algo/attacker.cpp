@@ -26,6 +26,30 @@ void Attacker::init() {
     PID_traceBallY.setPID(0.04, 0, 0);
 }
 
+void Attacker::update2() {
+    float observed_x = cos((90 - cam->data.ball_angle) * deg_to_rad);
+
+    float out_x = PID_traceBallX2.update(0, observed_x) * -1;
+    float out_y = PID_traceBallY2.update(0, cam->KeepGoal.dis);
+
+    ui->buzzer(600, 10);
+
+    if (out_x > 0.94) {
+        out_x = 0.94;
+    } else if (out_x < -0.94) {
+        out_x = -0.94;
+    }
+
+    if (out_y > 0.94) {
+        out_y = 0.94;
+    } else if (out_y < -0.94) {
+        out_y = -0.94;
+    }
+
+    atc->setMode(4);
+    atc->setGoStraightXY(out_x, out_y);
+}
+
 void Attacker::update() {
     float _ball_angle = 90 + cam->data.ball_angle;
     if (_ball_angle > 360) {
@@ -57,7 +81,7 @@ void Attacker::update() {
     // if (!cam->data.isBallDetected) {
     //     _mode = 0;
     // }
-    // _mode = 0;
+    _mode = 0;
 
     switch (_mode) {
         case 0:  // ボール前方
@@ -65,11 +89,11 @@ void Attacker::update() {
             out_y = PID_traceBallY.update(0, observed_y) * -1;
             ui->buzzer(500, 10);
 
-            if (ball_pos == 1) {
-                _mode = 10;
-            } else if (ball_pos == 2) {
-                _mode = 20;
-            }
+            // if (ball_pos == 1) {
+            //     _mode = 10;
+            // } else if (ball_pos == 2) {
+            //     _mode = 20;
+            // }
             break;
 
         case 10:  // ボール左うしろ

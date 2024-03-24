@@ -24,6 +24,7 @@ class Attacker {
     Attacker(MAL* _mcu, AttitudeController* _atc, camera* _cam, KickerController* _kicker, LineSensor* _line, MPU6500* _imu, UI* _ui);
     void init();
     void update();
+    void update2();
 
    private:
     MAL* mcu;
@@ -36,6 +37,9 @@ class Attacker {
 
     PID<float> PID_traceBallX;
     PID<float> PID_traceBallY;
+
+    PID<float> PID_traceBallX2;
+    PID<float> PID_traceBallY2;
 
     const float _ball_distance_target = 45;
 
