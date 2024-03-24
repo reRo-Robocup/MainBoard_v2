@@ -188,10 +188,15 @@ void AttitudeController::update() {
                 _setPWM(TractionMotors::Motor4, output);
             } else {
                 for (int i = 0; i < 4; i++) {
-                    MPowerVector[i] += output;
                     if (MPowerMax < abs(MPowerVector[i]))
                         MPowerMax = abs(MPowerVector[i]);
                 }
+                if (MPowerMax > 0.94) {
+                    for (int i = 0; i < 4; i++) {
+                        MPowerVector[i] *= (0.94 / MPowerMax);
+                    }
+                }
+                // printf("%f %f %f %f\r\n", MPowerVector[0], MPowerVector[1], MPowerVector[2], MPowerVector[3]);
                 _setPWM(TractionMotors::Motor1, MPowerVector[0]);
                 _setPWM(TractionMotors::Motor2, MPowerVector[1]);
                 _setPWM(TractionMotors::Motor3, MPowerVector[2]);

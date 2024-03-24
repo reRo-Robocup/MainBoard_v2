@@ -166,16 +166,16 @@ void Attacker::update() {
         }
         // ui->setLED(1, cam->data.isBallDetected);
 
-        if (out_x > 0.5) {
-            out_x = 0.5;
-        } else if (out_x < -0.5) {
-            out_x = -0.5;
+        if (out_x > 1) {
+            out_x = 1;
+        } else if (out_x < -1) {
+            out_x = -1;
         }
 
-        if (out_y > 0.5) {
-            out_y = 0.5;
-        } else if (out_y < -0.5) {
-            out_y = -0.5;
+        if (out_y > 1) {
+            out_y = 1;
+        } else if (out_y < -1) {
+            out_y = -1;
         }
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
