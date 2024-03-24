@@ -98,9 +98,14 @@ void Keeper::_returnGoal() {
     } else if (out_y < -0.94) {
         out_y = -0.94;
     }
-
-    atc->setMode(4);
-    atc->setGoStraightXY(out_x, out_y);
+    if (line->isonLine) {
+        // if (0) {
+        atc->setMode(3);
+        atc->setGoStraightAngle(line->angle);
+    } else {
+        atc->setMode(4);
+        atc->setGoStraightXY(out_x, out_y);
+    }
 }
 
 void Keeper::_guardGoal() {
