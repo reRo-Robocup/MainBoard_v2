@@ -40,48 +40,6 @@ void Attacker::update2() {
     atc->setMode(3);
     atc->setGoStraightPower(0.6);
     atc->setGoStraightAngle(angle);
-
-    // float _ball_angle = 90 + cam->data.ball_angle;
-    // if (_ball_angle > 360) {
-    //     _ball_angle -= 360;
-    // }
-    // float observed_x = cos((_ball_angle)*deg_to_rad);
-
-    // int _ball_pos = 0;
-    // float _ball_distance = 0;
-
-    // // if (_ball_angle < 360 && _ball_angle > 270) {
-    // //     _ball_pos = 1;  // 左うしろ
-    // //     _ball_distance = -cam->data.ball_distance;
-    // // } else if (_ball_angle > 180 && _ball_angle < 270) {
-    // //     _ball_pos = 2;  // 右うしろ
-    // //     _ball_distance = -cam->data.ball_distance;
-    // // } else {
-    // //     _ball_pos = 0;  // 前方
-    // //     _ball_distance = cam->data.ball_distance;
-    // // }
-
-    // float out_x = PID_traceBallX2.update(0, observed_x);
-    // float out_y = PID_traceBallY2.update(5, _ball_distance) * -1;
-
-    // /// printf("ba: %f bd: %f obs_x: %f out_x: %f out_y: %f\r\n", _ball_angle, _ball_distance, observed_x, out_x, out_y);
-
-    // ui->buzzer(600, 10);
-
-    // if (out_x > 0.94) {
-    //     out_x = 0.94;
-    // } else if (out_x < -0.94) {
-    //     out_x = -0.94;
-    // }
-
-    // if (out_y > 0.94) {
-    //     out_y = 0.94;
-    // } else if (out_y < -0.94) {
-    //     out_y = -0.94;
-    // }
-
-    // atc->setMode(4);
-    // atc->setGoStraightXY(out_x, out_y);
 }
 
 void Attacker::update() {
@@ -115,7 +73,7 @@ void Attacker::update() {
     // if (!cam->data.isBallDetected) {
     //     _mode = 0;
     // }
-    _mode = 0;
+    // _mode = 10;
 
     switch (_mode) {
         case 0:  // ボール前方
@@ -123,11 +81,11 @@ void Attacker::update() {
             out_y = PID_traceBallY.update(0, observed_y) * -1;
             ui->buzzer(500, 10);
 
-            // if (ball_pos == 1) {
-            //     _mode = 10;
-            // } else if (ball_pos == 2) {
-            //     _mode = 20;
-            // }
+            if (ball_pos == 1) {
+                _mode = 10;
+            } else if (ball_pos == 2) {
+                _mode = 20;
+            }
             break;
 
         case 10:  // ボール左うしろ
@@ -208,16 +166,16 @@ void Attacker::update() {
         }
         ui->setLED(1, cam->data.isBallDetected);
 
-        if (out_x > 0.94) {
-            out_x = 0.94;
-        } else if (out_x < -0.94) {
-            out_x = -0.94;
+        if (out_x > 0.5) {
+            out_x = 0.5;
+        } else if (out_x < -0.5) {
+            out_x = -0.5;
         }
 
-        if (out_y > 0.94) {
-            out_y = 0.94;
-        } else if (out_y < -0.94) {
-            out_y = -0.94;
+        if (out_y > 0.5) {
+            out_y = 0.5;
+        } else if (out_y < -0.5) {
+            out_y = -0.5;
         }
 
         // printf("is_front: %d, goal_angle: %d, ball_angle: %d, distance: %d\r\n", cam->KeepGoal.isFront, cam->KeepGoal.ang, cam->data.ball_angle, cam->KeepGoal.dis);
