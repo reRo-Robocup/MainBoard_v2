@@ -109,6 +109,9 @@ void logic_main(void) {
         case 2:
             keeper.update();
             break;
+        case 3:
+            attacker.update2();
+            break;
         default:
             break;
     }
@@ -151,6 +154,15 @@ void logic_main(void) {
                         mcu.systemReset();
                     } else {
                         mode = 2;
+                    }
+                    break;
+
+                case 6:
+                    /* Attacker Mode 2 */
+                    if (ui_sw_cnt > 500) {
+                        mcu.systemReset();
+                    } else {
+                        mode = 3;
                     }
                     break;
                 default:
