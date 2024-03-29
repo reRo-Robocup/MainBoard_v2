@@ -43,23 +43,23 @@ void app_update();
 void logic_main();
 
 void BatteryVoltageWarning(bool flag) {
-    // if (flag) {
-    //     printf("BatteryVoltageWarning\r\n");
-    //     ui.buzzer(500, 10000);
-    // } else {
-    //     printf("WarningClear\r\n");
-    //     ui.buzzer(500, 1000);
-    // }
+    if (flag) {
+        printf("BatteryVoltageWarning\r\n");
+        ui.buzzer(500, 10000);
+    } else {
+        printf("WarningClear\r\n");
+        ui.buzzer(500, 1000);
+    }
 }
 
 void BatteryVoltageCritical(bool flag) {
-    // if (flag) {
-    //     printf("BatteryVoltageCritical\r\n");
-    //     ui.buzzer(300, 10000);
-    // } else {
-    //     printf("CriticalClear\r\n");
-    //     ui.buzzer(300, 1000);
-    // }
+    if (flag) {
+        printf("BatteryVoltageCritical\r\n");
+        ui.buzzer(300, 10000);
+    } else {
+        printf("CriticalClear\r\n");
+        ui.buzzer(300, 1000);
+    }
 }
 
 void app_init() {
@@ -203,8 +203,6 @@ void app_main() {
 
     isInit = true;
 
-    while (1) {
-        // printf("%d\r\n", cam.data.ball_angle);
-        /* main loop */
+    while(1) {
     }
 }
