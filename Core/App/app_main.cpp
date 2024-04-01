@@ -112,6 +112,10 @@ void logic_main(void) {
         case 3:
             attacker.update2();
             break;
+        case 4:
+            atc.setMode(2);
+            atc.setTurnAngle(180);
+            break;
         default:
             break;
     }
@@ -165,6 +169,14 @@ void logic_main(void) {
                         mode = 3;
                     }
                     break;
+                case 7:
+                    /* 宴会芸 */
+                    if (ui_sw_cnt > 500) {
+                        mcu.systemReset();
+                    } else {
+                        mode = 4;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -203,6 +215,6 @@ void app_main() {
 
     isInit = true;
 
-    while(1) {
+    while (1) {
     }
 }
