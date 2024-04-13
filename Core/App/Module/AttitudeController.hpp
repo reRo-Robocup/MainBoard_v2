@@ -28,6 +28,8 @@ class AttitudeController {
 
     void setGoStraightXY(float x, float y);
 
+    void setTargetPositionXY(float x, float y);
+
     enum TractionMotors {
         Motor1,
         Motor2,
@@ -47,6 +49,9 @@ class AttitudeController {
     baseMcuAbstractionLayer* _mcu;
     MPU6500* _imu;
     PID<float> _turn_angle_pid;
+    PID<float> _position_x_pid;
+    PID<float> _position_y_pid;
+
     int _mode;
 
     int _go_straight_angle;
@@ -54,6 +59,9 @@ class AttitudeController {
 
     float _go_straight_x = 0;
     float _go_straight_y = 0;
+
+    float _target_position_x = 0;
+    float _target_position_y = 0;
 
     int _turn_angle;
 

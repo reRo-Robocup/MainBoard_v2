@@ -37,6 +37,16 @@ int mode = 0;
 unsigned int ui_sw_cnt = 0;
 bool ui_sw_f = false;
 
+float accX[3000] = {0};
+float accY[3000] = {0};
+float veloX[3000] = {0};
+float veloY[3000] = {0};
+float PosX[3000] = {0};
+float PosY[3000] = {0};
+
+int benchmark_mode = 0;
+unsigned int benchmark_cnt = 0;
+
 void app_init();
 void app_main();
 void app_update();
@@ -115,7 +125,65 @@ void logic_main(void) {
         case 4:
             atc.setMode(2);
             atc.setTurnAngle(180);
+        case 5: {
+            switch (benchmark_mode) {
+                case 0:
+                    benchmark_mode = 1;
+                    break;
+                case 1:
+                    // atc.setMode(3);
+                    // atc.setGoStraightPower(0.96);
+                    // atc.setGoStraightAngle(180);
+                    atc.setMode(5);
+                    atc.setTargetPositionXY(0, 1.8);
+                    atc.setGoStraightAngle(180);
+
+                    accX[benchmark_cnt] = imu.Ax;
+                    accY[benchmark_cnt] = imu.Ay;
+                    veloX[benchmark_cnt] = imu.Vx;
+                    veloY[benchmark_cnt] = imu.Vy;
+                    PosX[benchmark_cnt] = imu.Px;
+                    PosY[benchmark_cnt] = imu.Py;
+                    benchmark_cnt++;
+                    if (benchmark_cnt > 2500) {
+                        benchmark_mode = 2;
+                    }
+                    if (benchmark_cnt > 2000) {
+                        atc.setMode(0);
+                    }
+                    break;
+                case 2:
+                    // 待機
+                    atc.setMode(0);
+                    break;
+                case 3:
+                    for (int i = 0; i < 2500; i++) {
+                        printf("cnt: %d, accX: %f, accY: %f, veloX: %f, VeloY: %f, PosX: %f, PosY: %f\r\n", i, accX[i], accY[i], veloX[i], veloY[i], PosX[i], PosY[i]);
+                    }
+                    benchmark_mode = 0;
+                    break;
+                default:
+                    break;
+            }
             break;
+        }
+        case 6: {
+            benchmark_cnt++;
+            if (benchmark_cnt > 2000) {
+                if (benchmark_cnt > 4000) {
+                    benchmark_cnt = 0;
+                }
+                atc.setMode(5);
+                atc.setTargetPositionXY(0, 0.5);
+                atc.setGoStraightAngle(180);
+            } else {
+                atc.setMode(5);
+                atc.setTargetPositionXY(0, 0);
+                atc.setGoStraightAngle(180);
+            }
+
+            // printf("veloX: %f, VeloY: %f, PosX: %f, PosY: %f\r\n", imu.Vx, imu.Vy, imu.Px, imu.Py);
+        } break;
         default:
             break;
     }
@@ -162,11 +230,11 @@ void logic_main(void) {
                     break;
 
                 case 6:
-                    /* Attacker Mode 2 */
+                    /* XY制御 */
                     if (ui_sw_cnt > 500) {
                         mcu.systemReset();
                     } else {
-                        mode = 3;
+                        mode = 6;
                     }
                     break;
                 case 7:
@@ -175,6 +243,18 @@ void logic_main(void) {
                         mcu.systemReset();
                     } else {
                         mode = 4;
+                    }
+                    break;
+
+                case 8:
+                    /* ベンチマーク */
+                    if (ui_sw_cnt > 500) {
+                        mcu.systemReset();
+                    } else {
+                        mode = 5;
+                        if (benchmark_mode == 2) {
+                            benchmark_mode = 3;
+                        }
                     }
                     break;
                 default:

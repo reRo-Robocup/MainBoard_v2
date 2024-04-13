@@ -31,6 +31,8 @@ void MPU6500::init() {
         _write_byte(0x1A, 0x00);
         _write_byte(0x1B, 0x18);  // FS_SEL = 3
         //_write_byte(0x1B, 0x00); // FS_SEL = 0
+
+        _write_byte(0x1C, 0x08);  // AFS_SEL = 1
         isInitialized = 1;
     }
 
@@ -39,6 +41,10 @@ void MPU6500::init() {
     _Gx_drift_constant = 0;
     _Gy_drift_constant = 0;
     _Gz_drift_constant = 0;
+
+    _Ax_drift_constant = 0;
+    _Ay_drift_constant = 0;
+
     Yaw = 180;
     _madgwick.begin(1000.0);
     // printf("IMU init END \n\n");
@@ -68,6 +74,9 @@ void MPU6500::update() {
                 _Gy_drift_constant = _calibration_sum_Gy / _calibration_sum_cnt;
                 _Gz_drift_constant = _calibration_sum_Gz / _calibration_sum_cnt;
 
+                _Ax_drift_constant = _calibration_sum_Ax / _calibration_sum_cnt;
+                _Ay_drift_constant = _calibration_sum_Ay / _calibration_sum_cnt;
+
                 isCalibrationed = true;
                 _mode = 10;
             } else {
@@ -77,6 +86,9 @@ void MPU6500::update() {
                 _calibration_sum_Gx += raw_Gx;
                 _calibration_sum_Gy += raw_Gy;
                 _calibration_sum_Gz += raw_Gz;
+
+                _calibration_sum_Ax += raw_Ax;
+                _calibration_sum_Ay += raw_Ay;
                 _calibration_sum_cnt++;
             }
 
@@ -94,14 +106,27 @@ void MPU6500::update() {
             Gy = (float)(raw_Gy / 16.4);
             Gz = (float)(raw_Gz / 16.4);
 
-            Ax = (float)(raw_Ax / 16384.0);
-            Ay = (float)(raw_Ay / 16384.0);
-            Az = (float)(raw_Az / 16384.0);
+            // Ax = (float)(raw_Ax / 16384.0) * 9.8;
+            // Ay = (float)(raw_Ay / 16384.0) * 9.8;
+            // Az = (float)(raw_Az / 16384.0) * 9.8;
 
-            _madgwick.updateIMU(Gx, Gy, Gz, Ax, Ay, Az);
+            Ax = (float)(raw_Ax / 8192.0) * 9.8;
+            Ay = (float)(raw_Ay / 8192.0) * 9.8;
+            Az = (float)(raw_Az / 8192.0) * 9.8;
+
+            _madgwick.updateIMU(Gx, Gy, Gz, raw_Ax, raw_Ay, raw_Az);
 
             // Yaw += Gz * 0.001;
             Yaw = _madgwick.getYaw();
+
+            _filter_Ax.push(Ax);
+            _filter_Ay.push(Ay);
+
+            Vx += _filter_Ax.get() * 0.001;
+            Vy += _filter_Ay.get() * 0.001;
+
+            Px += Vx * 0.001;
+            Py += Vy * 0.001;
             break;
 
         default:
@@ -123,6 +148,9 @@ void MPU6500::_read_accel_data() {
     raw_Ax = ((int16_t)_read_byte(0x3B) << 8) | ((int16_t)_read_byte(0x3C));
     raw_Ay = ((int16_t)_read_byte(0x3D) << 8) | ((int16_t)_read_byte(0x3E));
     raw_Az = ((int16_t)_read_byte(0x3F) << 8) | ((int16_t)_read_byte(0x40));
+
+    raw_Ax -= _Ax_drift_constant;
+    raw_Ay -= _Ay_drift_constant;
 }
 
 void MPU6500::_write_byte(uint8_t reg, uint8_t val) {

@@ -14,6 +14,7 @@
 #define _APP_MODULE_MPU6500_HPP_
 
 #include <Lib/MadgwickAHRS.h>
+#include <Lib/MovingAverageFilter.hpp>
 #include <McuAbstractionLayer/baseMcuAbstractionLayer.hpp>
 
 class MPU6500 {
@@ -31,12 +32,16 @@ class MPU6500 {
     float Yaw, Pitch, Roll;
     float Vy, Vx, Vz;
 
+    float Px, Py, Pz;
+
     bool isInitialized;
     bool isCalibrationed;
 
    private:
     MAL* _mcu;
     Madgwick _madgwick;
+    MovingAverageFilter<float, 50> _filter_Ax;
+    MovingAverageFilter<float, 50> _filter_Ay;
 
     float _dt;
     int16_t _mode;
@@ -48,6 +53,12 @@ class MPU6500 {
     int32_t _calibration_sum_Gx;
     int32_t _calibration_sum_Gy;
     int32_t _calibration_sum_Gz;
+
+    int16_t _Ax_drift_constant;
+    int16_t _Ay_drift_constant;
+
+    int32_t _calibration_sum_Ax;
+    int32_t _calibration_sum_Ay;
 
     int32_t _calibration_sum_cnt;
 
